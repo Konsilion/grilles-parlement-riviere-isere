@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 660" font-family="-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="fleche" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#0b4387"/>
+    </marker>
+  </defs>
+  <rect width="1040" height="660" fill="#ffffff"/>
+  <text x="520" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#0b4387">Grilles de carte — modèle d'ensemble des données</text>
+  <text x="520" y="46" text-anchor="middle" font-size="11" fill="#555555">source de vérité Zotero · dérivés JSON régénérés · parcours contribution</text>
+
+  <!-- En-têtes de colonnes -->
+  <text x="130" y="74" text-anchor="middle" font-size="11" font-weight="700" fill="#333333">SOURCE DE VÉRITÉ</text>
+  <text x="400" y="74" text-anchor="middle" font-size="11" font-weight="700" fill="#333333">PIPELINE (scripts/)</text>
+  <text x="670" y="74" text-anchor="middle" font-size="11" font-weight="700" fill="#333333">DÉRIVÉS JSON (régénérés)</text>
+  <text x="925" y="74" text-anchor="middle" font-size="11" font-weight="700" fill="#333333">APPLICATIONS (GitHub Pages)</text>
+
+  <!-- Groupe Zotero -->
+  <rect x="20" y="86" width="220" height="338" rx="10" fill="#eef4fb" stroke="#0b4387" stroke-width="1.5"/>
+  <text x="130" y="106" text-anchor="middle" font-size="12" font-weight="700" fill="#0b4387">Groupe Zotero Konsilion</text>
+  <text x="130" y="121" text-anchor="middle" font-size="10" fill="#555555">6610185 — source unique</text>
+
+  <!-- Ligne 1 : racine du groupe (médiathèque) -->
+  <rect x="34" y="136" width="192" height="54" rx="6" fill="#ffffff" stroke="#7aa5d8"/>
+  <text x="130" y="154" text-anchor="middle" font-size="11" font-weight="600" fill="#222222">Items racine du groupe</text>
+  <text x="130" y="168" text-anchor="middle" font-size="9" fill="#666666">hors Actualités · Contacts · Projets</text>
+  <text x="130" y="180" text-anchor="middle" font-size="9" fill="#666666">filtre anti-fuite (config.py)</text>
+
+  <!-- Ligne 2 : Actualités -->
+  <rect x="34" y="204" width="192" height="54" rx="6" fill="#ffffff" stroke="#7aa5d8"/>
+  <text x="130" y="222" text-anchor="middle" font-size="11" font-weight="600" fill="#222222">Collection Actualités</text>
+  <text x="130" y="236" text-anchor="middle" font-size="9.5" fill="#666666">clé U4HFDR68</text>
+  <text x="130" y="249" text-anchor="middle" font-size="9" fill="#666666">citationKey A000N</text>
+
+  <!-- Ligne 3 : Contacts -->
+  <rect x="34" y="272" width="192" height="54" rx="6" fill="#ffffff" stroke="#7aa5d8"/>
+  <text x="130" y="290" text-anchor="middle" font-size="11" font-weight="600" fill="#222222">Collection Contacts</text>
+  <text x="130" y="304" text-anchor="middle" font-size="9.5" fill="#666666">clé JI7JP8AZ</text>
+  <text x="130" y="317" text-anchor="middle" font-size="9" fill="#666666">citationKey C000N</text>
+
+  <!-- Ligne 4 : Projets -->
+  <rect x="34" y="340" width="192" height="54" rx="6" fill="#ffffff" stroke="#7aa5d8"/>
+  <text x="130" y="358" text-anchor="middle" font-size="11" font-weight="600" fill="#222222">Collection Projets</text>
+  <text x="130" y="372" text-anchor="middle" font-size="9.5" fill="#666666">clé RPZFWI9M</text>
+  <text x="130" y="385" text-anchor="middle" font-size="9" fill="#666666">citationKey P000N</text>
+
+  <!-- Pipeline -->
+  <rect x="300" y="136" width="200" height="54" rx="6" fill="#f7f7f7" stroke="#999999"/>
+  <text x="400" y="168" text-anchor="middle" font-size="12" font-weight="600" font-family="ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace" fill="#222222">fetch_zotero.py</text>
+  <rect x="300" y="204" width="200" height="54" rx="6" fill="#f7f7f7" stroke="#999999"/>
+  <text x="400" y="236" text-anchor="middle" font-size="12" font-weight="600" font-family="ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace" fill="#222222">fetch_actualites.py</text>
+  <rect x="300" y="272" width="200" height="54" rx="6" fill="#f7f7f7" stroke="#999999"/>
+  <text x="400" y="304" text-anchor="middle" font-size="12" font-weight="600" font-family="ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace" fill="#222222">fetch_contacts.py</text>
+  <rect x="300" y="340" width="200" height="54" rx="6" fill="#f7f7f7" stroke="#999999"/>
+  <text x="400" y="372" text-anchor="middle" font-size="12" font-weight="600" font-family="ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace" fill="#222222">fetch_projets.py</text>
+
+  <!-- Dérivés -->
+  <rect x="560" y="136" width="220" height="54" rx="6" fill="#f7f7f7" stroke="#999999"/>
+  <text x="670" y="160" text-anchor="middle" font-size="10.5" font-family="ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace" fill="#222222">mediatheque/data/collection.json</text>
+  <text x="670" y="177" text-anchor="middle" font-size="8.5" fill="#a33333">régénéré à chaque tir — ne jamais éditer</text>
+  <rect x="560" y="204" width="220" height="54" rx="6" fill="#f7f7f7" stroke="#999999"/>
+  <text x="670" y="228" text-anchor="middle" font-size="10.5" font-family="ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace" fill="#222222">actualites/data/actualites.json</text>
+  <text x="670" y="245" text-anchor="middle" font-size="8.5" fill="#a33333">régénéré à chaque tir — ne jamais éditer</text>
+  <rect x="560" y="272" width="220" height="54" rx="6" fill="#f7f7f7" stroke="#999999"/>
+  <text x="670" y="296" text-anchor="middle" font-size="10.5" font-family="ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace" fill="#222222">contacts/data/contacts.json</text>
+  <text x="670" y="313" text-anchor="middle" font-size="8.5" fill="#a33333">régénéré à chaque tir — ne jamais éditer</text>
+  <rect x="560" y="340" width="220" height="54" rx="6" fill="#f7f7f7" stroke="#999999"/>
+  <text x="670" y="364" text-anchor="middle" font-size="10.5" font-family="ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace" fill="#222222">projets/data/projets.json</text>
+  <text x="670" y="381" text-anchor="middle" font-size="8.5" fill="#a33333">régénéré à chaque tir — ne jamais éditer</text>
+
+  <!-- Applications -->
+  <rect x="830" y="136" width="190" height="54" rx="6" fill="#eef4fb" stroke="#0b4387"/>
+  <text x="925" y="161" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b4387">mediatheque/</text>
+  <text x="925" y="178" text-anchor="middle" font-size="9" fill="#666666">app GitHub Pages</text>
+  <rect x="830" y="204" width="190" height="54" rx="6" fill="#eef4fb" stroke="#0b4387"/>
+  <text x="925" y="229" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b4387">actualites/</text>
+  <text x="925" y="246" text-anchor="middle" font-size="9" fill="#666666">app GitHub Pages</text>
+  <rect x="830" y="272" width="190" height="54" rx="6" fill="#eef4fb" stroke="#0b4387"/>
+  <text x="925" y="297" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b4387">contacts/</text>
+  <text x="925" y="314" text-anchor="middle" font-size="9" fill="#666666">app GitHub Pages</text>
+  <rect x="830" y="340" width="190" height="54" rx="6" fill="#eef4fb" stroke="#0b4387"/>
+  <text x="925" y="365" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b4387">projets/</text>
+  <text x="925" y="382" text-anchor="middle" font-size="9" fill="#666666">app GitHub Pages</text>
+
+  <!-- Flèches du pipeline -->
+  <line x1="226" y1="163" x2="300" y2="163" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+  <line x1="500" y1="163" x2="560" y2="163" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+  <line x1="780" y1="163" x2="830" y2="163" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+  <line x1="226" y1="231" x2="300" y2="231" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+  <line x1="500" y1="231" x2="560" y2="231" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+  <line x1="780" y1="231" x2="830" y2="231" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+  <line x1="226" y1="299" x2="300" y2="299" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+  <line x1="500" y1="299" x2="560" y2="299" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+  <line x1="780" y1="299" x2="830" y2="299" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+  <line x1="226" y1="367" x2="300" y2="367" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+  <line x1="500" y1="367" x2="560" y2="367" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+  <line x1="780" y1="367" x2="830" y2="367" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+
+  <!-- Légende pipeline -->
+  <text x="420" y="444" text-anchor="middle" font-size="9.5" fill="#666666">timer grilles-parlement-sync (horaire :07) → deploy.sh : 4 fetchs + commit + push</text>
+
+  <!-- Parcours contribution -->
+  <text x="20" y="486" font-size="12" font-weight="700" fill="#0b4387">PARCOURS CONTRIBUTION (médiathèque)</text>
+
+  <rect x="20" y="502" width="210" height="48" rx="6" fill="#f7f7f7" stroke="#999999"/>
+  <text x="125" y="520" text-anchor="middle" font-size="11" font-weight="600" fill="#222222">Modale</text>
+  <text x="125" y="536" text-anchor="middle" font-size="9.5" fill="#666666">« Proposer un document »</text>
+  <line x1="230" y1="526" x2="290" y2="526" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+
+  <rect x="290" y="502" width="210" height="48" rx="6" fill="#f7f7f7" stroke="#999999"/>
+  <text x="395" y="517" text-anchor="middle" font-size="11" font-weight="600" fill="#222222">Relais VPS</text>
+  <text x="395" y="531" text-anchor="middle" font-size="9" fill="#555555">hermes.konsilion.fr</text>
+  <text x="395" y="543" text-anchor="middle" font-size="9" fill="#555555">/api/contribution</text>
+  <line x1="500" y1="526" x2="560" y2="526" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+
+  <rect x="560" y="502" width="200" height="48" rx="6" fill="#f7f7f7" stroke="#999999"/>
+  <text x="660" y="520" text-anchor="middle" font-size="11" font-weight="600" fill="#222222">Issue GitHub</text>
+  <text x="660" y="536" text-anchor="middle" font-size="9.5" fill="#666666">étiquette « contribution »</text>
+  <line x1="760" y1="526" x2="820" y2="526" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+
+  <rect x="820" y="502" width="200" height="48" rx="6" fill="#f7f7f7" stroke="#999999"/>
+  <text x="920" y="520" text-anchor="middle" font-size="10.5" font-weight="600" font-family="ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace" fill="#222222">valider_contribution.py</text>
+  <text x="920" y="536" text-anchor="middle" font-size="9" fill="#666666">--liste · n° · --refuser</text>
+
+  <text x="395" y="570" text-anchor="middle" font-size="9" fill="#a33333">repli : issue GitHub manuelle si le relais échoue</text>
+
+  <!-- Retour vers Zotero -->
+  <polyline points="920,550 920,586 130,586 130,430" fill="none" stroke="#0b4387" stroke-width="1.6" marker-end="url(#fleche)"/>
+  <text x="520" y="604" text-anchor="middle" font-size="9.5" fill="#555555">issue validée → item Zotero (collection Médiathèque MCKNJI9M) → publié au prochain fetch (tir horaire :07)</text>
+</svg>

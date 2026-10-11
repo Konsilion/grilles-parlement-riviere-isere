@@ -1,0 +1,59 @@
+entite,champ,type,obligatoire,source,regle,exemple
+Document (mediatheque),key,texte,oui,cle item Zotero (key),identifiant de la fiche dans le JSON ; pas de convention citationKey ici,9L7JFN37
+Document (mediatheque),title,texte,oui,title (ou subject / nameOfAct selon itemType),titre vide => item ecarte du derive (fetch_zotero.py format_item),Bassin versant : Drac-aval
+Document (mediatheque),authors,liste texte,non,creators,name (organisation) ou ""prenom nom"" concatene,Département de l'Isère
+Document (mediatheque),year,texte (AAAA),non,date sinon dateAdded sinon issued,4 premiers caracteres numeriques,2025
+Document (mediatheque),type,texte,oui,itemType via TYPE_FR_MAP (fetch_zotero.py),libelle francais ; itemType inconnu => repris tel quel ou ""Document"",Rapport
+Document (mediatheque),abstract,texte,non,abstractNote,trim ; vide autorise,Rapport detaille publie en 2025...
+Document (mediatheque),tags,liste texte,non,tags + noms des collections de l'item,dedoublonnes ; la sidebar Tags reflete l'organisation par collections,Résultats à l'échelle des bassins versants
+Document (mediatheque),doi,texte ou null,non,DOI,vide => null,https://doi.org/10.4000/13jvu
+Document (mediatheque),url,texte ou null,non,url,vide => null,https://www.isere.fr/...
+Document (mediatheque),dateAdded,date (AAAA-MM-JJ),oui,dateAdded,coupe a 10 caracteres,2026-09-14
+Derive mediatheque,generated_at,date ISO 8601 Z,oui,horodatage du fetch,regenere a chaque tir (deploy.sh / timer :07),2026-10-11T16:07:31Z
+Derive mediatheque,collection_id,texte,oui,ZOTERO_COLLECTION_ID,vide = ""all"" (tous les items du groupe),all
+Derive mediatheque,count,entier,oui,nombre d'items retenus,egal au nombre d'items ecrits,92
+Actualite,id,texte (A000N),oui,citationKey,unicite verifiee au fetch (doublon => echec) ; attribution A000N par valider.py (scan max+1),A0001
+Actualite,type,texte,oui,extra : ligne ""Type:"",liste fermee : evenement_a_venir / evenement_passe / ressource_publiee / information_parlement ; absent => echec du fetch,evenement_a_venir
+Actualite,titre,texte,non,title,trim,Séminaire MEPAG — restitution intermédiaire
+Actualite,description,texte,non,abstractNote,trim,Restitution intermédiaire du projet de recherche MEPAG...
+Actualite,date_debut,date (AAAA-MM-JJ),non,champ date — partie avant ""/"",OPTION B : date seule ou intervalle AAAA-MM-JJ/AAAA-MM-JJ,2026-11-27
+Actualite,date_fin,date (AAAA-MM-JJ),non,champ date — partie apres ""/"",vide si pas d'intervalle,(vide)
+Actualite,lieu,texte,non,place,trim,Salle A 177 Maison Climat Planète Grenoble
+Actualite,lien,texte,non,url,trim,https://www.ige-grenoble.fr/Contact-Acces
+Actualite,date_ajout,date (AAAA-MM-JJ),non,dateAdded,coupe a 10 caracteres,2026-10-10
+Actualite,source_message_id,texte,non,extra : ligne ""Source message id:"",tracabilite du mail d'origine ; sert d'anti-doublon a la validation,fc703a1ddbf56f5710de2032a1fffacd@free.fr
+Contact,id,texte (C000N),oui,citationKey,unicite verifiee au fetch ; attribution C000N par ajouter_contact.py (scan max+1),C0001
+Contact,nom,texte,oui,title,obligatoire a la saisie (--nom),Philippe Dubois
+Contact,description,texte,non,abstractNote,trim ; peut contenir des sauts de ligne,Référent de la commission juridique...
+Contact,organisation,texte,non,publisher,trim,France Nature Environnement 38
+Contact,lieu,texte,non,place,trim,Grenoble
+Contact,date_contact,date (AAAA-MM-JJ),non,date,non splitté (pas un intervalle) ; vide si inconnu,(vide)
+Contact,lien,texte,non,url,trim,https://parlement-isere.org/...
+Contact,email,texte,non,extra : ligne ""Email:"",label anglais sans accents ; absent = chaine vide ; coordonnees PUBLIQUES uniquement,phdpdc@free.fr
+Contact,telephone,texte,non,extra : ligne ""Telephone:"",label anglais sans accents ; absent = chaine vide,(vide)
+Contact,role,texte,non,extra : ligne ""Role:"",label anglais sans accents ; absent = chaine vide,Référent de la commission juridique
+Contact,categories,liste texte,non,tags,devient le filtre Categories de la grille,"collectif, commission juridique"
+Contact,date_ajout,date (AAAA-MM-JJ),non,dateAdded,coupe a 10 caracteres,2026-10-11
+Projet,id,texte (P000N),oui,citationKey,unicite verifiee au fetch ; attribution P000N par ajouter_projet.py (scan max+1),P0001
+Projet,titre,texte,oui,title,obligatoire a la saisie (--titre) ; absent => echec du fetch,Déclaration des droits de la rivière Isère
+Projet,description,texte,non,abstractNote,trim ; peut contenir des sauts de ligne,Texte fondateur rédigé par la commission juridique...
+Projet,porteur,texte,non,publisher,trim,Commission juridique du Parlement de la rivière Isère
+Projet,lieu,texte,non,place,trim,Grenoble
+Projet,date_debut,date (AAAA-MM-JJ),non,champ date — partie avant ""/"",OPTION B : date seule ou intervalle AAAA-MM-JJ/AAAA-MM-JJ ; date_fin >= date_debut a la saisie,2024-09-28
+Projet,date_fin,date (AAAA-MM-JJ),non,champ date — partie apres ""/"",vide si pas d'intervalle,2025-03-22
+Projet,lien,texte,non,url,trim,https://parlement-isere.org/pages/sessions/deuxieme_session/
+Projet,statut,texte,non,extra : ligne ""Statut:"",conseilles : En cours / À venir / Terminé ; absent = chaine vide => le front deduit des dates,En cours
+Projet,categories,liste texte,non,tags,devient le filtre Categories de la grille,"commission juridique, droits de la nature"
+Projet,date_ajout,date (AAAA-MM-JJ),non,dateAdded,coupe a 10 caracteres,2026-10-11
+Proposition,numero,entier,oui,numero de l'issue GitHub,identifiant de la proposition ; issues ouvertes seulement (label contribution),12
+Proposition,titre_issue,texte,oui,genere : ""Contribution : <titre>"",titre de l'issue GitHub (app.js buildIssueUrl / server.py create_issue),Contribution : Étude sur la qualité de l'eau du Drac
+Proposition,auteur_issue,texte,oui,login GitHub,robot nbrem (relais) ou compte du visiteur (parcours manuel),nbrem
+Proposition,label,texte,oui,etiquette GitHub,toujours ""contribution"",contribution
+Proposition,title,texte,oui,champ modale c-title (requis) puis bloc json-contribution,300 car. max ; >= 3 car. cote relais ; obligatoire a la validation,Étude sur la qualité de l'eau du Drac
+Proposition,authors,texte,non,champ modale c-authors puis bloc json-contribution,300 car. max ; decoupe sur "" , "" / "" ; "" ; un mot = organisation, plusieurs mots = personne,Office français de la biodiversité
+Proposition,type,texte,oui,champ modale c-type (select) puis bloc json-contribution,14 types fermes identiques dans la modale le relais et le script ; inconnu => refus ; traduit en itemType par TYPE_TO_ITEMTYPE,Rapport
+Proposition,year,texte (AAAA),non,champ modale c-year puis bloc json-contribution,4 chiffres (front : 1400-2100) ; ecrit dans le champ date Zotero,2024
+Proposition,url,texte,oui,champ modale c-url (requis) puis bloc json-contribution,2000 car. max ; http/https et >= 12 car. cote relais ; obligatoire a la validation,https://exemple.fr/rapport.pdf
+Proposition,abstract,texte,non,champ modale c-abstract puis bloc json-contribution,3000 car. max,Analyse de la qualité de l'eau du Drac...
+Proposition,gotcha,texte,non,champ modale c-gotcha (anti-robots),piege invisible : rempli => faux succes (202) et rien n'est cree ; jamais transmis dans l'issue,(toujours vide cote humain)
+Proposition,etat,texte,oui,etat de l'issue GitHub,soumise (ouverte) / validee (fermee apres creation Zotero) / refusee (fermee avec motif),soumise

@@ -1,56 +1,26 @@
 /* =========================================================
-   Zotero Vitrine — styles
-   - Sobre, lisible, responsive
-   - Thème clair unique, fond blanc (CEO 09/10/26)
+   Zotero Vitrine (médiathèque) — styles propres
+   Le socle commun (../common/css/base.css) porte : tokens de
+   base, thème clair unique, .layout (conteneur), .dropdown/.dd-*
+   (dont .dd-menu right:0 min-width:100%), .filter-pill(-x),
+   .pagination/.page-*, .page-size-label, .header-controls,
+   .search-input, .card (socle + halo), .card-type, .card-title,
+   .card-meta, .empty, .muted, .center, .grid (display/gap).
+   Ce fichier garde : sidebar, filtres Type, variantes year-*
+   (largeur pleine sidebar), modale, palette des types, mode
+   intégré (?mode=integre) et tokens supplémentaires.
    ========================================================= */
 
+/* ============== Tokens supplémentaires (médiathèque) ============== */
 :root {
-  --bg: #ffffff;
-  --bg-soft: #eaf1fa;
-  --bg-card: #ffffff;
   --bg-sidebar: #ffffff;
   --bg-modal: #ffffff;
-  --text: #1a1a1a;
-  --text-muted: #6b7280;
-  --border: #e5e7eb;
-  --border-strong: #d1d5db;
-  --accent: #0b4387; /* bleu primaire du site hote (personnel.css) */
-  --accent-hover: #1a63b0;
-  --tag-bg: #e8f0fb;
-  --tag-text: #0b4387;
   --tag-active-bg: #0b4387;
   --tag-active-text: #ffffff;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
-  --radius: 8px;
-  --radius-sm: 4px;
-  --max-width: 1400px;
 }
 
-/* Thème clair unique : neutralise le dark mode de l'OS */
-:root { color-scheme: light; }
-
-* { box-sizing: border-box; }
-
-html, body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  /* 16.5px = 15px × 1.1 : rendu équivalent au « zoom 110 % » par défaut,
-     sans que l'utilisateur ait à zoomer (CEO 09/10/26). Toutes les autres
-     tailles sont en rem → elles suivent cette base. */
-  font-size: 16.5px;
-  line-height: 1.5;
-}
-
-/* ============== Layout principal ============== */
+/* ============== Layout principal (sidebar + contenu) ============== */
 .layout {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 1.5rem;
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 1.5rem;
@@ -95,6 +65,7 @@ html, body {
   letter-spacing: 0.04em;
 }
 
+/* Recherche sidebar : pleine largeur (plus épaisse que .search-input) */
 input[type="search"],
 select {
   width: 100%;
@@ -179,92 +150,16 @@ select:focus {
   font-size: 0.75rem;
 }
 
-/* ============== Filtre Année (menu déroulant multi-choix, CEO 10/10/26) ============== */
-.year-dropdown {
-  position: relative;
-}
+/* ============== Filtre Année : variantes sidebar (CEO 10/10/26) ==============
+   Mécanique = dropdown commun (base.css .dd-*) ; la sidebar impose
+   bouton et menu pleine largeur, menu aligné à gauche. */
 .year-toggle {
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
   padding: 0.5rem 0.65rem;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  background: #ffffff;
-  color: var(--text);
-  font-size: 0.9rem;
-  font-family: inherit;
-  cursor: pointer;
-  text-align: left;
 }
-.year-toggle:hover { border-color: var(--accent); }
-.year-toggle:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: -1px;
-  border-color: var(--accent);
-}
-.year-toggle.active .year-pill-text {
-  color: var(--accent);
-  font-weight: 600;
-}
-.year-caret {
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  flex: none;
-  transition: transform 0.15s;
-}
-.year-dropdown.open .year-caret { transform: rotate(180deg); }
 .year-menu {
-  display: none;
-  position: absolute;
-  top: calc(100% + 0.3rem);
   left: 0;
   right: 0;
-  z-index: 60;
-  flex-direction: column;
-  gap: 0.15rem;
-  padding: 0.4rem;
-  background: #ffffff;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-md);
-  max-height: 280px;
-  overflow-y: auto;
-}
-.year-menu.open { display: flex; }
-.year-option {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.3rem 0.4rem;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  user-select: none;
-  font-size: 0.9rem;
-  line-height: 1.3;
-}
-.year-option:hover { background: var(--bg-soft); }
-.year-option input[type="checkbox"] {
-  margin: 0;
-  accent-color: var(--accent);
-  width: 0.95rem;
-  height: 0.95rem;
-  flex: none;
-  cursor: pointer;
-}
-.year-option-name { flex: 1; }
-.year-option.active .year-option-name {
-  color: var(--accent);
-  font-weight: 600;
-}
-/* « Toutes les années » : séparée de la liste des années */
-.year-option.year-all {
-  border-bottom: 1px solid var(--border);
-  border-radius: 0;
-  margin-bottom: 0.25rem;
-  padding-bottom: 0.45rem;
 }
 
 /* ============== Mention développement (sidebar) ============== */
@@ -298,7 +193,7 @@ select:focus {
   color: var(--accent);
 }
 
-/* ============== Contenu / grille ============== */
+/* ============== Contenu / entête ============== */
 .content-header {
   display: flex;
   flex-wrap: wrap;
@@ -312,117 +207,41 @@ select:focus {
   font-size: 0.9rem;
 }
 
-/* Select taille de page (entête de grille) */
-.page-size-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
-.page-size-label select {
-  width: auto;
-  padding: 0.3rem 0.45rem;
-  font-size: 0.85rem;
-}
-
-/* Groupe pagination-haut + select dans l'entête */
-.header-controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-/* ============== Pagination de la grille ============== */
-.pagination {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 0.35rem;
-  margin-top: 1.25rem;
-}
-.pagination:empty { display: none; }
-.pagination-top {
-  margin-top: 0;
-  justify-content: flex-start;
-}
-
-.page-btn,
-.page-num {
-  min-width: 2.1rem;
-  padding: 0.35rem 0.6rem;
-  font-size: 0.85rem;
-  font-family: inherit;
-  line-height: 1.2;
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: border-color 0.15s, color 0.15s, background 0.15s;
-}
-.page-btn:hover:not(:disabled),
-.page-num:hover:not(.active) {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.page-btn:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-.page-num.active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-  cursor: default;
-}
-.page-btn:focus-visible,
-.page-num:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-.page-ellipsis {
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  padding: 0 0.15rem;
-}
-
-
+/* ============== Grille de cartes ============== */
 .grid {
-  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
 }
 
-/* ============== Carte ============== */
+/* Carte cliquable (ouvre la modale) */
 .card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
-  box-shadow: var(--shadow-sm);
-}
-.card:hover {
-  transform: translateY(-2px);
-  /* Halo bleu léger, façon néon douce */
-  box-shadow: 0 0 0 1px rgba(11, 67, 135, 0.35),
-              0 4px 14px -2px rgba(11, 67, 135, 0.25),
-              0 0 18px rgba(11, 67, 135, 0.22);
-  border-color: rgba(11, 67, 135, 0.45);
-}
-.card:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
 }
 
-.card-type,
+.card-authors {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+.card-tag {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.7rem;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  border-radius: 999px;
+}
+.card-tag.more { background: transparent; color: var(--text-muted); }
+
+/* ============== Vignettes par type (palette Office) ==============
+   Applicables carte ET modale. */
 .modal-type {
   display: inline-block;
   align-self: flex-start;
@@ -436,8 +255,6 @@ select:focus {
   color: var(--accent);
   background: var(--tag-bg);
 }
-
-/* ---- Vignettes par type (palette Office) ---- */
 .card-type.type-rapport, .modal-type.type-rapport {
   background: #e3ecf7;
   border-color: #c3d3eb;
@@ -473,45 +290,6 @@ select:focus {
   border-color: var(--border);
   color: var(--accent);
 }
-
-.card-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0;
-  line-height: 1.35;
-  /* Limite à 3 lignes */
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.card-authors {
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  font-style: italic;
-}
-.card-meta {
-  margin: 0;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-.card-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3rem;
-  margin-top: auto;
-  padding-top: 0.5rem;
-}
-.card-tag {
-  display: inline-block;
-  padding: 0.15rem 0.5rem;
-  font-size: 0.7rem;
-  background: var(--tag-bg);
-  color: var(--tag-text);
-  border-radius: 999px;
-}
-.card-tag.more { background: transparent; color: var(--text-muted); }
 
 /* ============== Modale ============== */
 .modal {
@@ -565,7 +343,6 @@ select:focus {
   background: var(--bg-soft);
   color: var(--text);
 }
-/* (styles communs vignettes : voir .card-type/.modal-type plus haut) */
 .modal-type {
   margin-bottom: 0.5rem;
 }
@@ -652,17 +429,7 @@ select:focus {
   min-height: 1.2em;
 }
 
-/* ============== Utilitaires ============== */
-.muted { color: var(--text-muted); }
-.center { text-align: center; }
-.empty {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 3rem 1rem;
-  color: var(--text-muted);
-}
-
-/* ============== Bloc contribution (proposition par mail) ============== */
+/* ============== Bloc contribution ============== */
 .propose-block {
   margin-top: 1.25rem;
   padding-top: 1rem;
@@ -685,14 +452,14 @@ body.modal-open {
   overflow: hidden;
 }
 
-/* ============== Mode intégré (?mode=integre) ==============
+/* ============== Mode intégré (?mode=integre) =============
    La vitrine est embarquée dans une page hôte qui redimensionne l'iframe
    (postMessage) : la page hôte fournit le fond et l'unique défilement.
    - fond transparent : la teinte de la page reste celle de l'hôte ;
    - l'hôte (mkdocs-material, palette claire fixe) impose le clair : un OS
      en sombre rendrait sinon le texte de la vitrine invisible sur fond clair ;
-   - la modale s'ancre sur la carte cliquée (JS) : l'iframe n'ayant pas de
-     défilement propre, un placement « fixed » sortirait du champ visible. */
+   - la modale s'ancre sur la carte cliquée (JS) : l'iframe n'ayant pas
+     de défilement propre, un placement « fixed » sortirait du champ visible. */
 html[data-embed="1"] {
   color-scheme: light;
   --bg: transparent;
@@ -719,8 +486,8 @@ html[data-embed="1"] .layout { padding: 1rem 1.25rem 2.5rem; }
 html[data-embed="1"] .type-check:hover { background: #eaf1fa; }
 html[data-embed="1"] input[type="search"],
 html[data-embed="1"] select { background: #ffffff; }
-html[data-embed="1"] .year-toggle,
-html[data-embed="1"] .year-menu { background: #ffffff; }
+html[data-embed="1"] .dd-toggle,
+html[data-embed="1"] .dd-menu { background: #ffffff; }
 
 /* Vignettes de type : re-forçage des variantes claires (les variantes
    sombres via prefers-color-scheme passeraient au travers sinon). */

@@ -1,0 +1,374 @@
+/* =========================================================
+   Grilles de carte — socle commun des deux apps (K5)
+   Tokens + styles PARTAGÉS : thème clair UNIQUE (fond blanc,
+   accent #0b4387 — bleu primaire du site hôte, CEO 09/10/26),
+   base 16.5px (tout le reste en rem), neutralisation du dark
+   mode OS, dropdowns custom, pagination, pastilles de filtre.
+   Palette = tokens existants des deux apps, AUCUNE nouvelle
+   couleur. Chaque app garde ses styles propres dans son
+   css/style.css (chargé APRÈS ce socle).
+   ========================================================= */
+
+/* ============== Tokens (identiques aux deux apps) ============== */
+:root {
+  --bg: #ffffff;
+  --bg-soft: #eaf1fa;
+  --bg-card: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
+  --accent: #0b4387; /* bleu primaire du site hôte (personnel.css) */
+  --accent-hover: #1a63b0;
+  --tag-bg: #e8f0fb;
+  --tag-text: #0b4387;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
+  --radius: 8px;
+  --radius-sm: 4px;
+  --max-width: 1400px;
+}
+
+/* Thème clair unique : neutralise le dark mode de l'OS */
+:root { color-scheme: light; }
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* 16.5px = 15px × 1.1 : rendu équivalent au « zoom 110 % » demandé
+     par le CEO. Toutes les autres tailles sont en rem → elles
+     suivent cette base. */
+  font-size: 16.5px;
+  line-height: 1.5;
+}
+
+/* ============== Layout ============== */
+.layout {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* ============== Entête de contenu ============== */
+/* (.content-header/.result-count : layout propre à chaque app —
+   actus = colonne [compteur puis toolbar], médiathèque = ligne
+   [compteur à gauche, contrôles à droite] — cf. css/style.css.) */
+
+/* Groupe pagination-haut + select taille de page (droite) */
+.header-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Select taille de page (entête de grille) */
+.page-size-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.page-size-label select {
+  width: auto;
+  padding: 0.3rem 0.45rem;
+  font-size: 0.85rem;
+  font-family: inherit;
+  color: var(--text);
+  background: #ffffff;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+}
+.page-size-label select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+  border-color: var(--accent);
+}
+
+/* ============== Recherche ============== */
+.search-input {
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: #ffffff;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.6rem;
+  line-height: 1.2;
+  min-width: 13rem;
+}
+.search-input::placeholder { color: var(--text-muted); }
+.search-input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+  border-color: var(--accent);
+}
+
+/* ============== Dropdowns custom multi-choix ============== */
+/* (le <select> natif refuse le multi — jamais y revenir) */
+.dropdown { position: relative; }
+.dd-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  line-height: 1.2;
+}
+.dd-toggle:hover { border-color: var(--accent); }
+.dd-toggle:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+  border-color: var(--accent);
+}
+.dd-toggle.active .dd-pill {
+  color: var(--accent);
+  font-weight: 600;
+}
+.dd-caret {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  flex: none;
+  transition: transform 0.15s;
+}
+.dropdown.open .dd-caret { transform: rotate(180deg); }
+.dd-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.3rem);
+  right: 0;
+  min-width: 100%;
+  z-index: 60;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.4rem;
+  background: #ffffff;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  max-height: 280px;
+  overflow-y: auto;
+}
+.dd-menu.open { display: flex; }
+.dd-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.4rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.9rem;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.dd-option:hover { background: var(--bg-soft); }
+.dd-option input[type="checkbox"] {
+  margin: 0;
+  accent-color: var(--accent);
+  width: 0.95rem;
+  height: 0.95rem;
+  flex: none;
+  cursor: pointer;
+}
+.dd-option-name { flex: 1; }
+.dd-option.active .dd-option-name {
+  color: var(--accent);
+  font-weight: 600;
+}
+/* Option « Tous… » : séparée de la liste */
+.dd-option.dd-all {
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  margin-bottom: 0.25rem;
+  padding-bottom: 0.45rem;
+}
+
+/* ============== Pastilles de filtre (mois actus) ============== */
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+.filter-pills:empty { display: none; }
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.18rem 0.2rem 0.18rem 0.55rem;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  /* fond bleu transparent léger, sobre (accent #0b4387 codé en dur) */
+  background: rgba(11, 67, 135, 0.08);
+  border: 1px solid rgba(11, 67, 135, 0.22);
+  border-radius: 999px;
+  color: var(--accent);
+}
+.filter-pill-x {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-family: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+.filter-pill-x:hover {
+  background: rgba(11, 67, 135, 0.15);
+}
+.filter-pill-x:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* ============== Pagination ============== */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 1.25rem;
+}
+.pagination:empty { display: none; }
+.pagination-top {
+  margin-top: 0;
+  justify-content: flex-start;
+}
+
+.page-btn,
+.page-num {
+  min-width: 2.1rem;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.85rem;
+  font-family: inherit;
+  line-height: 1.2;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.page-btn:hover:not(:disabled),
+.page-num:hover:not(.active) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.page-num.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  cursor: default;
+}
+.page-btn:focus-visible,
+.page-num:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.page-ellipsis {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  padding: 0 0.15rem;
+}
+
+/* ============== Carte (socle partagé) ============== */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  box-shadow: var(--shadow-sm);
+}
+.card:hover {
+  transform: translateY(-2px);
+  /* Halo bleu léger, façon néon douce (accent #0b4387 codé en dur —
+     grep "rgba(11, 67, 135," si l'accent change) */
+  box-shadow: 0 0 0 1px rgba(11, 67, 135, 0.35),
+              0 4px 14px -2px rgba(11, 67, 135, 0.25),
+              0 0 18px rgba(11, 67, 135, 0.22);
+  border-color: rgba(11, 67, 135, 0.45);
+}
+.card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Badge de type (carte + modale) */
+.card-type {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--accent);
+  background: var(--tag-bg);
+}
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.35;
+  /* Limite à 3 lignes */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-meta {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* ============== États vides & utilitaires ============== */
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+}
+.muted { color: var(--text-muted); }
+.center { text-align: center; }
+
+/* ============== Grille ============== */
+.grid {
+  display: grid;
+  gap: 1rem;
+}

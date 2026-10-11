@@ -2,13 +2,22 @@
    Zotero Vitrine — logique front
    - Fetch collection.json
    - Rendu des cartes (sans tags depuis 09/10/26 — décision CEO)
-   - Filtres (recherche floue insensible casse/accents + année multi-choix + type multi-choix)
-   - Types dynamiques : compteurs recalculés à chaque filtre, types à 0 masqués
+   - Filtres (recherche floue insensible casse/accents + année
+     multi-choix via dropdown commun + type multi-choix)
+   - Types dynamiques : compteurs recalculés à chaque filtre,
+     types à 0 masqués
    - Modale détail + copie BibTeX (tags conservés en modale)
+   - Recherche floue / pagination / dropdown : socles communs
+     (../common/js/*) partagés avec l'app actualités (K5).
    ========================================================= */
 
 (() => {
   "use strict";
+
+  const { esc: escapeHtml } = window.GrilleDom;
+  const GS = window.GrilleSearch;
+  const { paginate: paginateItems, renderPagination } = window.GrillePagination;
+  const { makeDropdown } = window.GrilleDropdown;
 
   // ---------- Mode intégré (iframe hôte, ?mode=integre) ----------
   // La vitrine embarquée n'a PAS de défilement propre : l'iframe est
@@ -70,14 +79,6 @@
   };
 
   // ---------- Utils ----------
-  const escapeHtml = (s) =>
-    String(s ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-
   const formatAuthors = (authors) => {
     if (!authors || authors.length === 0) return "Auteur inconnu";
     if (authors.length === 1) return authors[0];
@@ -93,96 +94,12 @@
     return authors[0] + " et al.";
   };
 
-  // ---------- Recherche : normalisation + fuzzy (10/10/26, demande CEO) ----------
-  // La recherche doit être insensible à la casse, aux accents et tolérante
-  // aux petites fautes de frappe (« ~95 % de correspondance »). Deux étapes :
-  //   1. sous-chaîne sur le texte NORMALISÉ (casse, accents, œ, ’) ;
-  //   2. mode flou par mot : chaque mot significatif de la requête doit se
-  //      trouver dans la fiche, exact ou à ~1-2 fautes près (Damerau-
-  //      Levenshtein borné). Calibrage : 95 % STRICT n'autoriserait aucune
-  //      faute sur un mot de moins de 20 lettres (1 lettre sur 8 = 12 %
-  //      d'écart) — le fuzzy serait inutile. Budget retenu : 0 faute ≤ 5
-  //      car., 1 faute 6-12 car., 2 fautes 13-20 car. (≥ ~85 % par mot).
-
-  const FOLD_MAP = { "œ": "oe", "æ": "ae", "Œ": "oe", "Æ": "ae", "’": "'", "‘": "'" };
-
-  const searchNormalize = (s) =>
-    String(s ?? "")
-      .replace(/[œæŒÆ]/g, (m) => FOLD_MAP[m])
-      .replace(/[’‘]/g, "'")
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase();
-
-  const searchSplitWords = (s) =>
-    searchNormalize(s).split(/[^a-z0-9]+/).filter(Boolean);
-
-  // Distance de Damerau-Levenshtein restreinte (substitution, insertion,
-  // suppression, transposition adjacente), bornée par max : renvoie max+1
-  // dès que la distance excède max (coupe précoce, mots courts).
-  function boundedEditDistance(a, b, max) {
-    const la = a.length, lb = b.length;
-    if (Math.abs(la - lb) > max) return max + 1;
-    if (la === 0) return lb > max ? max + 1 : lb;
-    let dPrev2 = new Int32Array(lb + 1);
-    let dPrev = new Int32Array(lb + 1);
-    let dCur = new Int32Array(lb + 1);
-    for (let j = 0; j <= lb; j++) dPrev[j] = j;
-    for (let i = 1; i <= la; i++) {
-      dCur[0] = i;
-      let rowMin = i;
-      const ca = a.charCodeAt(i - 1);
-      for (let j = 1; j <= lb; j++) {
-        const cost = ca === b.charCodeAt(j - 1) ? 0 : 1;
-        let v = Math.min(dCur[j - 1] + 1, dPrev[j] + 1, dPrev[j - 1] + cost);
-        if (
-          i > 1 && j > 1 &&
-          ca === b.charCodeAt(j - 2) &&
-          a.charCodeAt(i - 2) === b.charCodeAt(j - 1)
-        ) {
-          v = Math.min(v, dPrev2[j - 2] + 1);
-        }
-        dCur[j] = v;
-        if (v < rowMin) rowMin = v;
-      }
-      if (rowMin > max) return max + 1;
-      const t = dPrev2; dPrev2 = dPrev; dPrev = dCur; dCur = t;
-    }
-    return dPrev[lb] > max ? max + 1 : dPrev[lb];
-  }
-
-  // Nombre de fautes tolérées pour un mot de la requête.
-  const typoBudget = (w) =>
-    w.length <= 5 ? 0 : w.length <= 12 ? 1 : w.length <= 20 ? 2 : Math.floor(w.length / 10);
-
-  // Un mot de requête correspond-il ? Exact d'abord (Set), sinon flou borné
-  // sur les seuls mots de longueur comparable.
-  function wordMatches(qWord, index) {
-    if (index.set.has(qWord)) return true;
-    const budget = typoBudget(qWord);
-    if (budget === 0) return false;
-    for (const w of index.words) {
-      if (w.length < qWord.length - budget || w.length > qWord.length + budget) continue;
-      if (boundedEditDistance(qWord, w, budget) <= budget) return true;
-    }
-    return false;
-  }
-
-  // Index de recherche par item, calculé une fois puis mis en cache (le JSON
-  // ne change pas sans re-fetch de la page).
-  const searchIndexCache = new Map(); // item.key → { norm, words, set }
-  function getSearchIndex(it) {
-    let index = searchIndexCache.get(it.key);
-    if (!index) {
-      const norm = searchNormalize(
-        [it.title, ...(it.authors || []), it.abstract || "", ...(it.tags || [])].join(" ")
-      );
-      const words = searchSplitWords(norm);
-      index = { norm, words, set: new Set(words) };
-      searchIndexCache.set(it.key, index);
-    }
-    return index;
-  }
+  // ---------- Index de recherche (haystack médiathèque) ----------
+  // Titre + auteurs + résumé + tags (calque vitrine 10/10/26).
+  const getSearchIndex = GS.makeSearchCache(
+    (it) => it.key,
+    (it) => [it.title, ...(it.authors || []), it.abstract || "", ...(it.tags || [])].join(" ")
+  );
 
   // ---------- Fetch initial ----------
   async function loadCollection() {
@@ -213,101 +130,35 @@
       if (it.year) years.add(it.year);
     }
 
-    // Menu Année multi-choix : « Toutes les années » en tête (décoche tout
-    // d'un clic), puis les années distinctes par ordre décroissant.
-    els.yearMenu.innerHTML = "";
-    els.yearMenu.appendChild(buildYearOption("", "Toutes les années"));
-    [...years].sort((a, b) => b.localeCompare(a)).forEach((y) => {
-      els.yearMenu.appendChild(buildYearOption(y, y));
-    });
-    updateYearDropdownUI();
+    // Menu Année multi-choix (dropdown commun) : « Toutes les années »
+    // en tête (décoche tout d'un clic), puis les années distinctes par
+    // ordre décroissant.
+    yearDD.fill(
+      [...years].sort((a, b) => b.localeCompare(a)).map((y) => ({ value: y, label: y })),
+      onYearChange
+    );
   }
 
-  // Une ligne du menu Année : checkbox + libellé. value vide = « Toutes les
-  // années » → vide la sélection d'un clic.
-  function buildYearOption(value, label) {
-    const row = document.createElement("label");
-    row.className = "year-option" + (value === "" ? " year-all" : "");
-    row.dataset.value = value;
-    row.setAttribute("role", "option");
-
-    const box = document.createElement("input");
-    box.type = "checkbox";
-    box.addEventListener("change", () => {
-      if (value === "") {
-        state.selectedYears.clear(); // tout décocher d'un clic
-      } else if (box.checked) {
-        state.selectedYears.add(value);
-      } else {
-        state.selectedYears.delete(value);
-      }
-      state.currentPage = 0; // tout filtre ramène à la page 1 (calque alpas)
-      updateYearDropdownUI();
-      render();
-    });
-
-    const name = document.createElement("span");
-    name.className = "year-option-name";
-    name.textContent = label;
-
-    row.append(box, name);
-    return row;
+  // Tout changement du dropdown Année : retour page 1 + re-rendu.
+  function onYearChange() {
+    state.currentPage = 0; // tout filtre ramène à la page 1 (calque alpas)
+    yearDD.syncUI();
+    render();
   }
-
-  // Libellé du bouton pill : « Toutes les années » (aucune) | l'année | « N années ».
-  function yearPillLabel() {
-    const n = state.selectedYears.size;
-    if (n === 0) return "Toutes les années";
-    if (n === 1) return [...state.selectedYears][0];
-    return `${n} années`;
-  }
-
-  // Resynchronise menu (cases cochées, .active, aria-selected) et pill après
-  // chaque changement de sélection (ou reset). Classe de sélection = .active,
-  // convention du site (cf. filtre Type).
-  function updateYearDropdownUI() {
-    els.yearMenu.querySelectorAll(".year-option").forEach((row) => {
-      const value = row.dataset.value;
-      const checked = value === ""
-        ? state.selectedYears.size === 0
-        : state.selectedYears.has(value);
-      row.querySelector("input").checked = checked;
-      row.classList.toggle("active", checked);
-      row.setAttribute("aria-selected", checked ? "true" : "false");
-    });
-    els.yearPill.textContent = yearPillLabel();
-    els.yearToggle.classList.toggle("active", state.selectedYears.size > 0);
-  }
-
-  // ---------- Ouverture/fermeture du menu Année ----------
-  function setYearMenuOpen(open) {
-    els.yearDropdown.classList.toggle("open", open);
-    els.yearMenu.classList.toggle("open", open);
-    els.yearToggle.setAttribute("aria-expanded", open ? "true" : "false");
-  }
-
-  const isYearMenuOpen = () => els.yearMenu.classList.contains("open");
 
   // ---------- Filtrage ----------
   // ignoreTypes: calcule le filtrage SANS la condition de type — utilisé pour
   // les compteurs de la sidebar : les types restent tous visibles et cochables
   // même quand des types sont déjà sélectionnés (sinon le multi-choix casserait).
   function getFilteredItems({ ignoreTypes = false } = {}) {
-    const qNorm = searchNormalize(state.searchText.trim());
+    const qNorm = GS.searchNormalize(state.searchText.trim());
     // Mots significatifs (≥ 2 car.) pour le mode flou ; les mots de 1 car.
     // (« l » de « l'eau ») ne portent pas de sens de recherche.
     const qWords = qNorm ? qNorm.split(/[^a-z0-9]+/).filter((w) => w.length >= 2) : [];
     return state.items.filter((it) => {
       if (qNorm) {
         const index = getSearchIndex(it);
-        // 1) sous-chaîne normalisée : casse/accents/apostrophes ignorés,
-        //    expressions multi-mots conservées telles quelles ;
-        if (!index.norm.includes(qNorm)) {
-          // 2) mode flou : chaque mot de la requête doit être trouvé dans la
-          //    fiche, exact ou à ~1-2 fautes près. Une requête sans aucun
-          //    mot significatif ne peut pas être rattrapée.
-          if (qWords.length === 0 || !qWords.every((w) => wordMatches(w, index))) return false;
-        }
+        if (!GS.matchesQuery(index, qNorm, qWords)) return false;
       }
       if (state.selectedYears.size > 0 && !state.selectedYears.has(it.year)) return false;
       if (!ignoreTypes && state.selectedTypes.size > 0 && !state.selectedTypes.has(it.type)) return false;
@@ -378,67 +229,6 @@
   }
 
   // ---------- Rendu ----------
-
-  // Calcule la tranche courante + borne currentPage (calque alpas).
-  function paginate(filtered) {
-    const pageSizeNum = (state.pageSize === "all") ? filtered.length : parseInt(state.pageSize, 10);
-    const totalPages = Math.max(1, Math.ceil(filtered.length / pageSizeNum));
-    if (state.currentPage >= totalPages) state.currentPage = totalPages - 1;
-    if (state.currentPage < 0) state.currentPage = 0;
-    const startIdx = state.currentPage * pageSizeNum;
-    return {
-      totalPages,
-      pageRows: filtered.slice(startIdx, startIdx + pageSizeNum),
-    };
-  }
-
-  // Barres de pagination (haut + bas, synchronisées) : ‹ / numéros / › (tous
-  // si ≤ 6 pages, sinon fenêtre [première, dernière, courant±1] avec « … »).
-  // Chaque changement de filtre ramène à la page 1 (comme alpas).
-  function renderPagination(totalPages) {
-    const navs = [els.pagination, els.paginationTop].filter(Boolean);
-
-    if (state.pageSize === "all" || totalPages <= 1) {
-      navs.forEach((nav) => (nav.innerHTML = ""));
-      return;
-    }
-
-    let html = `<button class="page-btn" data-page="prev" ${state.currentPage === 0 ? "disabled" : ""} aria-label="Page précédente">‹</button>`;
-
-    if (totalPages <= 6) {
-      for (let i = 0; i < totalPages; i++) {
-        html += `<button class="page-num${i === state.currentPage ? " active" : ""}" data-page="${i}">${i + 1}</button>`;
-      }
-    } else {
-      const pages = new Set([0, totalPages - 1, state.currentPage, state.currentPage - 1, state.currentPage + 1]);
-      let prevShown = -1;
-      for (let i = 0; i < totalPages; i++) {
-        if (pages.has(i)) {
-          html += `<button class="page-num${i === state.currentPage ? " active" : ""}" data-page="${i}">${i + 1}</button>`;
-          prevShown = i;
-        } else if (prevShown !== -2) {
-          html += `<span class="page-ellipsis">…</span>`;
-          prevShown = -2;
-        }
-      }
-    }
-
-    html += `<button class="page-btn" data-page="next" ${state.currentPage >= totalPages - 1 ? "disabled" : ""} aria-label="Page suivante">›</button>`;
-
-    navs.forEach((nav) => {
-      nav.innerHTML = html;
-      nav.querySelectorAll("button[data-page]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const p = btn.dataset.page;
-          if (p === "prev") state.currentPage = Math.max(0, state.currentPage - 1);
-          else if (p === "next") state.currentPage = state.currentPage + 1;
-          else state.currentPage = parseInt(p, 10);
-          render();
-        });
-      });
-    });
-  }
-
   function render() {
     const filtered = getFilteredItems();
     els.resultCount.textContent = `${filtered.length} résultat${filtered.length > 1 ? "s" : ""}`;
@@ -447,8 +237,8 @@
     // filtre type, pour que tous les types restent cochables en multi-choix)
     renderTypes(getFilteredItems({ ignoreTypes: true }));
 
-    const { totalPages, pageRows } = paginate(filtered);
-    renderPagination(totalPages);
+    const { totalPages, pageRows } = paginateItems(state, filtered);
+    renderPagination(state, totalPages, [els.pagination, els.paginationTop], render);
 
     if (filtered.length === 0) {
       els.grid.innerHTML = `<p class="empty">Aucun document ne correspond aux filtres.</p>`;
@@ -664,15 +454,8 @@
       }, 150);
     });
 
-    // Filtre Année : menu déroulant multi-choix — clic bouton → ouvre/ferme
-    els.yearToggle.addEventListener("click", () => {
-      setYearMenuOpen(!isYearMenuOpen());
-    });
-
-    // Clic hors menu → ferme (les clics sur les options restent dedans)
-    document.addEventListener("click", (e) => {
-      if (isYearMenuOpen() && !els.yearDropdown.contains(e.target)) setYearMenuOpen(false);
-    });
+    // Filtre Année : le dropdown commun gère le clic bouton, le clic-dehors
+    // et Échap (focus rendu au bouton) — aucun listener doublé ici.
 
     if (els.pageSizeSelect) {
       els.pageSizeSelect.addEventListener("change", (e) => {
@@ -688,21 +471,20 @@
       state.selectedTypes.clear();
       state.currentPage = 0;
       els.search.value = "";
-      updateYearDropdownUI(); // cases décochées + pill « Toutes les années »
-      setYearMenuOpen(false);
+      yearDD.syncUI(); // cases décochées + pill « Toutes les années »
+      yearDD.setOpen(false);
       render();
     });
 
     els.modal.querySelectorAll("[data-close]").forEach((el) => {
       el.addEventListener("click", closeModal);
     });
+    // Échap : priorité au menu Année (fermé par le dropdown commun, qui
+    // rend le focus au bouton) — la modale ne se ferme que si le menu
+    // était déjà fermé (comportement d'origine).
     document.addEventListener("keydown", (e) => {
       if (e.key !== "Escape") return;
-      if (isYearMenuOpen()) {
-        setYearMenuOpen(false); // Échap ferme le menu Année
-        els.yearToggle.focus();
-        return;
-      }
+      if (els.yearMenu.classList.contains("open")) return;
       if (els.modal.getAttribute("aria-hidden") === "false") {
         closeModal();
       }
@@ -719,6 +501,17 @@
   }
 
   // ---------- Boot ----------
+  const yearDD = makeDropdown({
+    dropdown: els.yearDropdown,
+    toggle: els.yearToggle,
+    pill: els.yearPill,
+    menu: els.yearMenu,
+    set: state.selectedYears,
+    allLabel: "Toutes les années",
+    unitWord: "années",
+    labelOf: (v) => v,
+  });
+
   document.addEventListener("DOMContentLoaded", () => {
     attachListeners();
     loadCollection();

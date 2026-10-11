@@ -14,3 +14,7 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Documentation interne (décision CEO 11/10/26) : locale uniquement, JAMAIS en ligne
+README.md
+mcd/

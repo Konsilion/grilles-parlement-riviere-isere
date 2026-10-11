@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
-"""Affiche les actualités validées (data/actualites.csv) — contrôle rapide."""
-import csv
+# -*- coding: utf-8 -*-
+"""Affiche les actualités validées (data/actualites.json) — contrôle rapide.
+
+Depuis la bascule K6 (11/10/26) : la source affichée par la grille est
+actualites/data/actualites.json, régénéré depuis la collection Zotero
+« Actualités » par scripts/fetch_actualites.py (l'ancien
+data/actualites.csv reste dans le repo à titre historique).
+Interface inchangée : python3 scripts/lister.py
+"""
+import json
 import sys
 from pathlib import Path
 
-CSV = Path(__file__).resolve().parent.parent / "data" / "actualites.csv"
+JSON_PATH = Path(__file__).resolve().parent.parent / "actualites" / "data" / "actualites.json"
 
 TYPE_LABELS = {
     "evenement_a_venir": "Événement à venir",
@@ -15,25 +23,24 @@ TYPE_LABELS = {
 
 
 def main():
-    if not CSV.exists():
-        print("CSV absent :", CSV)
+    if not JSON_PATH.exists():
+        print("Fichier absent :", JSON_PATH)
         return 1
-    with open(CSV, newline="", encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
-    if not rows:
-        print("Aucune actualité validée (CSV vide).")
+    items = json.loads(JSON_PATH.read_text(encoding="utf-8"))
+    if not items:
+        print("Aucune actualité validée (JSON vide).")
         return 0
-    print(f"{len(rows)} actualité(s) validée(s) :")
-    for r in rows:
-        typ = TYPE_LABELS.get(r["type"], r["type"])
+    print(f"{len(items)} actualité(s) validée(s) :")
+    for r in items:
+        typ = TYPE_LABELS.get(r.get("type", ""), r.get("type", ""))
         print(f"\n  [{r['id']}] {r['titre']}")
-        print(f"      ajouté le  : {r['date_ajout']} · type : {typ}")
-        dates = r["date_debut"] or "—"
-        if r["date_fin"]:
+        dates = r.get("date_debut") or "—"
+        if r.get("date_fin"):
             dates += f" → {r['date_fin']}"
-        print(f"      dates      : {dates} · lieu : {r['lieu'] or '—'}")
-        print(f"      lien       : {r['lien'] or '—'}")
-        print(f"      résumé     : {r['description']}")
+        print(f"      dates      : {dates} · lieu : {r.get('lieu') or '—'}")
+        print(f"      lien       : {r.get('lien') or '—'}")
+        print(f"      ajouté le  : {r.get('date_ajout') or '—'} · type : {typ}")
+        print(f"      résumé     : {r.get('description') or ''}")
     return 0
 
 

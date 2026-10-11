@@ -1,8 +1,11 @@
 """
-Récupère les items d'un groupe Zotero via l'API et écrit site/data/collection.json.
+Récupère les items d'un groupe Zotero via l'API et écrit mediatheque/data/collection.json.
 
 Si ZOTERO_COLLECTION_ID est renseigné : récupère les items de cette collection.
 Si ZOTERO_COLLECTION_ID est vide      : récupère tous les items top-level du groupe.
+Si ZOTERO_EXCLUDE_COLLECTION est renseigné : exclut les items de cette collection
+(filtre anti-actualités K1b — les items actualités vivent dans la collection
+« Actualités » et sont servis par scripts/fetch_actualites.py, pas ici).
 
 Usage:
     python scripts/fetch_zotero.py
@@ -18,12 +21,18 @@ import requests
 # Charger la config locale (jamais commitée)
 sys.path.insert(0, str(Path(__file__).parent))
 try:
-    from config import ZOTERO_GROUP_ID, ZOTERO_API_KEY, ZOTERO_COLLECTION_ID
+    from config import (
+        ZOTERO_GROUP_ID,
+        ZOTERO_API_KEY,
+        ZOTERO_COLLECTION_ID,
+        ZOTERO_EXCLUDE_COLLECTION,
+    )
 except ImportError:
     sys.exit(
         "Fichier config.py introuvable.\n"
         "→ cp scripts/config.example.py scripts/config.py\n"
-        "→ puis renseigne ZOTERO_GROUP_ID, ZOTERO_API_KEY, ZOTERO_COLLECTION_ID"
+        "→ puis renseigne ZOTERO_GROUP_ID, ZOTERO_API_KEY, ZOTERO_COLLECTION_ID\n"
+        "→ (optionnel) ZOTERO_EXCLUDE_COLLECTION : clé de la collection à exclure"
     )
 
 # Valider que la config est remplie
@@ -183,12 +192,25 @@ def main():
     raw_items = fetch_items(ZOTERO_GROUP_ID, ZOTERO_COLLECTION_ID, ZOTERO_API_KEY)
     print(f"  {len(raw_items)} items bruts récupérés")
 
+    # Filtre anti-actualités (K1b) : exclure les items de la collection
+    # configurée — le scoping par collection dans l'API ne remonte pas les
+    # sous-collections, on filtre donc côté script après le fetch complet.
+    if ZOTERO_EXCLUDE_COLLECTION:
+        raw_items = [
+            r for r in raw_items
+            if ZOTERO_EXCLUDE_COLLECTION not in r.get("data", {}).get("collections", [])
+        ]
+        print(f"  {len(raw_items)} items après exclusion de la collection "
+              f"{ZOTERO_EXCLUDE_COLLECTION}")
+
     formatted = [
         it for it in (format_item(r, collection_map) for r in raw_items) if it is not None
     ]
     print(f"  {len(formatted)} items retenus (avec titre)")
 
-    out_path = Path(__file__).resolve().parent.parent / "data" / "collection.json"
+    out_path = (
+        Path(__file__).resolve().parent.parent / "mediatheque" / "data" / "collection.json"
+    )
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
     payload = {

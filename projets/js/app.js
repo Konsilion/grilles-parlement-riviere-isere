@@ -415,6 +415,129 @@ function attachListeners() {
   });
 }
 
+/* ---------- Contribution (esprit Datami) ----------
+   Calque médiathèque, socle commun common/js/contribution.js :
+   envoi silencieux au relais VPS → issue GitHub étiquetée
+   « contribution » ; repli manuel si le relais échoue. Les champs
+   suivent le mapping P3 de scripts/fetch_projets.py /
+   valider_contribution.py (extra « Statut: … », citationKey P000N,
+   date = début seul ou « début/fin » OPTION B). */
+(function initContribution() {
+  const GC = window.GrilleContribution;
+  if (!GC) return;
+
+  const f = {
+    titre: () => document.getElementById("c-titre"),
+    porteur: () => document.getElementById("c-porteur"),
+    lieu: () => document.getElementById("c-lieu"),
+    dateDebut: () => document.getElementById("c-date-debut"),
+    dateFin: () => document.getElementById("c-date-fin"),
+    statut: () => document.getElementById("c-statut"),
+    description: () => document.getElementById("c-description"),
+    url: () => document.getElementById("c-url"),
+  };
+
+  function closeDetailModal() {
+    if (els.modal && els.modal.getAttribute("aria-hidden") === "false") {
+      closeModal();
+    }
+  }
+
+  function validate() {
+    let ok = true;
+    const titre = f.titre().value.trim();
+    const porteur = f.porteur().value.trim();
+    const debut = f.dateDebut().value.trim();
+    const fin = f.dateFin().value.trim();
+    const url = f.url().value.trim();
+
+    if (!titre) {
+      GC.setFieldError(f.titre(), "Le titre est nécessaire pour que l'équipe vérifie le projet.");
+      ok = false;
+    } else if (titre.length < 3) {
+      GC.setFieldError(f.titre(), "Le titre paraît trop court — quelques mots suffisent.");
+      ok = false;
+    } else {
+      GC.setFieldError(f.titre(), null);
+    }
+
+    if (!porteur) {
+      GC.setFieldError(f.porteur(), "Le porteur (organisation) est nécessaire.");
+      ok = false;
+    } else {
+      GC.setFieldError(f.porteur(), null);
+    }
+
+    if (!debut) {
+      GC.setFieldError(f.dateDebut(), "La date de début est nécessaire.");
+      ok = false;
+    } else {
+      GC.setFieldError(f.dateDebut(), null);
+    }
+
+    if (fin && debut && fin < debut) {
+      GC.setFieldError(f.dateFin(), "La date de fin doit suivre la date de début.");
+      ok = false;
+    } else {
+      GC.setFieldError(f.dateFin(), null);
+    }
+
+    if (url) {
+      let urlOk = false;
+      try {
+        const u = new URL(url);
+        urlOk = u.protocol === "http:" || u.protocol === "https:";
+      } catch { /* invalide */ }
+      if (!urlOk) {
+        GC.setFieldError(f.url(), "Collez une adresse web complète commençant par https:// (ou http://).");
+        ok = false;
+      } else {
+        GC.setFieldError(f.url(), null);
+      }
+    }
+
+    return ok;
+  }
+
+  GC.init({
+    app: "projets",
+    firstFieldId: "c-titre",
+    onOpen: closeDetailModal,
+    titleOf: (d) => d.titre,
+    collect: () => ({
+      titre: f.titre().value.trim(),
+      porteur: f.porteur().value.trim(),
+      lieu: f.lieu().value.trim(),
+      date_debut: f.dateDebut().value.trim(),
+      date_fin: f.dateFin().value.trim(),
+      statut: f.statut().value,
+      description: f.description().value.trim(),
+      url: f.url().value.trim(),
+    }),
+    validate,
+    payload: (d) => d,
+    table: (d) => [
+      ["Titre", d.titre],
+      ["Porteur", d.porteur],
+      ["Lieu", d.lieu || "—"],
+      ["Date de début", d.date_debut || "—"],
+      ["Date de fin", d.date_fin || "—"],
+      ["Statut", d.statut || "—"],
+      ["Description", d.description || "—"],
+      ["Lien", d.url || "—"],
+    ],
+    issueTexts: {
+      heading: "Proposition de projet",
+      intro:
+        "Un·e visiteur de la grille Projets propose d'ajouter ce projet.",
+      closing:
+        "La validation crée l'item Zotero (collection « Projets », mapping P3 : " +
+        "extra « Statut: … », citationKey P000N), ferme cette issue et le prochain " +
+        "`deploy.sh` publie le projet.",
+    },
+  });
+})();
+
 /* ---------- Boot ---------- */
 grabEls();
 const statutDD = makeDropdown({

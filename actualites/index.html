@@ -7,6 +7,7 @@
   <!-- Socle commun des deux grilles (tokens, clair unique, pagination,
        dropdowns, pastilles) — chargé AVANT les styles propres. -->
   <link rel="stylesheet" href="../common/css/base.css" />
+  <link rel="stylesheet" href="../common/css/contribution.css" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -60,6 +61,10 @@
                 aria-multiselectable="true"
               ></div>
             </div>
+            <!-- Parcours de contribution (esprit Datami) — calque médiathèque. -->
+            <button type="button" id="propose-btn" class="btn btn-primary propose-btn">
+              Proposer une actualité
+            </button>
           </div>
           <div id="month-pills" class="filter-pills" aria-label="Mois sélectionnés"></div>
           <div class="header-controls">
@@ -82,11 +87,119 @@
     </section>
   </main>
 
+  <!-- ===== Modale contribution (calque médiathèque) ===== -->
+  <div id="contribute-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="contribute-title">
+    <div class="modal-backdrop" data-cclose></div>
+    <div class="modal-content" role="document">
+      <button class="modal-close" type="button" data-cclose aria-label="Fermer">×</button>
+      <h2 id="contribute-title" class="modal-title">Proposer une actualité</h2>
+      <p class="contribute-intro">
+        Merci&nbsp;! Décrivez l'actualité en quelques lignes&nbsp;: l'équipe du
+        Parlement de la rivière Isère vérifie chaque proposition avant
+        publication.
+      </p>
+
+      <form id="contribute-form" novalidate>
+        <div class="form-row">
+          <label for="c-titre">Titre de l'actualité <span class="req">*</span></label>
+          <input type="text" id="c-titre" name="titre" required maxlength="300" autocomplete="off"
+                 placeholder="Ex. : Conférence sur la restauration des rivières" />
+        </div>
+
+        <div class="form-row">
+          <label for="c-type">Type d'actualité <span class="req">*</span></label>
+          <select id="c-type" name="type">
+            <option value="evenement_a_venir">Événement à venir</option>
+            <option value="ressource_publiee">Ressource publiée</option>
+            <option value="evenement_passe">Événement passé</option>
+            <option value="information_parlement">Information du parlement</option>
+          </select>
+        </div>
+
+        <div class="form-row form-row-2">
+          <div>
+            <label for="c-date">Date <span class="req">*</span></label>
+            <input type="date" id="c-date" name="date" required />
+            <p class="field-hint">Pour une période, remplissez aussi la date de fin.</p>
+          </div>
+          <div>
+            <label for="c-date-fin">Date de fin (facultatif)</label>
+            <input type="date" id="c-date-fin" name="date_fin" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="c-lieu">Lieu (facultatif)</label>
+          <input type="text" id="c-lieu" name="lieu" maxlength="300" autocomplete="off"
+                 placeholder="Ex. : Grenoble" />
+        </div>
+
+        <div class="form-row">
+          <label for="c-url">Lien <span class="req">*</span></label>
+          <input type="url" id="c-url" name="url" required maxlength="2000" autocomplete="off"
+                 placeholder="https://…" />
+          <p class="field-hint">Collez l'adresse web (https://…) de l'événement ou de la ressource.</p>
+        </div>
+
+        <div class="form-row">
+          <label for="c-description">Résumé (facultatif)</label>
+          <textarea id="c-description" name="description" rows="4" maxlength="3000"
+                    placeholder="En une ou deux phrases : de quoi s'agit-il ?"></textarea>
+        </div>
+
+        <p class="contribute-privacy">
+          En envoyant, vous acceptez que ces informations soient publiées sur
+          GitHub (la plateforme qui héberge ce projet) afin que l'équipe les
+          examine. Vous y serez automatiquement informé·e de la suite donnée
+          à votre proposition.
+        </p>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" data-cclose>Annuler</button>
+          <button type="submit" id="contribute-submit" class="btn btn-primary">Envoyer la proposition</button>
+        </div>
+
+        <!-- Piège à robots : champ invisible — tout robot qui le remplit ne
+             partira jamais vers GitHub (ignore silencieux côté navigateur). -->
+        <input type="text" id="c-gotcha" name="website" class="gotcha" tabindex="-1" autocomplete="off" />
+      </form>
+
+      <!-- Confirmation : envoi silencieux réussi (le visiteur ne voit
+           jamais GitHub). -->
+      <div id="contribute-success" class="contribute-success" hidden>
+        <p class="contribute-success-title">✓ Merci, votre proposition est envoyée !</p>
+        <p>
+          L'équipe du Parlement de la rivière Isère va l'examiner. Si
+          l'actualité est retenue, elle apparaîtra dans la grille
+          d'ici quelques jours.
+        </p>
+        <p class="contribute-success-note">
+          Merci pour votre aide&nbsp;!
+        </p>
+      </div>
+
+      <!-- Repli : le relais est indisponible → parcours GitHub manuel. -->
+      <div id="contribute-fallback" class="contribute-success" hidden>
+        <p class="contribute-success-title">⚠️ L'envoi direct est indisponible pour le moment</p>
+        <p>
+          Vous pouvez tout de même transmettre votre proposition via GitHub
+          (la plateforme qui héberge ce site)&nbsp;: un onglet va s'ouvrir,
+          cliquez simplement sur «&nbsp;<em>Submit new issue</em>&nbsp;» pour
+          finaliser l'envoi. Un compte GitHub gratuit suffit.
+        </p>
+        <a id="contribute-link" class="btn btn-primary contribute-link" target="_blank" rel="noopener noreferrer">
+          Finaliser l'envoi sur GitHub →
+        </a>
+      </div>
+    </div>
+  </div>
+
   <!-- Socles communs (recherche floue, pagination, dropdowns, dates) -->
   <script src="../common/js/dom.js"></script>
   <script src="../common/js/search.js"></script>
   <script src="../common/js/pagination.js"></script>
   <script src="../common/js/dropdown.js"></script>
+  <script src="../common/js/contribution.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

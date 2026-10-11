@@ -30,9 +30,11 @@ grilles-parlement-riviere-isere/
 ├── projets/                # démarches du Parlement (P3)
 │   ├── index.html, js/app.js, css/style.css
 │   └── data/projets.json       # généré par scripts/fetch_projets.py (P1)
-├── common/                 # code mutualisé des trois apps (K5)
+├── common/                 # code mutualisé des apps (K5)
 │   ├── css/base.css         # tokens, thème clair unique, pagination, dropdowns, pastilles
-│   └── js/                  # dom.js (esc/dates), search.js (fuzzy), pagination.js, dropdown.js
+│   ├── css/contribution.css # styles du bloc contribution (calque médiathèque)
+│   └── js/                  # dom.js (esc/dates), search.js (fuzzy), pagination.js, dropdown.js,
+│                            # contribution.js (modale contribution 4 apps : GrilleContribution)
 ├── scripts/
 │   ├── fetch_zotero.py     # médiathèque : API Zotero → mediatheque/data/collection.json
 │   ├── fetch_actualites.py # actualités : collection « Actualités » → actualites/data/actualites.json
@@ -43,7 +45,7 @@ grilles-parlement-riviere-isere/
 │   ├── config.example.py   # template de credentials (config.py = .gitignore, JAMAIS commité)
 │   ├── deploy.sh           # 4 fetchs + commit + push (timer grilles-parlement-sync)
 │   ├── valider.py          # actualités : validation CEO par numéros
-│   ├── valider_contribution.py # médiathèque : validation des contributions GitHub (modération)
+│   ├── valider_contribution.py # 4 apps : validation des contributions GitHub (modération)
 │   └── lister.py           # actualités : affichage des propositions / actualités
 ├── README.md
 ├── .gitignore              # DOIT couvrir scripts/config.py (clé API — push = incident)
@@ -225,18 +227,37 @@ bash scripts/deploy.sh
 
 GitHub Pages resert en 1-2 minutes.
 
-## Contribution documents (esprit Datami)
+## Contribution (esprit Datami) — les 4 applications
 
-Les visiteurs de la médiathèque peuvent proposer un document sans
-compte et **sans quitter le site** : bouton « Proposer un document »
-(sidebar) → modale de formulaire → **envoi silencieux**. Un relais sur
-le VPS (robot GitHub `nbrem`, jeton `public_repo` au coffre
+Les visiteurs des **quatre applications** peuvent proposer une
+contribution sans compte et **sans quitter le site** : bouton
+« Proposer … » → modale de formulaire → **envoi silencieux**. Un relais
+sur le VPS (robot GitHub `nbrem`, jeton `public_repo` au coffre
 `~/secrets/host/github-robot.token`) crée l'issue étiquetée
 `contribution` à la place du visiteur — GitHub n'apparaît nulle part.
 
 Si le relais est indisponible, repli automatique sur le parcours
 GitHub manuel (issue pré-remplie, bouton « Submit new issue ») :
 aucune proposition n'est perdue.
+
+| App | Bouton | Champs du formulaire |
+| --- | --- | --- |
+| **Médiathèque** (livrée 11/10) | « Proposer un document » (sidebar) | titre, auteur·e·s, type (14 types fermés), année, lien, résumé |
+| **Actualités** | « Proposer une actualité » (toolbar) | titre, type fermé (Événement à venir / Ressource publiée / Événement passé / Information du parlement), date (+ fin), lieu, lien, résumé |
+| **Contacts** | « Proposer un contact » (toolbar) | nom, organisation, lieu, e-mail, téléphone, rôle, description, lien — ⚠ coordonnées professionnelles publiques uniquement |
+| **Projets** | « Proposer un projet » (toolbar) | titre, porteur, lieu, date début (+ fin), statut (En cours / À venir / Terminé), description, lien |
+
+Architecture : le bloc contribution de la médiathèque est le modèle ;
+le mécanisme (modale, honeypot `gotcha`, envoi silencieux, repli,
+corps d'issue `json-contribution`) est **mutualisé dans le socle
+commun** `common/js/contribution.js` + `common/css/contribution.css`
+(window.GrilleContribution) ; les **champs restent propres à chaque
+app** dans son app.js (collecte, validation, libellés du tableau).
+Le bloc JSON porte un champ `app` (`mediatheque`/`actualites`/
+`contacts`/`projets`) — sans ce champ (anciennes issues), la
+proposition est traitée comme médiathèque. Le titre de l'issue du
+repli manuel est préfixé par l'app : `[actualites]`, `[contacts]`,
+`[projets]`.
 
 ### Le relais (infrastructure VPS)
 
@@ -248,31 +269,50 @@ aucune proposition n'est perdue.
 - Durcissement : CORS limité à `konsilion.github.io`, corps ≤ 20 Ko,
   types fermés revalidés, rate-limit 15 requêtes/h/IP, champ
   anti-robots, log sans contenu (date/IP/statut seulement).
+- ⚠ Le relais en production ne connaît aujourd'hui que les champs
+  **médiathèque** : une soumission actualités/contacts/projets
+  échoue la revalidation serveur → repli GitHub manuel (comportement
+  attendu, aucune perte). **Extension du relais = mission copilote
+  après fusion** : accepter le champ `app` + les champs par app
+  (cf. contrat du bloc `json-contribution` de chaque app).
 - Statut : `systemctl --user status parlement-contribution` ; journal
   journald (démarrage) + `~/parlement-contribution/requests.log`
   (requêtes, sans contenu : date/IP/statut seulement).
 
-### Modération (équipe)
+### Modération (équipe) — UNE commande pour les 4 apps
 
 ```bash
-# voir les propositions en attente (issues ouvertes « contribution »)
+# voir les propositions en attente (issues ouvertes « contribution »,
+# toutes apps confondues, avec app d'origine et collection cible)
 python3 scripts/valider_contribution.py --liste
 
-# valider : crée la fiche Zotero (collection « Médiathèque »),
-# ferme l'issue avec un message de remerciement
+# valider : crée l'item Zotero dans la collection de l'app
+# (mapping exact : C2 pour contacts, P3 pour projets, contrat
+# actualités), citationKey auto (A/C/P000N, scan max+1),
+# re-fetch de contrôle, ferme l'issue avec remerciement
 python3 scripts/valider_contribution.py <n° issue>
 
 # refuser : ferme l'issue avec motif, sans toucher Zotero
 python3 scripts/valider_contribution.py <n° issue> --refuser "hors sujet"
 ```
 
-La publication sur la médiathèque suit le cycle normal : le prochain
-`deploy.sh` (timer horaire :07) fetch Zotero et régénère
-`collection.json`.
+La publication suit le cycle normal : le prochain `deploy.sh`
+(timer horaire :07) fetch Zotero et régénère les data/*.json de
+l'app concernée.
 
-Contrôles du script : doublon par titre exact, type fermé (14 types
-de la modale), champs titre + lien obligatoires, clé d'écriture
-Zotero du coffre `~/secrets/client/zotero.key`, GitHub via `gh`.
+Contrôles du script : doublon par titre exact (dans la collection
+cible de l'app), types/statuts fermés revalidés, champs obligatoires
+par app (médiathèque : titre + lien ; actualités : titre + type +
+date + lien ; contacts : nom ; projets : titre + porteur + date
+début), clé d'écriture Zotero du coffre
+`~/secrets/client/zotero.key`, GitHub via `gh`.
+
+| App validée | Collection Zotero | Mapping |
+| --- | --- | --- |
+| mediatheque | « Médiathèque » MCKNJI9M | type fermé → itemType, extra `Source: contribution…` |
+| actualites | « Actualités » U4HFDR68 | extra `Type: …`, date `début/fin` OPTION B, citationKey A000N |
+| contacts | « Contacts » JI7JP8AZ | C2 : extra `Email:`/`Telephone:`/`Role:`, citationKey C000N |
+| projets | « Projets » RPZFWI9M | P3 : extra `Statut: …`, citationKey P000N |
 
 ## Cron
 

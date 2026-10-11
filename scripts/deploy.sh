@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# deploy.sh — synchronise Zotero (médiathèque + actualités + contacts),
-# commit et push.
+# deploy.sh — synchronise Zotero (médiathèque + actualités + contacts +
+# projets), commit et push.
 #
-# Étendu (C2) : les TROIS fetchs —
+# Étendu (P1) : les QUATRE fetchs —
 #   1. scripts/fetch_zotero.py      -> mediatheque/data/collection.json
 #   2. scripts/fetch_actualites.py  -> actualites/data/actualites.json
 #   3. scripts/fetch_contacts.py    -> contacts/data/contacts.json
-# puis commit des trois data/ et push vers GitHub Pages.
+#   4. scripts/fetch_projets.py     -> projets/data/projets.json
+# puis commit des quatre data/ et push vers GitHub Pages.
 #
 # Usage:
 #   bash scripts/deploy.sh             # exécution réelle
@@ -22,10 +23,10 @@ elif [ $# -gt 0 ]; then
     exit 2
 fi
 
-echo "══════════════════════════════════════════════════"
+echo "════════════════════════════════════════════════"
 echo "  Grilles Parlement — déploiement GitHub Pages"
-echo "  (médiathèque + actualités + contacts)"
-echo "══════════════════════════════════════════════════"
+echo "  (médiathèque + actualités + contacts + projets)"
+echo "════════════════════════════════════════════════"
 
 # 1. Vérifier config.py (clé lecture pour fetch_zotero.py — jamais commitée)
 if [ ! -f scripts/config.py ]; then
@@ -33,7 +34,7 @@ if [ ! -f scripts/config.py ]; then
     exit 1
 fi
 
-# 2. Vérifier requests (fetch_zotero.py en dépend ; fetch_actualites.py est stdlib)
+# 2. Vérifier requests (fetch_zotero.py en dépend ; les autres fetchs sont stdlib)
 if ! python3 -c "import requests" 2>/dev/null; then
     if [ "$DRY_RUN" = "1" ]; then
         echo "✗ requests absent (nécessaire à fetch_zotero.py) : pip install requests"
@@ -49,12 +50,13 @@ if [ "$DRY_RUN" = "1" ]; then
     echo "  1. python3 scripts/fetch_zotero.py      -> mediatheque/data/collection.json"
     echo "  2. python3 scripts/fetch_actualites.py  -> actualites/data/actualites.json"
     echo "  3. python3 scripts/fetch_contacts.py    -> contacts/data/contacts.json"
-    echo "  4. git add mediatheque/data/collection.json actualites/data/actualites.json contacts/data/contacts.json"
-    echo "  5. git commit + push origin main"
+    echo "  4. python3 scripts/fetch_projets.py     -> projets/data/projets.json"
+    echo "  5. git add mediatheque/data/collection.json actualites/data/actualites.json contacts/data/contacts.json projets/data/projets.json"
+    echo "  6. git commit + push origin main"
     exit 0
 fi
 
-# 3. Les TROIS fetchs Zotero
+# 3. Les QUATRE fetchs Zotero
 echo ""
 echo "→ Fetch médiathèque (fetch_zotero.py)…"
 python3 scripts/fetch_zotero.py
@@ -67,11 +69,15 @@ echo ""
 echo "→ Fetch contacts (fetch_contacts.py)…"
 python3 scripts/fetch_contacts.py
 
-# 4. Commit + push des trois data/
+echo ""
+echo "→ Fetch projets (fetch_projets.py)…"
+python3 scripts/fetch_projets.py
+
+# 4. Commit + push des quatre data/
 echo ""
 echo "→ Mise à jour du dépôt Git…"
-git add mediatheque/data/collection.json actualites/data/actualites.json contacts/data/contacts.json
-git commit -m "Mise à jour Zotero (médiathèque + actualités + contacts) ($(date '+%Y-%m-%d %H:%M'))" || {
+git add mediatheque/data/collection.json actualites/data/actualites.json contacts/data/contacts.json projets/data/projets.json
+git commit -m "Mise à jour Zotero (médiathèque + actualités + contacts + projets) ($(date '+%Y-%m-%d %H:%M'))" || {
     echo "  Aucun changement à committer (données inchangées)."
     exit 0
 }

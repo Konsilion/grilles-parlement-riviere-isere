@@ -1,6 +1,6 @@
 # Grilles de carte — Parlement de la rivière Isère
 
-Repo unique portant les **trois applications « Grilles de carte »** du
+Repo unique portant les **quatre applications « Grilles de carte »** du
 Parlement de la rivière Isère (décision CEO 11/10/26) — sites statiques
 (HTML/CSS/JS vanilla), zéro build, zéro dépendance, servis par
 **GitHub Pages** depuis la branche `main` à la racine.
@@ -15,7 +15,7 @@ jusqu'à la bascule finale — ce repo les remplace à terme.
 
 ```
 grilles-parlement-riviere-isere/
-├── index.html              # accueil : 3 liens vers les trois apps
+├── index.html              # accueil : 4 liens vers les quatre apps
 ├── mediatheque/            # ex-vitrine Zotero (git mv — historique conservé)
 │   ├── index.html, js/app.js, css/style.css
 │   └── data/collection.json    # généré par scripts/fetch_zotero.py
@@ -27,16 +27,21 @@ grilles-parlement-riviere-isere/
 ├── contacts/               # répertoire de contacts (C3)
 │   ├── index.html, js/app.js, css/style.css
 │   └── data/contacts.json      # généré par scripts/fetch_contacts.py (C2)
+├── projets/                # démarches du Parlement (P3)
+│   ├── index.html, js/app.js, css/style.css
+│   └── data/projets.json       # généré par scripts/fetch_projets.py (P1)
 ├── common/                 # code mutualisé des trois apps (K5)
 │   ├── css/base.css         # tokens, thème clair unique, pagination, dropdowns, pastilles
 │   └── js/                  # dom.js (esc/dates), search.js (fuzzy), pagination.js, dropdown.js
 ├── scripts/
 │   ├── fetch_zotero.py     # médiathèque : API Zotero → mediatheque/data/collection.json
 │   ├── fetch_actualites.py # actualités : collection « Actualités » → actualites/data/actualites.json
-│   ├── fetch_contacts.py    # contacts : collection « Contacts » → contacts/data/contacts.json (C2)
-│   ├── ajouter_contact.py   # contacts : saisie d'un contact (CEO) dans Zotero (C2)
+│   ├── fetch_contacts.py   # contacts : collection « Contacts » → contacts/data/contacts.json (C2)
+│   ├── ajouter_contact.py  # contacts : saisie d'un contact (CEO) dans Zotero (C2)
+│   ├── fetch_projets.py    # projets : collection « Projets » → projets/data/projets.json (P1)
+│   ├── ajouter_projet.py   # projets : saisie d'un projet (CEO) dans Zotero (P1)
 │   ├── config.example.py   # template de credentials (config.py = .gitignore, JAMAIS commité)
-│   ├── deploy.sh           # 3 fetchs + commit + push (timer grilles-parlement-sync)
+│   ├── deploy.sh           # 4 fetchs + commit + push (timer grilles-parlement-sync)
 │   ├── valider.py          # actualités : validation CEO par numéros
 │   └── lister.py           # actualités : affichage des propositions / actualités
 ├── README.md
@@ -44,7 +49,7 @@ grilles-parlement-riviere-isere/
 └── .nojekyll
 ```
 
-## Les trois applications
+## Les quatre applications
 
 **Médiathèque** (`/mediatheque/`) — collection du groupe Zotero
 Konsilion (6610185) en cartes type e-commerce : recherche floue,
@@ -64,6 +69,16 @@ téléphone `tel:`, lien externe `_blank`). Les données viennent de
 `data/contacts.json` (contrat C2 : `id`, `nom`, `description`,
 `organisation`, `lieu`, `date_contact`, `lien`, `email`, `telephone`,
 `role`, `categories`, `date_ajout`).
+
+**Projets** (`/projets/`) — grille des démarches propres au Parlement
+de la rivière Isère : carte par projet avec vignette de statut (En
+cours / À venir / Terminé, déduit des dates si absent), recherche
+floue (titre, porteur, description, lieu), filtres Statut +
+Catégories multi-choix, tri (début le plus récent / titre A-Z / fin de
+projet), pagination, modale détail (période, porteur, lien). Les
+données viennent de `data/projets.json` (contrat P3 : `id`, `titre`,
+`description`, `porteur`, `lieu`, `date_debut`, `date_fin`, `lien`,
+`statut`, `categories`, `date_ajout`).
 
 ## Mutualisation (K5)
 
@@ -148,6 +163,49 @@ production, il est **régénéré** par `scripts/fetch_actualites.py`
 (K4) depuis la collection Zotero « Actualités » — le deploy
 écrase la fixture à chaque sync.
 
+## Projets — mécanique (P1)
+
+**Source de vérité :** collection Zotero « Projets » (clé `RPZFWI9M`,
+racine du groupe Konsilion 6610185, créée 11/10/26) — itemType
+`document`. La donnée du repo est un dérivé régénéré par le pipeline.
+La collection est dans `ZOTERO_EXCLUDE_COLLECTIONS` (anti-fuite
+médiathèque, cf. `scripts/config.py`).
+
+**Mapping Zotero → contrat du front (11 clés) :**
+
+| Contrat | Zotero |
+|---|---|
+| `id` | `citationKey` (P000N, attribué automatiquement) |
+| `titre` | `title` |
+| `description` | `abstractNote` |
+| `porteur` | `publisher` |
+| `lieu` | `place` |
+| `date_debut` / `date_fin` | `date` (split « / », OPTION B) |
+| `lien` | `url` |
+| `statut` | `extra`, ligne « Statut: … » |
+| `categories` | `tags` |
+| `date_ajout` | `dateAdded` (AAAA-MM-JJ) |
+
+**Fetch :** `scripts/fetch_projets.py` lit la collection et écrit
+`projets/data/projets.json` (tri déterministe par id ; collection
+vide → `[]`, l'app affiche « Aucun projet pour le moment. »).
+
+**Saisie (CEO) :** `scripts/ajouter_projet.py` crée l'item Zotero
+sans toucher l'API à la main — citationKey P000N auto (scan max+1),
+POST en échec vérifié, re-fetch de contrôle :
+
+```bash
+python3 scripts/ajouter_projet.py --titre "Où atterrir ?" \
+  --porteur "Parlement de la rivière Isère" --statut "En cours" \
+  --date-debut 2026-10-01 --categorie animation
+```
+
+Autres options : `--description`, `--lieu`, `--date-fin AAAA-MM-JJ`,
+`--lien`, `--categorie` (répétable). Statuts conseillés :
+« En cours », « À venir », « Terminé » (le front colore ces trois-là ;
+sans statut, il déduit depuis les dates). Le projet est visible sur la
+grille après le prochain fetch (deploy.sh ou tir horaire du timer).
+
 ## Déploiement
 
 Depuis la racine du repo :
@@ -157,15 +215,16 @@ bash scripts/deploy.sh
 # 1. fetch_zotero.py     -> mediatheque/data/collection.json
 # 2. fetch_actualites.py -> actualites/data/actualites.json
 # 3. fetch_contacts.py   -> contacts/data/contacts.json
-# puis commit des 3 data/ + push origin main
+# 4. fetch_projets.py    -> projets/data/projets.json
+# puis commit des 4 data/ + push origin main
 ```
 
 GitHub Pages resert en 1-2 minutes.
 
 ## Cron
 
-- **Les 3 apps** : timer systemd user `grilles-parlement-sync`
-  (horaire, :07) — exécute `scripts/deploy.sh` (3 fetchs + commit
+- **Les 4 apps** : timer systemd user `grilles-parlement-sync`
+  (horaire, :07) — exécute `scripts/deploy.sh` (4 fetchs + commit
   + push) sur ce repo.
 - **Actualités** : cron Hermes quotidien 08:15 « Actualités du
   Parlement (grille) » — monitor du dossier mail + propositions

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collection Zotero</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <main class="layout">
+    <!-- ===== Sidebar filtres ===== -->
+    <aside class="sidebar" aria-label="Filtres">
+      <div class="filter-block">
+        <label for="search" class="filter-label">Recherche</label>
+        <input
+          type="search"
+          id="search"
+          placeholder="Titre, auteur, mot-clé…"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="filter-block">
+        <span class="filter-label" id="year-filter-label">Année</span>
+        <div id="year-dropdown" class="year-dropdown">
+          <button
+            type="button"
+            id="year-toggle"
+            class="year-toggle"
+            aria-expanded="false"
+            aria-haspopup="listbox"
+          >
+            <span id="year-pill" class="year-pill-text">Toutes les années</span>
+            <span class="year-caret" aria-hidden="true">▾</span>
+          </button>
+          <div
+            id="year-menu"
+            class="year-menu"
+            role="listbox"
+            aria-multiselectable="true"
+            aria-labelledby="year-filter-label"
+          >
+            <p class="muted">Chargement…</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-block">
+        <span class="filter-label">Type</span>
+        <div id="type-list" class="type-list">
+          <p class="muted">Chargement…</p>
+        </div>
+      </div>
+
+      <button type="button" id="reset-filters" class="reset-btn">
+        Réinitialiser les filtres
+      </button>
+
+      <div class="filter-block propose-block">
+        <span class="filter-label">Contribuer</span>
+        <p class="propose-note">
+          Vous connaissez un document utile sur l'eau et les rivières en
+          Isère&nbsp;? Proposez son ajout à la bibliothèque.
+        </p>
+      </div>
+
+      <div class="filter-block dev-note-block">
+        <span class="dev-note">Développement en cours</span>
+      </div>
+    </aside>
+
+    <!-- ===== Grille de cartes ===== -->
+    <section class="content" aria-label="Documents">
+      <div class="content-header">
+        <span id="result-count" class="result-count">— résultats</span>
+        <div class="header-controls">
+          <nav id="pagination-top" class="pagination pagination-top" aria-label="Pagination haut"></nav>
+          <label for="page-size-select" class="page-size-label">Afficher
+            <select id="page-size-select">
+              <option value="12">12</option>
+              <option value="24">24</option>
+              <option value="48">48</option>
+              <option value="all">Tout</option>
+            </select>
+            par page
+          </label>
+        </div>
+      </div>
+      <div id="grid" class="grid">
+        <p class="muted center">Chargement de la collection…</p>
+      </div>
+      <nav id="pagination" class="pagination" aria-label="Pagination"></nav>
+    </section>
+  </main>
+
+  <!-- ===== Modale détail ===== -->
+  <div id="modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-content" role="document">
+      <button class="modal-close" type="button" data-close aria-label="Fermer">×</button>
+      <span id="modal-type" class="modal-type"></span>
+      <h2 id="modal-title" class="modal-title"></h2>
+      <p id="modal-meta-line" class="modal-meta-line"></p>
+      <div id="modal-tags" class="modal-tags"></div>
+      <div class="modal-section">
+        <h3>Résumé</h3>
+        <p id="modal-abstract" class="modal-abstract"></p>
+      </div>
+      <div class="modal-actions">
+        <a id="modal-source" class="btn btn-primary" href="#" target="_blank" rel="noopener">
+          Ouvrir la source
+        </a>
+        <button id="modal-bibtex" type="button" class="btn btn-secondary">
+          Copier la citation BibTeX
+        </button>
+      </div>
+      <p id="modal-copied" class="copied-msg" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

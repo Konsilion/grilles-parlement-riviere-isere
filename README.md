@@ -21,9 +21,12 @@ grilles-parlement-riviere-isere/
 │   └── data/collection.json    # généré par scripts/fetch_zotero.py
 ├── actualites/             # ex-app actualités (copie — historique dans l'ancien repo)
 │   ├── index.html, js/app.js, css/style.css
-│   └── data/actualites.csv     # source de vérité actuelle (→ JSON après migration)
+│   └── data/actualites.json    # généré par scripts/fetch_actualites.py (K4)
+│       data/actualites.csv      # historique (migration Zotero en cours)
 │       data/pending_proposals.json
-├── common/                 # code mutualisé des deux apps (populé par K5)
+├── common/                 # code mutualisé des deux apps (K5)
+│   ├── css/base.css         # tokens, thème clair unique, pagination, dropdowns, pastilles
+│   └── js/                  # dom.js (esc/dates), search.js (fuzzy), pagination.js, dropdown.js
 ├── scripts/
 │   ├── fetch_zotero.py     # médiathèque : API Zotero → mediatheque/data/collection.json
 │   ├── config.example.py   # template de credentials (config.py = .gitignore, JAMAIS commité)
@@ -43,7 +46,47 @@ filtres type/année/tags, pagination, modale de détail.
 
 **Actualités** (`/actualites/`) — grille des actualités du Parlement
 (événements à venir/passés, ressources, informations), filtres
-année/mois, recherche floue, pagination.
+année/mois, recherche floue, pagination. Les données viennent de
+`data/actualites.json`, généré depuis la collection Zotero
+« Actualités » par `scripts/fetch_actualites.py`.
+
+## Mutualisation (K5)
+
+Les deux apps partagent un socle unique dans `common/`, référencé
+par chemin relatif (`../common/...`) — même origine sur GitHub
+Pages, aucun build :
+
+- `common/js/search.js` — recherche floue (normalisation
+  casse/accents + Damerau-Levenshtein borné, calibrage vitrine
+  10/10/26) : `GrilleSearch.matchesQuery`, index par item via
+  `makeSearchCache(getKey, getHaystack)` (le haystack dépend de
+  l'app : fiches Zotero vs actualités).
+- `common/js/pagination.js` — `GrillePagination.paginate(state,
+  filtered)` + `renderPagination(state, totalPages, navs,
+  onChange)` : barres ‹ numéros › haut + bas synchronisées.
+- `common/js/dropdown.js` — `GrilleDropdown.makeDropdown` :
+  dropdowns custom multi-choix (le `<select>` natif refuse le
+  multi — ne jamais y revenir), clic-dehors/Échap, option
+  « Tous… » qui décoche tout.
+- `common/js/dom.js` — `GrilleDom` : `esc` (échappement HTML),
+  `parseISO`, `formatDate`.
+- `common/css/base.css` — tokens (`--accent: #0b4387`…), thème
+  clair unique (`:root { color-scheme: light }`, PAS de
+  prefers-color-scheme), base 16.5px (tout en rem), `.card`
+  + halo bleu au survol, `.pagination/.page-*`,
+  `.dropdown/.dd-*`, `.filter-pill(s)`, `.search-input`.
+
+Chaque app ne garde que ses styles et logiques propres
+(sidebar + modale médiathèque, toolbar + pastilles mois actus).
+
+### Fixture `actualites/data/actualites.json`
+
+Le fichier commis est une **fixture de développement** générée
+une fois depuis le CSV historique (12 items, mêmes noms de
+champs) pour que le front fonctionne avant la bascule. En
+production, il est **régénéré** par `scripts/fetch_actualites.py`
+(K4) depuis la collection Zotero « Actualités » — le deploy
+écrase la fixture à chaque sync.
 
 ## Déploiement
 

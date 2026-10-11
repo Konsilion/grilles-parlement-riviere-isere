@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Actualités — Parlement de la rivière Isère</title>
+  <!-- Socle commun des deux grilles (tokens, clair unique, pagination,
+       dropdowns, pastilles) — chargé AVANT les styles propres. -->
+  <link rel="stylesheet" href="../common/css/base.css" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -21,44 +24,44 @@
               autocomplete="off"
               aria-label="Rechercher dans les actualités"
             />
-            <div class="fdropdown" id="year-dropdown">
+            <div class="dropdown" id="year-dropdown">
               <button
                 type="button"
                 id="year-toggle"
-                class="f-toggle"
+                class="dd-toggle"
                 aria-expanded="false"
                 aria-haspopup="listbox"
               >
-                <span class="f-pill" id="year-pill">Toutes les années</span>
-                <span class="f-caret" aria-hidden="true">▾</span>
+                <span class="dd-pill" id="year-pill">Toutes les années</span>
+                <span class="dd-caret" aria-hidden="true">▾</span>
               </button>
               <div
                 id="year-menu"
-                class="f-menu"
+                class="dd-menu"
                 role="listbox"
                 aria-multiselectable="true"
               ></div>
             </div>
-            <div class="fdropdown" id="month-dropdown">
+            <div class="dropdown" id="month-dropdown">
               <button
                 type="button"
                 id="month-toggle"
-                class="f-toggle"
+                class="dd-toggle"
                 aria-expanded="false"
                 aria-haspopup="listbox"
               >
-                <span class="f-pill" id="month-pill">Tous les mois</span>
-                <span class="f-caret" aria-hidden="true">▾</span>
+                <span class="dd-pill" id="month-pill">Tous les mois</span>
+                <span class="dd-caret" aria-hidden="true">▾</span>
               </button>
               <div
                 id="month-menu"
-                class="f-menu"
+                class="dd-menu"
                 role="listbox"
                 aria-multiselectable="true"
               ></div>
             </div>
           </div>
-          <div id="month-pills" class="month-pills" aria-label="Mois sélectionnés"></div>
+          <div id="month-pills" class="filter-pills" aria-label="Mois sélectionnés"></div>
           <div class="header-controls">
             <nav id="pagination-top" class="pagination pagination-top" aria-label="Pagination haut"></nav>
             <label for="page-size-select" class="page-size-label">Afficher
@@ -79,6 +82,11 @@
     </section>
   </main>
 
+  <!-- Socles communs (recherche floue, pagination, dropdowns, dates) -->
+  <script src="../common/js/dom.js"></script>
+  <script src="../common/js/search.js"></script>
+  <script src="../common/js/pagination.js"></script>
+  <script src="../common/js/dropdown.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

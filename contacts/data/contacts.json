@@ -1,1 +1,70 @@
-[]
+[
+  {
+    "id": "C0001",
+    "nom": "Philippe Dubois",
+    "description": "Référent de la commission juridique du Parlement de la rivière Isère, consacrée aux droits de la nature et à la rédaction de la Déclaration des droits de la rivière. Membre de France Nature Environnement 38, l'une des associations du collectif fondateur du Parlement. Il a accueilli et présenté le Parlement lors de la troisième session du 28 mars 2026.",
+    "organisation": "France Nature Environnement 38",
+    "lieu": "Grenoble",
+    "date_contact": "",
+    "lien": "https://parlement-isere.org/pages/commissions/juridique/contact/",
+    "email": "phdpdc@free.fr",
+    "telephone": "",
+    "role": "Référent de la commission juridique",
+    "categories": [
+      "collectif",
+      "commission juridique"
+    ],
+    "date_ajout": "2026-10-11"
+  },
+  {
+    "id": "C0002",
+    "nom": "Lucas Mercuri",
+    "description": "Référent de la commission démocratie du Parlement de la rivière Isère, chargée de la réappropriation démocratique des enjeux de l'eau : cadre démocratique du Parlement, règles de gouvernance et participation citoyenne (éducation populaire).",
+    "organisation": "",
+    "lieu": "Grenoble",
+    "date_contact": "",
+    "lien": "https://parlement-isere.org/pages/commissions/democratie/contact/",
+    "email": "lucas.mercuri@outlook.fr",
+    "telephone": "",
+    "role": "Référent de la commission démocratie",
+    "categories": [
+      "collectif",
+      "commission démocratie"
+    ],
+    "date_ajout": "2026-10-11"
+  },
+  {
+    "id": "C0003",
+    "nom": "Pierre-Louis Serero",
+    "description": "Référent de la commission artistique du Parlement de la rivière Isère (attachement, affects et imaginaires liés à la rivière). Membre de Civipole, association du collectif fondateur. Il a animé l'intervention « Retrouver les voies(x) de l'eau » (programme POPSU) lors de la troisième session du 28 mars 2026.",
+    "organisation": "Civipole",
+    "lieu": "Grenoble",
+    "date_contact": "",
+    "lien": "https://parlement-isere.org/pages/commissions/artistique/",
+    "email": "pierrelouisserero@gmail.com",
+    "telephone": "",
+    "role": "Référent de la commission artistique",
+    "categories": [
+      "collectif",
+      "commission artistique"
+    ],
+    "date_ajout": "2026-10-11"
+  },
+  {
+    "id": "C0004",
+    "nom": "David Gabriel",
+    "description": "Référent de la galerie d'images de la rivière Isère (commission artistique) : il collecte les images, peintures, gravures et photographies de l'Isère et de ses affluents, et accueille les contributions et commentaires des gardien·ne·s et sympathisant·e·s.",
+    "organisation": "",
+    "lieu": "Grenoble",
+    "date_contact": "",
+    "lien": "https://parlement-isere.org/pages/commissions/artistique/images/",
+    "email": "davidgabriel@zaclys.net",
+    "telephone": "",
+    "role": "Référent de la galerie d'images",
+    "categories": [
+      "collectif",
+      "commission artistique"
+    ],
+    "date_ajout": "2026-10-11"
+  }
+]

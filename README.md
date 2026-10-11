@@ -7,9 +7,9 @@ Parlement de la rivière Isère (décision CEO 11/10/26) — sites statiques
 
 **URL publique :** https://konsilion.github.io/grilles-parlement-riviere-isere/
 
-Les anciens repos `zotero-parlement-riviere-isere` (médiathèque) et
-`actualites-parlement-riviere-isere` (actualités) restent en prod
-jusqu'à la bascule finale — ce repo les remplace à terme.
+Ancienne vitrine médiathèque `zotero-parlement-riviere-isere`
+ARCHIVÉE le 11/10/26 (décision CEO) — ce repo unique la remplace
+(bascule K6 du 11/10/26).
 
 ## Structure
 
@@ -245,11 +245,12 @@ aucune proposition n'est perdue.
   invisible d'Internet : ufw n'autorise que le réseau caddy-net).
 - Route publique : `https://hermes.konsilion.fr/api/contribution`
   (bloc `handle` du site dans `~/caddy/etc/Caddyfile`).
-- Durcissement : CORS limité à `konsilion.github.io`, corps ≤ 8 Ko,
-  types fermés revalidés, rate-limit 5 requêtes/h/IP, champ
+- Durcissement : CORS limité à `konsilion.github.io`, corps ≤ 20 Ko,
+  types fermés revalidés, rate-limit 15 requêtes/h/IP, champ
   anti-robots, log sans contenu (date/IP/statut seulement).
-- Statut : `systemctl --user status parlement-contribution` ;
-  journal : `journalctl --user -u parlement-contribution`.
+- Statut : `systemctl --user status parlement-contribution` ; journal
+  journald (démarrage) + `~/parlement-contribution/requests.log`
+  (requêtes, sans contenu : date/IP/statut seulement).
 
 ### Modération (équipe)
 

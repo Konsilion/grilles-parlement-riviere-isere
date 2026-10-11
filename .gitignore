@@ -19,8 +19,5 @@ Thumbs.db
 README.md
 mcd/
 
-# Relais contribution (décision CEO 11/10/26) : vit DANS le repo mais
-# N'EST JAMAIS COMMITÉ — le serveur, son journal, la sauvegarde .v1 et le
-# cache Python restent locaux (pattern README/mcd). Le timer horaire
-# deploy.sh ne commite que data/*.json : double sécurité.
-parlement-contribution/
+# (11/10/26 soir) Annulation : le relais contribution ne vit plus dans ce
+# repo — déplacé dans ~/apps/ sur le VPS (décision CEO). Plus rien à ignorer.

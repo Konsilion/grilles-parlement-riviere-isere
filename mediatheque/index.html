@@ -209,24 +209,32 @@
         <input type="text" id="c-gotcha" name="website" class="gotcha" tabindex="-1" autocomplete="off" />
       </form>
 
-      <!-- Confirmation : l'onglet GitHub s'ouvre au moment de l'envoi ; ce
-           bloc garde le lien au cas où un bloqueur de pop-up l'aurait bloqué. -->
+      <!-- Confirmation : envoi silencieux réussi (le visiteur ne voit
+           jamais GitHub). -->
       <div id="contribute-success" class="contribute-success" hidden>
-        <p class="contribute-success-title">✓ Votre proposition est prête !</p>
+        <p class="contribute-success-title">✓ Merci, votre proposition est envoyée !</p>
         <p>
-          Elle va être transmise à l'équipe via GitHub (la plateforme qui
-          héberge ce site). Si l'onglet ne s'est pas ouvert, utilisez le
-          bouton ci-dessous, puis appuyez sur «&nbsp;<em>Submit new issue</em>&nbsp;»
-          pour finaliser l'envoi. Un compte GitHub gratuit suffit (création
-          en 2 minutes).
+          L'équipe du Parlement de la rivière Isère va l'examiner. Si le
+          document est retenu, il apparaîtra dans la bibliothèque
+          d'ici quelques jours.
+        </p>
+        <p class="contribute-success-note">
+          Merci pour votre aide&nbsp;!
+        </p>
+      </div>
+
+      <!-- Repli : le relais est indisponible → parcours GitHub manuel. -->
+      <div id="contribute-fallback" class="contribute-success" hidden>
+        <p class="contribute-success-title">⚠️ L'envoi direct est indisponible pour le moment</p>
+        <p>
+          Vous pouvez tout de même transmettre votre proposition via GitHub
+          (la plateforme qui héberge ce site)&nbsp;: un onglet va s'ouvrir,
+          cliquez simplement sur «&nbsp;<em>Submit new issue</em>&nbsp;» pour
+          finaliser l'envoi. Un compte GitHub gratuit suffit.
         </p>
         <a id="contribute-link" class="btn btn-primary contribute-link" target="_blank" rel="noopener noreferrer">
           Finaliser l'envoi sur GitHub →
         </a>
-        <p class="contribute-success-note">
-          L'équipe vérifie chaque proposition avant publication dans la
-          bibliothèque. Merci pour votre aide&nbsp;!
-        </p>
       </div>
     </div>
   </div>

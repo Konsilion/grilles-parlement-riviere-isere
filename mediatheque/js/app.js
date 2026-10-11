@@ -456,6 +456,7 @@
     modal: document.getElementById("contribute-modal"),
     form: document.getElementById("contribute-form"),
     success: document.getElementById("contribute-success"),
+    fallback: document.getElementById("contribute-fallback"),
     link: document.getElementById("contribute-link"),
     title: document.getElementById("c-title"),
     authors: document.getElementById("c-authors"),
@@ -487,9 +488,10 @@
   function openContributeModal() {
     // Sécurité : une seule modale à la fois (referme la modale détail).
     if (els.modal.getAttribute("aria-hidden") === "false") closeModal();
-    // Réinitialisation : formulaire visible, confirmation masquée
+    // Réinitialisation : formulaire visible, confirmations masquées
     elsC.form.hidden = false;
     elsC.success.hidden = true;
+    elsC.fallback.hidden = true;
     elsC.form.reset();
     [elsC.title, elsC.url, elsC.year].forEach((i) => setFieldError(i, null));
     elsC.modal.setAttribute("aria-hidden", "false");
@@ -594,9 +596,58 @@
     return `${CONTRIB_REPO_URL}/issues/new?${params.toString()}`;
   }
 
+  // Envoi silencieux au relais VPS (hermes.konsilion.fr/api/contribution)
+  // → le service crée l'issue GitHub avec le jeton du robot. En cas
+  // d'échec (service ou réseau) : repli sur le parcours GitHub manuel.
+  const CONTRIB_RELAY_URL = "https://hermes.konsilion.fr/api/contribution";
+
+  async function sendContributionSilent(d) {
+    const btn = document.getElementById("contribute-submit");
+    const prev = btn ? btn.textContent : null;
+    if (btn) { btn.disabled = true; btn.textContent = "Envoi en cours…"; }
+    const restore = () => { if (btn) { btn.disabled = false; btn.textContent = prev; } };
+    const body = {
+      title: d.title, authors: d.authors, year: d.year,
+      type: d.type, url: d.url, abstract: d.abstract,
+      gotcha: elsC.gotcha ? elsC.gotcha.value : "",
+    };
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 10000);
+      const resp = await fetch(CONTRIB_RELAY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: ctrl.signal,
+      });
+      clearTimeout(timer);
+      if (resp.ok) {
+        restore();
+        showContributeSuccess(true);
+        return;
+      }
+      // 429/4xx/5xx du relais → repli GitHub.
+    } catch { /* réseau/timeout → repli GitHub */ }
+    restore();
+    showContributeFallback(d);
+  }
+
+  function showContributeFallback(d) {
+    elsC.link.href = buildIssueUrl(d);
+    elsC.form.hidden = true;
+    elsC.success.hidden = true;
+    elsC.fallback.hidden = false;
+    window.open(elsC.link.href, "_blank", "noopener");
+  }
+
+  function showContributeSuccess() {
+    elsC.form.hidden = true;
+    elsC.fallback.hidden = true;
+    elsC.success.hidden = false;
+  }
+
   function submitContribution() {
-    // Piège à robots rempli → on fait semblant de réussir sans rien envoyer.
-    if (elsC.gotcha && elsC.gotcha.value) return showContributeSuccess();
+    if (elsC.gotcha && elsC.gotcha.value) { showContributeSuccess(); return; }
     if (!validateContribution()) return;
 
     const d = {
@@ -607,15 +658,7 @@
       url: elsC.url.value.trim(),
       abstract: elsC.abstract.value.trim(),
     };
-    const issueUrl = buildIssueUrl(d);
-    elsC.link.href = issueUrl;
-    showContributeSuccess();
-    window.open(issueUrl, "_blank", "noopener");
-  }
-
-  function showContributeSuccess() {
-    elsC.form.hidden = true;
-    elsC.success.hidden = false;
+    sendContributionSilent(d);
   }
 
   // ---------- Listeners globaux ----------

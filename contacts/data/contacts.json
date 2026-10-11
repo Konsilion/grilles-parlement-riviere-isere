@@ -2,16 +2,17 @@
   {
     "id": "C0001",
     "nom": "Philippe Dubois",
-    "description": "Référent de la commission juridique du Parlement de la rivière Isère, consacrée aux droits de la nature et à la rédaction de la Déclaration des droits de la rivière. Membre de France Nature Environnement 38, l'une des associations du collectif fondateur du Parlement. Il a accueilli et présenté le Parlement lors de la troisième session du 28 mars 2026.",
+    "description": "Référent de la commission juridique du Parlement de la rivière Isère, consacrée aux droits de la nature et à la rédaction de la Déclaration des droits de la rivière. Co-président de France Nature Environnement 38, l'une des associations du collectif fondateur du Parlement, et membre du comité d'organisation (note de réflexion gouvernance, mai 2025).\n\nIl a accueilli et présenté le Parlement lors de la troisième session du 28 mars 2026.",
     "organisation": "France Nature Environnement 38",
     "lieu": "Grenoble",
     "date_contact": "",
     "lien": "https://parlement-isere.org/pages/commissions/juridique/contact/",
     "email": "phdpdc@free.fr",
     "telephone": "",
-    "role": "Référent de la commission juridique",
+    "role": "Référent de la commission juridique, co-président de FNE 38, membre du comité d'organisation",
     "categories": [
       "collectif",
+      "comité d'organisation",
       "commission juridique"
     ],
     "date_ajout": "2026-10-11"
@@ -36,16 +37,17 @@
   {
     "id": "C0003",
     "nom": "Pierre-Louis Serero",
-    "description": "Référent de la commission artistique du Parlement de la rivière Isère (attachement, affects et imaginaires liés à la rivière). Membre de Civipole, association du collectif fondateur. Il a animé l'intervention « Retrouver les voies(x) de l'eau » (programme POPSU) lors de la troisième session du 28 mars 2026.",
+    "description": "Référent de la commission artistique du Parlement de la rivière Isère (attachement, affects et imaginaires liés à la rivière). Président de l'association Civipole, membre du comité d'organisation (note de réflexion gouvernance, mai 2025).\n\nIl a animé l'intervention « Retrouver les voies(x) de l'eau » (programme POPSU) lors de la troisième session du 28 mars 2026, et représenté le Parlement lors de l'échange avec STMicroelectronics sur la certification AWS (juillet 2025).",
     "organisation": "Civipole",
     "lieu": "Grenoble",
     "date_contact": "",
     "lien": "https://parlement-isere.org/pages/commissions/artistique/",
     "email": "pierrelouisserero@gmail.com",
     "telephone": "",
-    "role": "Référent de la commission artistique",
+    "role": "Référent de la commission artistique, président de Civipole, membre du comité d'organisation",
     "categories": [
       "collectif",
+      "comité d'organisation",
       "commission artistique"
     ],
     "date_ajout": "2026-10-11"
@@ -64,6 +66,120 @@
     "categories": [
       "collectif",
       "commission artistique"
+    ],
+    "date_ajout": "2026-10-11"
+  },
+  {
+    "id": "C0005",
+    "nom": "Delphine Astier",
+    "description": "Intervenante lors de la troisième session du Parlement de la rivière Isère (28 mars 2026, Les Usages de l'eau), avec « Une chaise pour la rivière » et « La chaîne du vivant ».",
+    "organisation": "",
+    "lieu": "Grenoble",
+    "date_contact": "",
+    "lien": "https://parlement-isere.org/pages/sessions/troisieme_session/",
+    "email": "",
+    "telephone": "",
+    "role": "Intervenante à la troisième session",
+    "categories": [
+      "intervenant·e"
+    ],
+    "date_ajout": "2026-10-11"
+  },
+  {
+    "id": "C0006",
+    "nom": "Julien Nemery",
+    "description": "Intervenant lors de la troisième session du Parlement de la rivière Isère (28 mars 2026) pour le collectif « Les gens qui ont chaud », mobilisation citoyenne croisée avec les sciences sociales et l'aménagement urbain.",
+    "organisation": "Collectif « Les gens qui ont chaud »",
+    "lieu": "Grenoble",
+    "date_contact": "",
+    "lien": "https://parlement-isere.org/pages/sessions/troisieme_session/",
+    "email": "",
+    "telephone": "",
+    "role": "Intervenant à la troisième session",
+    "categories": [
+      "intervenant·e"
+    ],
+    "date_ajout": "2026-10-11"
+  },
+  {
+    "id": "C0007",
+    "nom": "Antoine Brochet",
+    "description": "Intervenant lors de la troisième session du Parlement de la rivière Isère (28 mars 2026) : « Retrouver les voies(x) de l'eau », programme POPSU (aménagement urbain), animé avec Pierre-Louis Serero (Civipole).",
+    "organisation": "",
+    "lieu": "Grenoble",
+    "date_contact": "",
+    "lien": "https://parlement-isere.org/pages/sessions/troisieme_session/",
+    "email": "",
+    "telephone": "",
+    "role": "Intervenant à la troisième session",
+    "categories": [
+      "intervenant·e"
+    ],
+    "date_ajout": "2026-10-11"
+  },
+  {
+    "id": "C0008",
+    "nom": "Radia Benzidan",
+    "description": "Intervenante lors de la troisième session du Parlement de la rivière Isère (28 mars 2026) : restitution de travaux de l'École Nationale Supérieure d'Architecture de Grenoble (ENSAG).",
+    "organisation": "",
+    "lieu": "Grenoble",
+    "date_contact": "",
+    "lien": "https://parlement-isere.org/pages/sessions/troisieme_session/",
+    "email": "",
+    "telephone": "",
+    "role": "Intervenante à la troisième session",
+    "categories": [
+      "intervenant·e"
+    ],
+    "date_ajout": "2026-10-11"
+  },
+  {
+    "id": "C0009",
+    "nom": "Régis Moreira",
+    "description": "Membre du comité d'organisation du Parlement de la rivière Isère, qui fait le lien entre les commissions et le territoire (note de réflexion gouvernance, mai 2025).\n\nIl a animé l'atelier « Les usages de l'eau » avec les étudiants de la Faculté d'Économie de Grenoble lors de la troisième session du 28 mars 2026.",
+    "organisation": "",
+    "lieu": "Grenoble",
+    "date_contact": "",
+    "lien": "https://drive.google.com/file/d/1Zs4Cf_dQvxew1ywxuNr_abjepU9NHTRW/view",
+    "email": "",
+    "telephone": "",
+    "role": "Membre du comité d'organisation",
+    "categories": [
+      "comité d'organisation",
+      "intervenant·e"
+    ],
+    "date_ajout": "2026-10-11"
+  },
+  {
+    "id": "C0010",
+    "nom": "Chantal Diebolt",
+    "description": "Membre du comité d'organisation du Parlement de la rivière Isère, qui fait le lien entre les commissions et le territoire (note de réflexion gouvernance, mai 2025).",
+    "organisation": "",
+    "lieu": "",
+    "date_contact": "",
+    "lien": "https://drive.google.com/file/d/1Zs4Cf_dQvxew1ywxuNr_abjepU9NHTRW/view",
+    "email": "",
+    "telephone": "",
+    "role": "Membre du comité d'organisation",
+    "categories": [
+      "comité d'organisation"
+    ],
+    "date_ajout": "2026-10-11"
+  },
+  {
+    "id": "C0011",
+    "nom": "Nicolas Brémond",
+    "description": "Membre du comité d'organisation du Parlement de la rivière Isère et référent du comité Sciences. Ingénieur de formation en système énergétique, analysant les risques territoriaux industriels sur un site Seveso (transcription de l'échange STMicroelectronics, juillet 2025).",
+    "organisation": "",
+    "lieu": "Grenoble",
+    "date_contact": "",
+    "lien": "https://drive.google.com/file/d/1HZ-hIr6Q3krD5tByK5tXTmhMaB4I2ap7/view",
+    "email": "",
+    "telephone": "",
+    "role": "Membre du comité d'organisation, référent du comité Sciences",
+    "categories": [
+      "comité d'organisation",
+      "commission scientifique"
     ],
     "date_ajout": "2026-10-11"
   }

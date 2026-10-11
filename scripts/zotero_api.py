@@ -5,9 +5,9 @@
 Utilisé par fetch_actualites.py et valider.py (carte K4).
 
 Clé API (jamais affichée ni loguée) :
-- mode "write" : coffre ~/secrets/client/zotero.key — obligatoire ;
+- mode "write" : coffre ~/sys_admin/secrets/client/zotero.key — obligatoire ;
 - mode "read"  : coffre si présent, sinon ZOTERO_API_KEY du config.py
-                 de la vitrine (~/zotero-vitrine/scripts/config.py).
+                 de la vitrine (~/github/zotero-vitrine/scripts/config.py).
 
 PIÈGE prouvé en K3 : un POST batch renvoie HTTP 200 MÊME SI des items
 échouent — post_items() parse donc toujours successful/failed/unchanged et
@@ -32,8 +32,8 @@ API_VERSION = "3"
 DEFAULT_GROUP_ID = "6610185"
 DEFAULT_TIMEOUT = 90
 
-WRITE_KEY_PATH = Path.home() / "secrets" / "client" / "zotero.key"
-VITRINE_CONFIG = Path.home() / "zotero-vitrine" / "scripts" / "config.py"
+WRITE_KEY_PATH = Path.home() / "sys_admin" / "secrets" / "client" / "zotero.key"
+VITRINE_CONFIG = Path.home() / "github" / "zotero-vitrine" / "scripts" / "config.py"
 
 
 class ZoteroError(Exception):
@@ -45,7 +45,7 @@ class ZoteroError(Exception):
 def load_key(mode="write"):
     """Charge la clé API sans jamais l'afficher.
 
-    mode="write" : coffre ~/secrets/client/zotero.key — requis, échec sinon.
+    mode="write" : coffre ~/sys_admin/secrets/client/zotero.key — requis, échec sinon.
     mode="read"  : coffre si présent, sinon config.py de la vitrine.
     """
     if WRITE_KEY_PATH.exists():

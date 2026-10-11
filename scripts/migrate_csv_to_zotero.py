@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 """K3 : migre les 12 cartes du CSV actualites vers des items Zotero.
 
-Source de verite : ~/actualites-parlement/data/actualites.csv (lecture seule ;
-le CSV et l'ancien repo ~/actualites-parlement ne sont JAMAIS modifies).
+Source de verite : ~/github/actualites-parlement/data/actualites.csv (lecture seule ;
+le CSV et l'ancien repo ~/github/actualites-parlement ne sont JAMAIS modifies).
 
 Cible : collection « Actualites » du groupe Zotero 6610185 — cle retrouvee
 dynamiquement par recherche du nom (valeur attendue U4HFDR68, prouvee en K1 ;
@@ -36,7 +36,7 @@ Usage :
   python3 scripts/migrate_csv_to_zotero.py --dry-run   # verifie sans ecrire
   python3 scripts/migrate_csv_to_zotero.py              # execution reelle
 
-Cle d'ecriture : ~/secrets/client/zotero.key (jamais affichee).
+Cle d'ecriture : ~/sys_admin/secrets/client/zotero.key (jamais affichee).
 stdlib uniquement (urllib).
 """
 
@@ -50,8 +50,8 @@ from pathlib import Path
 
 GROUP_ID = "6610185"
 API_BASE = "https://api.zotero.org"
-CSV_PATH = Path.home() / "actualites-parlement" / "data" / "actualites.csv"
-WRITE_KEY_PATH = Path.home() / "secrets" / "client" / "zotero.key"
+CSV_PATH = Path.home() / "github" / "actualites-parlement" / "data" / "actualites.csv"
+WRITE_KEY_PATH = Path.home() / "sys_admin" / "secrets" / "client" / "zotero.key"
 EXPECTED_ACTUALITES_NAME = "Actualités"      # nom stocke byte-exact (K1)
 EXPECTED_ACTUALITES_KEY = "U4HFDR68"         # attendu, retrouve par nom
 MEDIATHEQUE_KEY = "MCKNJI9M"                 # interdit dans les items crees

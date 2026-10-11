@@ -17,7 +17,7 @@ L'item (itemType document) est créé dans la collection « Projets »
 Statuts conseillés : « En cours », « À venir », « Terminé » (le front
 colore ces trois-là ; toute autre valeur s'affiche telle quelle).
 
-La clé API (écriture, coffre ~/secrets/client/zotero.key) n'est JAMAIS
+La clé API (écriture, coffre ~/sys_admin/secrets/client/zotero.key) n'est JAMAIS
 affichée ni loguée. stdlib uniquement.
 
 Usage (depuis la racine du repo) :
@@ -163,7 +163,7 @@ def main():
     if not validate_args(args):
         return 2
 
-    key = load_key(mode="write")          # coffre ~/secrets/client/zotero.key
+    key = load_key(mode="write")          # coffre ~/sys_admin/secrets/client/zotero.key
     client = ZoteroClient(key)
     client.check_write_access()
 

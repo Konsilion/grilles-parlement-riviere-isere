@@ -43,7 +43,7 @@ restent traitées comme mediatheque — rétrocompatible.
 
 Accès :
 - GitHub : CLI `gh` (déjà authentifiée sur le VPS, compte Konsilion) ;
-- Zotero : clé d'écriture du coffre ~/secrets/client/zotero.key (jamais affichée).
+- Zotero : clé d'écriture du coffre ~/sys_admin/secrets/client/zotero.key (jamais affichée).
 
 Aucune invention : les champs viennent tels quels du formulaire. Les
 types/statuts fermés sont revalidés ; une valeur inconnue est refusée.

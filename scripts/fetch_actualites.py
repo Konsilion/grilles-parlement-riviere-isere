@@ -27,7 +27,7 @@ Usage :
       # en plus : compare champ par champ avec le CSV historique et imprime
       # le relevé (écart = ligne par ligne, champ par champ)
 
-Clé : lecture seule (coffre ~/secrets/client/zotero.key, sinon config de la
+Clé : lecture seule (coffre ~/sys_admin/secrets/client/zotero.key, sinon config de la
 vitrine). Clé d'écriture jamais nécessaire ici. stdlib uniquement.
 """
 

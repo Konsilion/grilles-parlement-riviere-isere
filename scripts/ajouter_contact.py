@@ -14,7 +14,7 @@ L'item (itemType document) est créé dans la collection « Contacts »
   citationKey=prochain C000N (scan des citationKeys existants, max+1),
   dateAdded/dateModified=maintenant (ISO 8601 Z).
 
-La clé API (écriture, coffre ~/secrets/client/zotero.key) n'est JAMAIS
+La clé API (écriture, coffre ~/sys_admin/secrets/client/zotero.key) n'est JAMAIS
 affichée ni loguée. stdlib uniquement.
 
 Usage (depuis la racine du repo) :
@@ -157,7 +157,7 @@ def main():
     if not validate_args(args):
         return 2
 
-    key = load_key(mode="write")          # coffre ~/secrets/client/zotero.key
+    key = load_key(mode="write")          # coffre ~/sys_admin/secrets/client/zotero.key
     client = ZoteroClient(key)
     client.check_write_access()
 

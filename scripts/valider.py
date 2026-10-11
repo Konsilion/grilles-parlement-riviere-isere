@@ -34,7 +34,7 @@ Comportement :
   imprime « VALIDÉ n°X -> citationKey A000N » par succès.
 
 Aucune invention : les champs viennent tels quels du pending.
-Clé d'écriture : coffre ~/secrets/client/zotero.key (jamais affichée).
+Clé d'écriture : coffre ~/sys_admin/secrets/client/zotero.key (jamais affichée).
 stdlib uniquement (urllib) via zotero_api.py.
 """
 

@@ -24,7 +24,7 @@ que fetch_contacts.py). UTF-8, liste JSON plate.
 Usage :
   python3 scripts/fetch_projets.py    # écrit projets/data/projets.json
 
-Clé : lecture seule (coffre ~/secrets/client/zotero.key, sinon config de
+Clé : lecture seule (coffre ~/sys_admin/secrets/client/zotero.key, sinon config de
 la vitrine). Clé d'écriture jamais nécessaire ici. stdlib uniquement.
 """
 

@@ -35,6 +35,12 @@ grilles-parlement-riviere-isere/
 │   ├── css/contribution.css # styles du bloc contribution (calque médiathèque)
 │   └── js/                  # dom.js (esc/dates), search.js (fuzzy), pagination.js, dropdown.js,
 │                            # contribution.js (modale contribution 4 apps : GrilleContribution)
+├── mcd/                    # Modèle Conceptuel des Données (MCD)
+│   ├── MODELE.md            # entités, règles de gestion, protocoles ajout/modif/suppression
+│   ├── contribution.md      # MCD du parcours contribution
+│   ├── dictionnaire-donnees.csv # un champ par ligne (5 entités)
+│   ├── mcd.svg              # schéma d'ensemble
+│   └── README.md            # comment maintenir le modèle à jour
 ├── scripts/
 │   ├── fetch_zotero.py     # médiathèque : API Zotero → mediatheque/data/collection.json
 │   ├── fetch_actualites.py # actualités : collection « Actualités » → actualites/data/actualites.json

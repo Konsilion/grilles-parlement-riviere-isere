@@ -15,7 +15,7 @@ jusqu'à la bascule finale — ce repo les remplace à terme.
 
 ```
 grilles-parlement-riviere-isere/
-├── index.html              # accueil : 2 liens vers les deux apps
+├── index.html              # accueil : 3 liens vers les trois apps
 ├── mediatheque/            # ex-vitrine Zotero (git mv — historique conservé)
 │   ├── index.html, js/app.js, css/style.css
 │   └── data/collection.json    # généré par scripts/fetch_zotero.py
@@ -26,15 +26,17 @@ grilles-parlement-riviere-isere/
 │       data/pending_proposals.json
 ├── contacts/               # répertoire de contacts (C3)
 │   ├── index.html, js/app.js, css/style.css
-│   └── data/contacts.json      # FIXTURE de dev — la donnée réelle sera
-│                               # générée par le deploy (C2) qui écrase ce fichier
+│   └── data/contacts.json      # généré par scripts/fetch_contacts.py (C2)
 ├── common/                 # code mutualisé des trois apps (K5)
 │   ├── css/base.css         # tokens, thème clair unique, pagination, dropdowns, pastilles
 │   └── js/                  # dom.js (esc/dates), search.js (fuzzy), pagination.js, dropdown.js
 ├── scripts/
 │   ├── fetch_zotero.py     # médiathèque : API Zotero → mediatheque/data/collection.json
+│   ├── fetch_actualites.py # actualités : collection « Actualités » → actualites/data/actualites.json
+│   ├── fetch_contacts.py    # contacts : collection « Contacts » → contacts/data/contacts.json (C2)
+│   ├── ajouter_contact.py   # contacts : saisie d'un contact (CEO) dans Zotero (C2)
 │   ├── config.example.py   # template de credentials (config.py = .gitignore, JAMAIS commité)
-│   ├── deploy.sh           # médiathèque : fetch + commit + push
+│   ├── deploy.sh           # 3 fetchs + commit + push (timer grilles-parlement-sync)
 │   ├── valider.py          # actualités : validation CEO par numéros
 │   └── lister.py           # actualités : affichage des propositions / actualités
 ├── README.md
@@ -92,6 +94,51 @@ Pages, aucun build :
 Chaque app ne garde que ses styles et logiques propres
 (sidebar + modale médiathèque, toolbar + pastilles mois actus).
 
+## Contacts — mécanique (C2)
+
+**Source de vérité :** collection Zotero « Contacts » (clé `JI7JP8AZ`,
+racine du groupe Konsilion 6610185) — itemType `document`. La donnée
+du repo est un dérivé régénéré par le pipeline.
+
+**Mapping Zotero → contrat du front (12 clés) :**
+
+| Contrat | Zotero |
+|---|---|
+| `id` | `citationKey` (C000N, attribué automatiquement) |
+| `nom` | `title` |
+| `description` | `abstractNote` |
+| `organisation` | `publisher` |
+| `lieu` | `place` |
+| `date_contact` | `date` |
+| `lien` | `url` |
+| `email` | `extra`, ligne « Email: … » |
+| `telephone` | `extra`, ligne « Telephone: … » |
+| `role` | `extra`, ligne « Role: … » |
+| `categories` | `tags` |
+| `date_ajout` | `dateAdded` (AAAA-MM-JJ) |
+
+**Fetch :** `scripts/fetch_contacts.py` lit la collection et écrit
+`contacts/data/contacts.json` (tri déterministe par id ; collection
+vide → `[]`, l'app affiche « Aucun contact pour le moment. »).
+
+**Saisie (CEO) :** `scripts/ajouter_contact.py` crée l'item Zotero
+sans toucher l'API à la main — citationKey C000N auto (scan max+1),
+POST en échec vérifié, re-fetch de contrôle :
+
+```bash
+python3 scripts/ajouter_contact.py --nom "Marie Dupont" \
+  --organisation "Conseil départemental" --lieu "Grenoble" \
+  --email marie@example.fr --role "Élue" \
+  --categorie institution --categorie eau
+```
+
+Autres options : `--description`, `--telephone`, `--lien`,
+`--date-contact AAAA-MM-JJ`. Le contact est visible sur la grille
+après le prochain fetch (deploy.sh ou tir horaire du timer).
+
+⚠ **La grille est publique** : n'y saisir que des coordonnées
+destinées à être publiées (email/téléphone professionnels).
+
 ### Fixture `actualites/data/actualites.json`
 
 Le fichier commis est une **fixture de développement** générée
@@ -101,32 +148,25 @@ production, il est **régénéré** par `scripts/fetch_actualites.py`
 (K4) depuis la collection Zotero « Actualités » — le deploy
 écrase la fixture à chaque sync.
 
-### Fixture `contacts/data/contacts.json`
-
-Le fichier commis est une **fixture de développement** : 3
-exemples aux noms évidemment fictifs (« Exemple Un »…) pour que
-l'app ne casse pas en dev. En production, il sera **régénéré par
-le deploy (C2)** — la donnée réelle (renseignée par le CEO)
-écrase cette fixture.
-
 ## Déploiement
 
-Médiathèque (depuis la racine du repo) :
+Depuis la racine du repo :
 
 ```bash
-python3 scripts/fetch_zotero.py   # → mediatheque/data/collection.json
-git add mediatheque/data/collection.json
-git commit -m "Mise à jour collection Zotero"
-git push origin main
+bash scripts/deploy.sh
+# 1. fetch_zotero.py     -> mediatheque/data/collection.json
+# 2. fetch_actualites.py -> actualites/data/actualites.json
+# 3. fetch_contacts.py   -> contacts/data/contacts.json
+# puis commit des 3 data/ + push origin main
 ```
 
 GitHub Pages resert en 1-2 minutes.
 
 ## Cron
 
-- **Médiathèque** : timer systemd user `zotero-vitrine-sync` (horaire,
-  :07) — opère encore sur l'ancien repo `~/zotero-vitrine` jusqu'à la
-  bascule ; ce repo prendra le relais à la bascule finale.
+- **Les 3 apps** : timer systemd user `grilles-parlement-sync`
+  (horaire, :07) — exécute `scripts/deploy.sh` (3 fetchs + commit
+  + push) sur ce repo.
 - **Actualités** : cron Hermes quotidien 08:15 « Actualités du
   Parlement (grille) » — monitor du dossier mail + propositions
   numérotées au CEO sur Telegram ; validation par

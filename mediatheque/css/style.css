@@ -526,3 +526,105 @@ html[data-embed="1"] .modal {
   align-items: flex-start;
 }
 html[data-embed="1"] .modal-content { max-height: 640px; }
+
+/* ============== Modale contribution (esprit Datami) ==============
+   Bouton « Proposer un document » → formulaire → issue GitHub
+   pré-remplie → validation par l'équipe. Aucun backend : le site
+   reste 100 % statique (GitHub Pages). */
+.contribute-intro {
+  margin: 0 0 1.25rem;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+.form-row {
+  margin-bottom: 1rem;
+}
+.form-row label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.form-row input,
+.form-row textarea {
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+.form-row input:focus,
+.form-row textarea:focus,
+.form-row select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+  border-color: var(--accent);
+}
+.form-row input.invalid,
+.form-row textarea.invalid {
+  border-color: #dc2626;
+}
+.field-error {
+  margin: 0.3rem 0 0;
+  font-size: 0.8rem;
+  color: #dc2626;
+}
+.field-hint {
+  margin: 0.3rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.req {
+  color: #dc2626;
+}
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 500px) {
+  .form-row-2 {
+    grid-template-columns: 1fr;
+  }
+}
+.gotcha {
+  position: absolute !important;
+  left: -9999px !important;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+.contribute-privacy {
+  margin: 0.75rem 0 0;
+  padding: 0.6rem 0.75rem;
+  background: var(--bg-soft);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+.contribute-success {
+  margin-top: 0.5rem;
+}
+.contribute-success-title {
+  font-weight: 700;
+  color: #16a34a;
+  margin: 0 0 0.5rem;
+}
+.contribute-success p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+.contribute-link {
+  display: inline-block;
+  margin: 0.75rem 0;
+}
+.contribute-success-note {
+  color: var(--text-muted) !important;
+  font-size: 0.82rem !important;
+}

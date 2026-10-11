@@ -43,6 +43,7 @@ grilles-parlement-riviere-isere/
 │   ├── config.example.py   # template de credentials (config.py = .gitignore, JAMAIS commité)
 │   ├── deploy.sh           # 4 fetchs + commit + push (timer grilles-parlement-sync)
 │   ├── valider.py          # actualités : validation CEO par numéros
+│   ├── valider_contribution.py # médiathèque : validation des contributions GitHub (modération)
 │   └── lister.py           # actualités : affichage des propositions / actualités
 ├── README.md
 ├── .gitignore              # DOIT couvrir scripts/config.py (clé API — push = incident)
@@ -53,7 +54,10 @@ grilles-parlement-riviere-isere/
 
 **Médiathèque** (`/mediatheque/`) — collection du groupe Zotero
 Konsilion (6610185) en cartes type e-commerce : recherche floue,
-filtres type/année/tags, pagination, modale de détail.
+filtres type/année/tags, pagination, modale de détail. Bouton
+« Proposer un document » (esprit Datami) : modale de contribution
+→ issue GitHub pré-remplie (étiquette `contribution`) → validation
+équipe avant publication.
 
 **Actualités** (`/actualites/`) — grille des actualités du Parlement
 (événements à venir/passés, ressources, informations), filtres
@@ -220,6 +224,41 @@ bash scripts/deploy.sh
 ```
 
 GitHub Pages resert en 1-2 minutes.
+
+## Contribution documents (esprit Datami)
+
+Les visiteurs de la médiathèque peuvent proposer un document sans
+compte technique : bouton « Proposer un document » (sidebar) → modale
+de formulaire → un onglet GitHub s'ouvre avec une **issue pré-remplie**
+(étiquette `contribution`). Le visiteur n'a qu'à cliquer
+« Submit new issue » (compte GitHub gratuit requis — c'est lui qui
+garde la trace et notifie le contributeur de la suite).
+
+Aucun backend : le site reste 100 % statique, GitHub joue le rôle
+d'entrepôt de contributions, comme Datami le fait avec les
+pull-requests.
+
+### Modération (équipe)
+
+```bash
+# voir les propositions en attente (issues ouvertes « contribution »)
+python3 scripts/valider_contribution.py --liste
+
+# valider : crée la fiche Zotero (collection « Médiathèque »),
+# ferme l'issue avec un message de remerciement
+python3 scripts/valider_contribution.py <n° issue>
+
+# refuser : ferme l'issue avec motif, sans toucher Zotero
+python3 scripts/valider_contribution.py <n° issue> --refuser "hors sujet"
+```
+
+La publication sur la médiathèque suit le cycle normal : le prochain
+`deploy.sh` (timer horaire :07) fetch Zotero et régénère
+`collection.json`.
+
+Contrôles du script : doublon par titre exact, type fermé (14 types
+de la modale), champs titre + lien obligatoires, clé d'écriture
+Zotero du coffre `~/secrets/client/zotero.key`, GitHub via `gh`.
 
 ## Cron
 

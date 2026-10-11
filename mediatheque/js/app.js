@@ -34,9 +34,10 @@
     if (window.parent !== window) parent.postMessage(msg, "*");
   };
   const notifyHeight = () => {
-    // Modale ouverte → la hauteur du document varie (ancrage absolu) :
-    // ne pas notifier l'hôte, pour éviter un cercle de redimensionnements.
-    if (els.modal && els.modal.getAttribute("aria-hidden") === "false") return;
+    // Modale ouverte (détail OU contribution) → la hauteur du document varie
+    // (ancrage absolu) : ne pas notifier l'hôte, pour éviter un cercle de
+    // redimensionnements.
+    if (document.querySelector('.modal[aria-hidden="false"]')) return;
     notifyHost({ type: "zotero-vitrine:height", height: document.documentElement.scrollHeight });
   };
 
@@ -357,16 +358,16 @@
   // En mode intégré, l'iframe est haute comme son contenu : un placement
   // « fixed » centrerait la modale hors du champ visible. On l'ancre donc
   // sur la carte cliquée — visible par définition — et le voile couvre
-  // tout le document.
-  function positionEmbedModal(triggerEl) {
+  // tout le document. Généralisée aux DEUX modales (détail + contribution).
+  function positionEmbedModal(triggerEl, modal = els.modal, backdrop = els.modalBackdrop, content = els.modalContent) {
     const top = triggerEl
       ? Math.max(8, Math.round(triggerEl.getBoundingClientRect().top) - 16)
       : 16;
-    els.modal.style.top = top + "px";
-    els.modalBackdrop.style.top = -top + "px";
-    els.modalBackdrop.style.height = document.documentElement.scrollHeight + "px";
+    modal.style.top = top + "px";
+    backdrop.style.top = -top + "px";
+    backdrop.style.height = document.documentElement.scrollHeight + "px";
     requestAnimationFrame(() => {
-      els.modalContent.scrollIntoView({ block: "center", behavior: "smooth" });
+      content.scrollIntoView({ block: "center", behavior: "smooth" });
     });
   }
 
@@ -442,6 +443,181 @@
     }
   }
 
+  // ---------- Contribution (esprit Datami) ----------
+  // Parcours néophyte : modale → issue GitHub pré-remplie → validation
+  // équipe. Aucun backend, aucun compte requis pour REMPLIR le formulaire ;
+  // GitHub demandera juste une connexion pour POSTER l'issue (compte gratuit).
+  const CONTRIB_REPO_URL = "https://github.com/Konsilion/grilles-parlement-riviere-isere";
+  // Rappel de cohérence : l'URL du dépôt ci-dessus doit rester celle du site
+  // servi (github.io → dépôt Konsilion/grilles-parlement-riviere-isere).
+
+  const elsC = {
+    btn: document.getElementById("propose-btn"),
+    modal: document.getElementById("contribute-modal"),
+    form: document.getElementById("contribute-form"),
+    success: document.getElementById("contribute-success"),
+    link: document.getElementById("contribute-link"),
+    title: document.getElementById("c-title"),
+    authors: document.getElementById("c-authors"),
+    year: document.getElementById("c-year"),
+    type: document.getElementById("c-type"),
+    url: document.getElementById("c-url"),
+    abstract: document.getElementById("c-abstract"),
+    gotcha: document.getElementById("c-gotcha"),
+  };
+
+  // Message d'erreur sous un champ (un seul à la fois par champ).
+  function setFieldError(input, msg) {
+    if (!input) return;
+    let err = input.parentElement.querySelector(".field-error");
+    if (msg) {
+      input.classList.add("invalid");
+      if (!err) {
+        err = document.createElement("p");
+        err.className = "field-error";
+        input.parentElement.appendChild(err);
+      }
+      err.textContent = msg;
+    } else {
+      input.classList.remove("invalid");
+      if (err) err.remove();
+    }
+  }
+
+  function openContributeModal() {
+    // Sécurité : une seule modale à la fois (referme la modale détail).
+    if (els.modal.getAttribute("aria-hidden") === "false") closeModal();
+    // Réinitialisation : formulaire visible, confirmation masquée
+    elsC.form.hidden = false;
+    elsC.success.hidden = true;
+    elsC.form.reset();
+    [elsC.title, elsC.url, elsC.year].forEach((i) => setFieldError(i, null));
+    elsC.modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+    if (EMBED_MODE) positionEmbedModal(elsC.btn, elsC.modal, elsC.modal.querySelector(".modal-backdrop"), elsC.modal.querySelector(".modal-content"));
+    setTimeout(() => elsC.title.focus(), 50);
+  }
+
+  function closeContributeModal() {
+    elsC.modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+    if (EMBED_MODE) {
+      elsC.modal.style.top = "";
+      elsC.modal.querySelector(".modal-backdrop").style.top = "";
+      elsC.modal.querySelector(".modal-backdrop").style.height = "";
+    }
+  }
+
+  // Validation légère, messages en français simple.
+  function validateContribution() {
+    let ok = true;
+    const title = elsC.title.value.trim();
+    const url = elsC.url.value.trim();
+    const year = elsC.year.value.trim();
+
+    if (!title) {
+      setFieldError(elsC.title, "Le titre est nécessaire pour que l'équipe vérifie le document.");
+      ok = false;
+    } else if (title.length < 3) {
+      setFieldError(elsC.title, "Le titre paraît trop court — quelques mots suffisent.");
+      ok = false;
+    } else {
+      setFieldError(elsC.title, null);
+    }
+
+    let urlOk = false;
+    try {
+      const u = new URL(url);
+      urlOk = u.protocol === "http:" || u.protocol === "https:";
+    } catch { /* invalide */ }
+    if (!urlOk) {
+      setFieldError(elsC.url, "Collez une adresse web complète commençant par https:// (ou http://).");
+      ok = false;
+    } else {
+      setFieldError(elsC.url, null);
+    }
+
+    if (year && !/^\d{4}$/.test(year)) {
+      setFieldError(elsC.year, "L'année est un nombre à 4 chiffres (ex. 2024) — ou laissez vide.");
+      ok = false;
+    } else {
+      setFieldError(elsC.year, null);
+    }
+
+    return ok;
+  }
+
+  // Corps de l'issue : partie lisible (pour le néophyte et la modération
+  // humaine) + bloc technique délimité, parsé par scripts/valider_contribution.py.
+  function buildIssueBody(d) {
+    const typ = d.type || "Document";
+    const lines = [
+      "## Proposition de document",
+      "",
+      "Un·e visiteur de la médiathèque propose d'ajouter ce document à la bibliothèque.",
+      "",
+      "| Champ | Valeur |",
+      "| --- | --- |",
+      `| Titre | ${d.title} |`,
+    ];
+    if (d.authors) lines.push(`| Auteur·e·s / organisation | ${d.authors} |`);
+    lines.push(`| Type | ${typ} |`);
+    if (d.year) lines.push(`| Année | ${d.year} |`);
+    lines.push(`| Lien | ${d.url} |`);
+    if (d.abstract) lines.push(`| Résumé | ${d.abstract} |`);
+
+    // Données brutes pour la modération (la modale ne propose que des types
+    // connus du front ; le script de modération revalide et refuse l'inconnu).
+    const payload = {
+      title: d.title, authors: d.authors, type: typ, year: d.year,
+      url: d.url, abstract: d.abstract,
+    };
+    lines.push("", "```json-contribution", JSON.stringify(payload), "```", "");
+    lines.push("### Modération (équipe)", "",
+      "Une fois le document vérifié (lien accessible, pertinence, pas de doublon) :",
+      "",
+      "```bash",
+      "python3 scripts/valider_contribution.py --liste",
+      "python3 scripts/valider_contribution.py <n° de l'issue>",
+      "```",
+      "",
+      "La validation crée la fiche Zotero, ferme cette issue et le prochain",
+      "`deploy.sh` publie le document sur la médiathèque.");
+    return lines.join("\n");
+  }
+
+  function buildIssueUrl(d) {
+    const params = new URLSearchParams();
+    params.set("title", `Contribution : ${d.title}`);
+    params.set("body", buildIssueBody(d));
+    params.set("labels", "contribution");
+    return `${CONTRIB_REPO_URL}/issues/new?${params.toString()}`;
+  }
+
+  function submitContribution() {
+    // Piège à robots rempli → on fait semblant de réussir sans rien envoyer.
+    if (elsC.gotcha && elsC.gotcha.value) return showContributeSuccess();
+    if (!validateContribution()) return;
+
+    const d = {
+      title: elsC.title.value.trim(),
+      authors: elsC.authors.value.trim(),
+      year: elsC.year.value.trim(),
+      type: elsC.type.value,
+      url: elsC.url.value.trim(),
+      abstract: elsC.abstract.value.trim(),
+    };
+    const issueUrl = buildIssueUrl(d);
+    elsC.link.href = issueUrl;
+    showContributeSuccess();
+    window.open(issueUrl, "_blank", "noopener");
+  }
+
+  function showContributeSuccess() {
+    elsC.form.hidden = true;
+    elsC.success.hidden = false;
+  }
+
   // ---------- Listeners globaux ----------
   function attachListeners() {
     let searchTimer = null;
@@ -498,6 +674,27 @@
       const ok = await copyToClipboard(bib);
       els.modalCopied.textContent = ok ? "✓ Citation BibTeX copiée !" : "⚠️ Copie impossible — sélectionne manuellement.";
     });
+
+    // ----- Modale contribution -----
+    if (elsC.btn && elsC.modal) {
+      elsC.btn.addEventListener("click", openContributeModal);
+      elsC.modal.querySelectorAll("[data-cclose]").forEach((el) => {
+        el.addEventListener("click", closeContributeModal);
+      });
+      elsC.form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        submitContribution();
+      });
+      // Échap : referme la modale contribution (le handler global Échap
+      // ne connaît que la modale détail — priorité contribution ouverte).
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        if (elsC.modal.getAttribute("aria-hidden") === "false") {
+          if (els.yearMenu.classList.contains("open")) return; // menu Année prioritaire
+          closeContributeModal();
+        }
+      });
+    }
   }
 
   // ---------- Boot ----------

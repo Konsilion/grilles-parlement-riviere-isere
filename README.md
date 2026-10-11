@@ -1,6 +1,6 @@
 # Grilles de carte — Parlement de la rivière Isère
 
-Repo unique portant les **deux applications « Grilles de carte »** du
+Repo unique portant les **trois applications « Grilles de carte »** du
 Parlement de la rivière Isère (décision CEO 11/10/26) — sites statiques
 (HTML/CSS/JS vanilla), zéro build, zéro dépendance, servis par
 **GitHub Pages** depuis la branche `main` à la racine.
@@ -24,7 +24,11 @@ grilles-parlement-riviere-isere/
 │   └── data/actualites.json    # généré par scripts/fetch_actualites.py (K4)
 │       data/actualites.csv      # historique (migration Zotero en cours)
 │       data/pending_proposals.json
-├── common/                 # code mutualisé des deux apps (K5)
+├── contacts/               # répertoire de contacts (C3)
+│   ├── index.html, js/app.js, css/style.css
+│   └── data/contacts.json      # FIXTURE de dev — la donnée réelle sera
+│                               # générée par le deploy (C2) qui écrase ce fichier
+├── common/                 # code mutualisé des trois apps (K5)
 │   ├── css/base.css         # tokens, thème clair unique, pagination, dropdowns, pastilles
 │   └── js/                  # dom.js (esc/dates), search.js (fuzzy), pagination.js, dropdown.js
 ├── scripts/
@@ -38,7 +42,7 @@ grilles-parlement-riviere-isere/
 └── .nojekyll
 ```
 
-## Les deux applications
+## Les trois applications
 
 **Médiathèque** (`/mediatheque/`) — collection du groupe Zotero
 Konsilion (6610185) en cartes type e-commerce : recherche floue,
@@ -49,6 +53,15 @@ filtres type/année/tags, pagination, modale de détail.
 année/mois, recherche floue, pagination. Les données viennent de
 `data/actualites.json`, généré depuis la collection Zotero
 « Actualités » par `scripts/fetch_actualites.py`.
+
+**Contacts** (`/contacts/`) — répertoire public de cartes contact :
+pastille avatar (initiales), recherche floue (nom, organisation,
+description, rôle), filtre Catégories multi-choix, tri nom A-Z /
+contact le plus récent, pagination, modale détail (email `mailto:`,
+téléphone `tel:`, lien externe `_blank`). Les données viennent de
+`data/contacts.json` (contrat C2 : `id`, `nom`, `description`,
+`organisation`, `lieu`, `date_contact`, `lien`, `email`, `telephone`,
+`role`, `categories`, `date_ajout`).
 
 ## Mutualisation (K5)
 
@@ -87,6 +100,14 @@ champs) pour que le front fonctionne avant la bascule. En
 production, il est **régénéré** par `scripts/fetch_actualites.py`
 (K4) depuis la collection Zotero « Actualités » — le deploy
 écrase la fixture à chaque sync.
+
+### Fixture `contacts/data/contacts.json`
+
+Le fichier commis est une **fixture de développement** : 3
+exemples aux noms évidemment fictifs (« Exemple Un »…) pour que
+l'app ne casse pas en dev. En production, il sera **régénéré par
+le deploy (C2)** — la donnée réelle (renseignée par le CEO)
+écrase cette fixture.
 
 ## Déploiement
 

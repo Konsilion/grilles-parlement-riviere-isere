@@ -1,0 +1,44 @@
+[
+  {
+    "id": "C0001",
+    "nom": "Exemple Un",
+    "description": "Contact fictif de développement : représentant d'une collectivité partenaire du Parlement de la rivière Isère.",
+    "organisation": "Mairie Exemple",
+    "lieu": "Grenoble",
+    "date_contact": "2026-09-15",
+    "lien": "https://www.exemple.fr",
+    "email": "exemple.un@mairie-exemple.fr",
+    "telephone": "04 76 00 00 01",
+    "role": "Responsable eau et milieux aquatiques",
+    "categories": ["Collectivité", "Eau"],
+    "date_ajout": "2026-10-01"
+  },
+  {
+    "id": "C0002",
+    "nom": "Exemple Deux",
+    "description": "Contact fictif de développement : chercheuse en hydrologie, consultée sur les suivis de la Romanche.",
+    "organisation": "Laboratoire Exemple",
+    "lieu": "Saint-Martin-d'Hères",
+    "date_contact": "2026-10-02",
+    "lien": "",
+    "email": "exemple.deux@labo-exemple.fr",
+    "telephone": "",
+    "role": "Chercheuse en hydrologie",
+    "categories": ["Recherche"],
+    "date_ajout": "2026-10-02"
+  },
+  {
+    "id": "C0003",
+    "nom": "Exemple Trois",
+    "description": "Contact fictif de développement : animatrice d'une association locale de défense des rivières.",
+    "organisation": "Association Exemple",
+    "lieu": "Vizille",
+    "date_contact": "",
+    "lien": "https://www.association-exemple.fr",
+    "email": "",
+    "telephone": "04 76 00 00 03",
+    "role": "Animatrice de réseau",
+    "categories": ["Association", "Eau"],
+    "date_ajout": "2026-10-03"
+  }
+]

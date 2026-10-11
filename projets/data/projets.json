@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "id": "P0001",
+    "titre": "Déclaration des droits de la rivière Isère",
+    "description": "Texte fondateur rédigé par la commission juridique du Parlement de la rivière Isère. Il formalise la reconnaissance de la rivière comme sujet de droit et sert de support de mobilisation pour la suite de la démarche.\n\nLe chantier a été lancé dès la première session du Parlement (28 septembre 2024), qui a posé le socle politique et juridique de la démarche. La Déclaration a été présentée et lue officiellement lors de la deuxième session, le 22 mars 2025 à Grenoble, dans le cadre de la Journée mondiale de l'eau.",
+    "porteur": "Commission juridique du Parlement de la rivière Isère",
+    "lieu": "Grenoble",
+    "date_debut": "2024-09-28",
+    "date_fin": "2025-03-22",
+    "lien": "https://parlement-isere.org/pages/sessions/deuxieme_session/",
+    "statut": "Terminé",
+    "categories": [
+      "commission juridique",
+      "droits de la nature"
+    ],
+    "date_ajout": "2026-10-11"
+  },
+  {
+    "id": "P0002",
+    "titre": "Observatoire de l'eau",
+    "description": "Chantier porté par la commission scientifique du Parlement de la rivière Isère : constituer un observatoire de l'eau neutre et indépendant, qui agrège les données dispersées sur l'Isère et ses affluents.\n\nSes objectifs affichés : rassembler les données scientifiques disponibles en une ressource centralisée et accessible, les vulgariser (glossaires, cartes d'identité de la rivière), et encourager la participation citoyenne à la collecte et à la validation des informations.\n\nLe chantier a été présenté comme travaux en cours lors de la deuxième session du Parlement, le 22 mars 2025.",
+    "porteur": "Commission scientifique du Parlement de la rivière Isère",
+    "lieu": "Bassin de l'Isère",
+    "date_debut": "2025-03-22",
+    "date_fin": "",
+    "lien": "https://parlement-isere.org/pages/commissions/scientifique/",
+    "statut": "En cours",
+    "categories": [
+      "commission scientifique",
+      "données"
+    ],
+    "date_ajout": "2026-10-11"
+  },
+  {
+    "id": "P0003",
+    "titre": "Gardiennes et Gardiens de la rivière",
+    "description": "Dispositif lancé lors de la deuxième session du Parlement de la rivière Isère, le 22 mars 2025 : des personnes s'engagent à agir pour protéger la rivière et l'eau.\n\nInspiré de la Charte de l'environnement, les Gardiennes et Gardiens peuvent alerter les pouvoirs publics (DREAL, ARS) en cas d'atteinte à l'intégrité des eaux et saisir la justice si nécessaire. Elles et ils rejoignent le Parlement comme membres à part entière.\n\nL'engagement se fait par courriel auprès du Parlement (parlement-isere@gresille.org, adresse publique sur le site du Parlement).",
+    "porteur": "Parlement de la rivière Isère",
+    "lieu": "Bassin de l'Isère",
+    "date_debut": "2025-03-22",
+    "date_fin": "",
+    "lien": "https://parlement-isere.org/pages/sessions/deuxieme_session/",
+    "statut": "En cours",
+    "categories": [
+      "citoyen",
+      "garde de la rivière"
+    ],
+    "date_ajout": "2026-10-11"
+  }
+]

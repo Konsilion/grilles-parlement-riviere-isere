@@ -400,6 +400,122 @@ function attachListeners() {
   }
 }
 
+/* ---------- Contribution (esprit Datami) ----------
+   Calque médiathèque, socle commun common/js/contribution.js :
+   envoi silencieux au relais VPS → issue GitHub étiquetée
+   « contribution » ; repli manuel si le relais échoue. Les champs
+   (titre, type fermé, dates, lieu, lien, résumé) suivent le contrat
+   de scripts/fetch_actualites.py / valider_contribution.py
+   (labels extra ANGLAIS sans accents). */
+(function initContribution() {
+  const GC = window.GrilleContribution;
+  if (!GC) return;
+
+  const f = {
+    titre: () => document.getElementById("c-titre"),
+    type: () => document.getElementById("c-type"),
+    date: () => document.getElementById("c-date"),
+    dateFin: () => document.getElementById("c-date-fin"),
+    lieu: () => document.getElementById("c-lieu"),
+    url: () => document.getElementById("c-url"),
+    description: () => document.getElementById("c-description"),
+  };
+
+  const TYPE_LABELS = {
+    evenement_a_venir: "Evenement a venir",
+    ressource_publiee: "Ressource publiee",
+    evenement_passe: "Evenement passe",
+    information_parlement: "Information parlement",
+  };
+
+  function validate() {
+    let ok = true;
+    const titre = f.titre().value.trim();
+    const url = f.url().value.trim();
+    const date = f.date().value.trim();
+
+    if (!titre) {
+      GC.setFieldError(f.titre(), "Le titre est nécessaire pour que l'équipe vérifie l'actualité.");
+      ok = false;
+    } else if (titre.length < 3) {
+      GC.setFieldError(f.titre(), "Le titre paraît trop court — quelques mots suffisent.");
+      ok = false;
+    } else {
+      GC.setFieldError(f.titre(), null);
+    }
+
+    let urlOk = false;
+    try {
+      const u = new URL(url);
+      urlOk = u.protocol === "http:" || u.protocol === "https:";
+    } catch { /* invalide */ }
+    if (!urlOk) {
+      GC.setFieldError(f.url(), "Collez une adresse web complète commençant par https:// (ou http://).");
+      ok = false;
+    } else {
+      GC.setFieldError(f.url(), null);
+    }
+
+    if (!date) {
+      GC.setFieldError(f.date(), "La date est nécessaire (jour de début de l'actualité).");
+      ok = false;
+    } else {
+      GC.setFieldError(f.date(), null);
+    }
+
+    const df = f.dateFin().value.trim();
+    if (df && date && df < date) {
+      GC.setFieldError(f.dateFin(), "La date de fin doit suivre la date de début.");
+      ok = false;
+    } else {
+      GC.setFieldError(f.dateFin(), null);
+    }
+
+    return ok;
+  }
+
+  GC.init({
+    app: "actualites",
+    firstFieldId: "c-titre",
+    titleOf: (d) => d.titre,
+    collect: () => ({
+      titre: f.titre().value.trim(),
+      type: f.type().value,
+      date: f.date().value.trim(),
+      date_fin: f.dateFin().value.trim(),
+      lieu: f.lieu().value.trim(),
+      lien: f.url().value.trim(),
+      description: f.description().value.trim(),
+    }),
+    validate,
+    payload: (d) => ({
+      titre: d.titre,
+      type: d.type,
+      date_debut: d.date,
+      date_fin: d.date_fin,
+      lieu: d.lieu,
+      lien: d.lien,
+      description: d.description,
+    }),
+    table: (d) => [
+      ["Titre", d.titre],
+      ["Type", TYPE_LABELS[d.type] || d.type],
+      ["Date", d.date + (d.date_fin ? ` → ${d.date_fin}` : "")],
+      ["Lieu", d.lieu || "—"],
+      ["Lien", d.lien],
+      ["Résumé", d.description || "—"],
+    ],
+    issueTexts: {
+      heading: "Proposition d'actualité",
+      intro:
+        "Un·e visiteur de la grille Actualités propose d'ajouter cette actualité.",
+      closing:
+        "La validation crée l'item Zotero (collection « Actualités », citationKey A000N), " +
+        "ferme cette issue et le prochain `deploy.sh` publie l'actualité.",
+    },
+  });
+})();
+
 /* ---------- Boot ---------- */
 grabEls();
 const yearDD = makeDropdown({

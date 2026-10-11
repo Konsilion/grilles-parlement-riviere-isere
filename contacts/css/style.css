@@ -295,6 +295,60 @@
 /* Body scroll lock quand modale ouverte (calque médiathèque) */
 body.modal-open { overflow: hidden; }
 
+/* ============== Bouton contribution (toolbar) ==============
+   Calque médiathèque : .btn/.btn-primary (calque projets), le
+   formulaire et la modale viennent du socle commun
+   contribution.css + des .modal/.modal-title existants. */
+.propose-btn {
+  white-space: nowrap;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #ffffff;
+}
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.btn[disabled] {
+  background: var(--border);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+
 /* ============== Mode intégré (?mode=integre) =============
    Calque médiathèque : aucune iframe prévue aujourd'hui, le
    mode est hérité pour l'avenir — l'app adaptée sans bandeau

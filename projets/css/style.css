@@ -262,6 +262,42 @@
 /* Body scroll lock quand modale ouverte (calque médiathèque) */
 body.modal-open { overflow: hidden; }
 
+/* ============== Bouton contribution (toolbar) ==============
+   Calque médiathèque : .btn/.btn-primary existent déjà (modale
+   détail), le formulaire et la modale viennent du socle commun
+   contribution.css + des .modal/.modal-title existants. */
+.propose-btn {
+  white-space: nowrap;
+}
+/* Rangée 3 colonnes du formulaire projet (début/fin/statut) —
+   variante de .form-row-2 du socle contribution.css. */
+.form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 600px) {
+  .form-row-3 {
+    grid-template-columns: 1fr;
+  }
+}
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn[disabled] {
+  background: var(--border);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+
 /* ============== Mode intégré (?mode=integre) ============= */
 html[data-embed="1"] { --bg: transparent; }
 html[data-embed="1"] body { background: transparent; }

@@ -369,6 +369,114 @@ function attachListeners() {
   });
 }
 
+/* ---------- Contribution (esprit Datami) ----------
+   Calque médiathèque, socle commun common/js/contribution.js :
+   envoi silencieux au relais VPS → issue GitHub étiquetée
+   « contribution » ; repli manuel si le relais échoue. Les champs
+   suivent le mapping C2 de scripts/fetch_contacts.py /
+   valider_contribution.py (labels extra ANGLAIS sans accents :
+   Email:/Telephone:/Role:). */
+(function initContribution() {
+  const GC = window.GrilleContribution;
+  if (!GC) return;
+
+  const f = {
+    nom: () => document.getElementById("c-nom"),
+    organisation: () => document.getElementById("c-organisation"),
+    lieu: () => document.getElementById("c-lieu"),
+    email: () => document.getElementById("c-email"),
+    telephone: () => document.getElementById("c-telephone"),
+    role: () => document.getElementById("c-role"),
+    description: () => document.getElementById("c-description"),
+    url: () => document.getElementById("c-url"),
+  };
+
+  function closeDetailModal() {
+    if (els.modal && els.modal.getAttribute("aria-hidden") === "false") {
+      closeModal();
+    }
+  }
+
+  function validate() {
+    let ok = true;
+    const nom = f.nom().value.trim();
+    const email = f.email().value.trim();
+
+    if (!nom) {
+      GC.setFieldError(f.nom(), "Le nom est nécessaire pour que l'équipe vérifie le contact.");
+      ok = false;
+    } else if (nom.length < 3) {
+      GC.setFieldError(f.nom(), "Le nom paraît trop court — prénom et nom suffisent.");
+      ok = false;
+    } else {
+      GC.setFieldError(f.nom(), null);
+    }
+
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      GC.setFieldError(f.email(), "Cette adresse e-mail ne semble pas valide.");
+      ok = false;
+    } else {
+      GC.setFieldError(f.email(), null);
+    }
+
+    const url = f.url().value.trim();
+    if (url) {
+      let urlOk = false;
+      try {
+        const u = new URL(url);
+        urlOk = u.protocol === "http:" || u.protocol === "https:";
+      } catch { /* invalide */ }
+      if (!urlOk) {
+        GC.setFieldError(f.url(), "Collez une adresse web complète commençant par https:// (ou http://).");
+        ok = false;
+      } else {
+        GC.setFieldError(f.url(), null);
+      }
+    }
+
+    return ok;
+  }
+
+  GC.init({
+    app: "contacts",
+    firstFieldId: "c-nom",
+    onOpen: closeDetailModal,
+    titleOf: (d) => d.nom,
+    collect: () => ({
+      nom: f.nom().value.trim(),
+      organisation: f.organisation().value.trim(),
+      lieu: f.lieu().value.trim(),
+      email: f.email().value.trim(),
+      telephone: f.telephone().value.trim(),
+      role: f.role().value.trim(),
+      description: f.description().value.trim(),
+      url: f.url().value.trim(),
+    }),
+    validate,
+    payload: (d) => d,
+    table: (d) => [
+      ["Nom", d.nom],
+      ["Organisation", d.organisation || "—"],
+      ["Lieu", d.lieu || "—"],
+      ["E-mail", d.email || "—"],
+      ["Téléphone", d.telephone || "—"],
+      ["Rôle", d.role || "—"],
+      ["Description", d.description || "—"],
+      ["Lien", d.url || "—"],
+    ],
+    issueTexts: {
+      heading: "Proposition de contact",
+      intro:
+        "Un·e visiteur du répertoire Contacts propose d'ajouter ce contact. " +
+        "⚠ Coordonnées personnelles : vérifier le consentement avant validation.",
+      closing:
+        "La validation crée l'item Zotero (collection « Contacts », mapping C2 : " +
+        "extra Email:/Telephone:/Role:, citationKey C000N), ferme cette issue et le prochain " +
+        "`deploy.sh` publie le contact.",
+    },
+  });
+})();
+
 /* ---------- Boot ---------- */
 grabEls();
 const catDD = makeDropdown({

@@ -5,6 +5,8 @@
 ZOTERO_USER_ID = ""           # ton user ID numérique (zotero.org/settings)
 ZOTERO_API_KEY = ""           # une API key avec accès lecture
 ZOTERO_COLLECTION_ID = ""     # l'ID de la collection à afficher (chiffre)
-# Clé de la collection « Actualités » à EXCLURE du fetch médiathèque
-# (filtre anti-actualités K1b). Valeur attendue : U4HFDR68.
-ZOTERO_EXCLUDE_COLLECTION = ""
+# Clés des collections à EXCLURE du fetch médiathèque (filtre anti-fuite).
+# Valeurs attendues : ["U4HFDR68", "JI7JP8AZ"] (Actualités, Contacts).
+# L'ancienne forme scalaire ZOTERO_EXCLUDE_COLLECTION reste acceptée
+# pendant la transition ; la liste est la forme de référence.
+ZOTERO_EXCLUDE_COLLECTIONS = []

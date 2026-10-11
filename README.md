@@ -228,15 +228,28 @@ GitHub Pages resert en 1-2 minutes.
 ## Contribution documents (esprit Datami)
 
 Les visiteurs de la médiathèque peuvent proposer un document sans
-compte technique : bouton « Proposer un document » (sidebar) → modale
-de formulaire → un onglet GitHub s'ouvre avec une **issue pré-remplie**
-(étiquette `contribution`). Le visiteur n'a qu'à cliquer
-« Submit new issue » (compte GitHub gratuit requis — c'est lui qui
-garde la trace et notifie le contributeur de la suite).
+compte et **sans quitter le site** : bouton « Proposer un document »
+(sidebar) → modale de formulaire → **envoi silencieux**. Un relais sur
+le VPS (robot GitHub `nbrem`, jeton `public_repo` au coffre
+`~/secrets/host/github-robot.token`) crée l'issue étiquetée
+`contribution` à la place du visiteur — GitHub n'apparaît nulle part.
 
-Aucun backend : le site reste 100 % statique, GitHub joue le rôle
-d'entrepôt de contributions, comme Datami le fait avec les
-pull-requests.
+Si le relais est indisponible, repli automatique sur le parcours
+GitHub manuel (issue pré-remplie, bouton « Submit new issue ») :
+aucune proposition n'est perdue.
+
+### Le relais (infrastructure VPS)
+
+- Service systemd user `parlement-contribution` →
+  `~/parlement-contribution/server.py` (stdlib seule, port 9135,
+  invisible d'Internet : ufw n'autorise que le réseau caddy-net).
+- Route publique : `https://hermes.konsilion.fr/api/contribution`
+  (bloc `handle` du site dans `~/caddy/etc/Caddyfile`).
+- Durcissement : CORS limité à `konsilion.github.io`, corps ≤ 8 Ko,
+  types fermés revalidés, rate-limit 5 requêtes/h/IP, champ
+  anti-robots, log sans contenu (date/IP/statut seulement).
+- Statut : `systemctl --user status parlement-contribution` ;
+  journal : `journalctl --user -u parlement-contribution`.
 
 ### Modération (équipe)
 

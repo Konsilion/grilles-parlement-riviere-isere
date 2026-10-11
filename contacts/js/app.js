@@ -180,7 +180,9 @@ function renderGrid() {
   if (!els.grid) return;
   els.grid.innerHTML = "";
 
-  const items = getFilteredItems();
+  // Tri appliqué à CHAQUE rendu (copie triée, pas de mutation) :
+  // changer le select de tri sans recharger la page doit réordonner.
+  const items = sortItems(getFilteredItems());
   const { totalPages, pageRows } = paginateItems(state, items);
   renderPagination(state, totalPages, [els.pagination, els.paginationTop], () => {
     renderGrid();

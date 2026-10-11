@@ -297,5 +297,10 @@ body.modal-open { overflow: hidden; }
 
 /* ============== Mode intégré (?mode=integre) =============
    Calque médiathèque : aucune iframe prévue aujourd'hui, le
-   mode est hérité pour l'avenir — l'app adaptée sans bandeau. */
+   mode est hérité pour l'avenir — l'app adaptée sans bandeau
+   (fond transparent : la page hôte fournit le sien ; l'hôte
+   impose le thème clair, seul un fond opaque créerait une
+   bande blanche). */
+html[data-embed="1"] { --bg: transparent; }
+html[data-embed="1"] body { background: transparent; }
 html[data-embed="1"] .layout { padding: 1rem 1.25rem 2.5rem; }

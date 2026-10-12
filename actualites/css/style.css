@@ -64,21 +64,56 @@
   gap: 0.5rem;
 }
 
-/* ============== Pastilles de filtre : une ligne chacune ==============
-   CEO 12/10/26 soir : les pastilles des filtres Année, Mois et Type
-   ne partagent PLUS la ligne des filtres — chacune a SA ligne propre
-   sous la barre recherche/dropdowns. flex-basis:100% force le
-   retour à la ligne dans la toolbar flex-wrap ; masquées vides par
-   le socle commun (.filter-pills:empty → display:none), donc la
-   ligne n'existe QUE quand des pastilles sont sélectionnées. */
-#year-pills,
-#month-pills,
-#type-pills {
+/* ============== Pastilles de filtre : UNE ligne commune ============== */
+/* CEO 12/10/26 soir : les pastilles Année/Mois/Type partagent UNE
+   seule ligne sous la barre des filtres. #pills-row est une ligne
+   pleine largeur (flex-basis:100%) ; le JS la masque quand aucun
+   filtre n'est actif (l'attribut hidden est écrasé par display:flex,
+   d'où la règle [hidden] explicite). */
+.pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
   flex-basis: 100%;
 }
+.pills-row[hidden] {
+  display: none;
+}
+/* Chaque groupe (Année/Mois/Type) expose ses enfants DIRECTS sur
+   la ligne commune — libellé et pastilles de tous les groupes
+   s'alignent sur la même ligne. */
+#pills-row .filter-pills {
+  display: contents;
+}
 
-/* Libellé « Mois : » / « Type : » devant les pastilles (rendu par
-   le JS uniquement quand il y a une sélection). */
+/* ============== Bouton « Réinitialiser » (CEO 12/10/26 soir) ==============
+   Bouton léger à droite des filtres : contour discret, pas de
+   fond plein (différent du .btn-primary), tokens du socle,
+   thème clair unique. */
+.btn-reset {
+  padding: 0.35rem 0.8rem;
+  font-size: 0.85rem;
+  font-family: inherit;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-reset:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--bg-soft);
+}
+.btn-reset:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Libellé « Année : » / « Mois : » / « Type : » devant les pastilles
+   (rendu par le JS uniquement quand il y a une sélection). */
 .pills-label {
   color: var(--text-muted);
   font-size: 0.85rem;

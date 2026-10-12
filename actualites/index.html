@@ -98,12 +98,21 @@
                 aria-multiselectable="true"
               ></div>
             </div>
+            <!-- Bouton léger « Réinitialiser » à droite des filtres
+                 (CEO 12/10/26 soir) : décoche Année/Mois/Type et vide
+                 la recherche. -->
+            <button type="button" id="reset-btn" class="btn-reset">
+              Réinitialiser
+            </button>
           </div>
-          <!-- Pastilles des filtres cochés : une ligne chacune, dans
-               l'ordre des filtres (Année, Mois, Type) — CEO 12/10/26. -->
-          <div id="year-pills" class="filter-pills" aria-label="Années sélectionnées"></div>
-          <div id="month-pills" class="filter-pills" aria-label="Mois sélectionnés"></div>
-          <div id="type-pills" class="filter-pills" aria-label="Types sélectionnés"></div>
+          <!-- Pastilles des filtres cochés : UNE seule ligne commune
+               (Année, Mois, Type — CEO 12/10/26 soir), sous la barre
+               des filtres ; masquée tant qu'aucun filtre n'est actif. -->
+          <div id="pills-row" class="pills-row">
+            <div id="year-pills" class="filter-pills" aria-label="Années sélectionnées"></div>
+            <div id="month-pills" class="filter-pills" aria-label="Mois sélectionnés"></div>
+            <div id="type-pills" class="filter-pills" aria-label="Types sélectionnés"></div>
+          </div>
         </div>
       </div>
       <div id="grid" class="grid">

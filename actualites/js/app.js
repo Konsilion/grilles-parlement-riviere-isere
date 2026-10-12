@@ -69,6 +69,8 @@ const els = {
   monthPill: null,
   monthMenu: null,
   monthPills: null,
+  pillsRow: null,
+  resetBtn: null,
   typeDropdown: null,
   typeToggle: null,
   typePill: null,
@@ -92,6 +94,8 @@ function grabEls() {
   els.monthPill = document.getElementById("month-pill");
   els.monthMenu = document.getElementById("month-menu");
   els.monthPills = document.getElementById("month-pills");
+  els.pillsRow = document.getElementById("pills-row");
+  els.resetBtn = document.getElementById("reset-btn");
   els.typeDropdown = document.getElementById("type-dropdown");
   els.typeToggle = document.getElementById("type-toggle");
   els.typePill = document.getElementById("type-pill");
@@ -520,6 +524,20 @@ function renderTypePills() {
   }
 }
 
+/* ---------- Ligne commune des pastilles (CEO 12/10/26 soir) ----------
+   Les pastilles Année/Mois/Type partagent UNE ligne (#pills-row).
+   Elle n'existe que si au moins un filtre est actif — le socle ne
+   masque plus les groupes (display:contents les expose tous), c'est
+   ce contrôle qui tient la visibilité de la ligne entière. */
+function syncPillsRow() {
+  if (!els.pillsRow) return;
+  const active =
+    state.selectedYears.size > 0 ||
+    state.selectedMonths.size > 0 ||
+    state.selectedTypes.size > 0;
+  els.pillsRow.hidden = !active;
+}
+
 /* ---------- Rendu de la page courante ---------- */
 function renderGrid() {
   if (!els.grid) return;
@@ -527,6 +545,7 @@ function renderGrid() {
   renderYearPills();
   renderMonthPills();
   renderTypePills();
+  syncPillsRow();
 
   const items = getFilteredItems();
   const { totalPages, pageRows } = paginateItems(state, items);
@@ -606,6 +625,24 @@ function attachListeners() {
   });
 
   // Filtre « Afficher » retiré (CEO 12/10/26 soir) : pageSize fixe 12.
+
+  // « Réinitialiser » (CEO 12/10/26 soir) : décoche Année/Mois/Type,
+  // vide la recherche, retour page 1. Même chemin qu'un changement
+  // de filtre : les trois dropdowns resynchronisent leur UI.
+  if (els.resetBtn) {
+    els.resetBtn.addEventListener("click", () => {
+      state.selectedYears.clear();
+      state.selectedMonths.clear();
+      state.selectedTypes.clear();
+      state.searchText = "";
+      if (els.search) els.search.value = "";
+      state.currentPage = 0; // retour page 1
+      yearDD.syncUI();
+      monthDD.syncUI();
+      typeDD.syncUI();
+      renderGrid();
+    });
+  }
 }
 
 /* ---------- Contribution (esprit Datami) ----------

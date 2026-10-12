@@ -135,53 +135,91 @@
         publication.
       </p>
 
-      <form id="contribute-form" novalidate>
-        <div class="form-row">
-          <label for="c-titre">Titre de l'actualité <span class="req">*</span></label>
-          <input type="text" id="c-titre" name="titre" required maxlength="300" autocomplete="off"
-                 placeholder="Ex. : Conférence sur la restauration des rivières" />
+      <!-- Étape 1 : choix du type d'actualité (CEO 12/10/26). Les 4 types
+           fermés du contrat ; le formulaire affiché ensuite dépend du type
+           (média = formulaire Médiathèque, outil = formulaire Outilthèque,
+           événement/information = formulaire propre à Actualités). -->
+      <div id="c-type-step">
+        <p class="c-step-label">Quel type d'actualité proposez-vous&nbsp;?</p>
+        <div class="c-type-grid" id="c-type-choices" role="list">
+          <button type="button" class="c-type-choice" data-actutype="evenement" role="listitem">
+            <span class="c-type-dot type-evenement"></span>
+            <span class="c-type-name">Événement</span>
+            <span class="c-type-desc">Conférence, séminaire, webinaire, rencontre…</span>
+          </button>
+          <button type="button" class="c-type-choice" data-actutype="media_publie" role="listitem">
+            <span class="c-type-dot type-media-publie"></span>
+            <span class="c-type-name">Média publié</span>
+            <span class="c-type-desc">Article, rapport, document… déjà publié</span>
+          </button>
+          <button type="button" class="c-type-choice" data-actutype="outil_publie" role="listitem">
+            <span class="c-type-dot type-outil-publie"></span>
+            <span class="c-type-name">Outil publié</span>
+            <span class="c-type-desc">Jeu, matériel, support… mis à disposition</span>
+          </button>
+          <button type="button" class="c-type-choice" data-actutype="information" role="listitem">
+            <span class="c-type-dot type-information"></span>
+            <span class="c-type-name">Information</span>
+            <span class="c-type-desc">Actualité, annonce, restriction…</span>
+          </button>
         </div>
+      </div>
 
-        <div class="form-row">
-          <label for="c-type">Type d'actualité <span class="req">*</span></label>
-          <select id="c-type" name="type">
-            <option value="evenement">Événement</option>
-            <option value="media_publie">Média publié</option>
-            <option value="outil_publie">Outil publié</option>
-            <option value="information">Information</option>
-          </select>
-        </div>
+      <!-- Étape 2 : formulaire selon le type. Un seul bloc visible à la
+           fois (JS). Les formulaires média/outil sont les calques des
+           apps d'origine (common/js/contribution-forms.js). -->
+      <form id="contribute-form" novalidate hidden>
+        <p class="c-step-back">
+          <button type="button" id="c-back-btn" class="c-back-btn">← Changer de type</button>
+        </p>
+        <p id="c-type-badge" class="c-type-badge"><span class="c-type-dot type-evenement"></span><span>Événement</span></p>
 
-        <div class="form-row form-row-2">
-          <div>
-            <label for="c-date">Date <span class="req">*</span></label>
-            <input type="date" id="c-date" name="date" required />
-            <p class="field-hint">Pour une période, remplissez aussi la date de fin.</p>
+        <div id="c-form-actu" class="c-form-variant">
+          <div class="form-row">
+            <label for="c-titre">Titre de l'actualité <span class="req">*</span></label>
+            <input type="text" id="c-titre" name="titre" required maxlength="300" autocomplete="off"
+                   placeholder="Ex. : Conférence sur la restauration des rivières" />
           </div>
-          <div>
-            <label for="c-date-fin">Date de fin (facultatif)</label>
-            <input type="date" id="c-date-fin" name="date_fin" />
+
+          <div class="form-row form-row-2">
+            <div>
+              <label for="c-date">Date <span class="req">*</span></label>
+              <input type="date" id="c-date" name="date" required />
+              <p class="field-hint">Pour une période, remplissez aussi la date de fin.</p>
+            </div>
+            <div>
+              <label for="c-date-fin">Date de fin (facultatif)</label>
+              <input type="date" id="c-date-fin" name="date_fin" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label for="c-a-lieu">Lieu (facultatif)</label>
+            <input type="text" id="c-a-lieu" name="lieu" maxlength="300" autocomplete="off"
+                   placeholder="Ex. : Grenoble" />
+          </div>
+
+          <div class="form-row">
+            <label for="c-a-url">Lien <span class="req">*</span></label>
+            <input type="url" id="c-a-url" name="url" required maxlength="2000" autocomplete="off"
+                   placeholder="https://…" />
+            <p class="field-hint">Collez l'adresse web (https://…) de l'événement ou de la ressource.</p>
+          </div>
+
+          <div class="form-row">
+            <label for="c-a-description">Résumé (facultatif)</label>
+            <textarea id="c-a-description" name="description" rows="4" maxlength="3000"
+                      placeholder="En une ou deux phrases : de quoi s'agit-il ?"></textarea>
           </div>
         </div>
 
-        <div class="form-row">
-          <label for="c-lieu">Lieu (facultatif)</label>
-          <input type="text" id="c-lieu" name="lieu" maxlength="300" autocomplete="off"
-                 placeholder="Ex. : Grenoble" />
-        </div>
+        <!-- Média publié : calque du formulaire Médiathèque, injecté par
+             common/js/contribution-forms.js (GrilleForms.media.html()). -->
+        <div id="c-form-media" class="c-form-variant" hidden></div>
 
-        <div class="form-row">
-          <label for="c-url">Lien <span class="req">*</span></label>
-          <input type="url" id="c-url" name="url" required maxlength="2000" autocomplete="off"
-                 placeholder="https://…" />
-          <p class="field-hint">Collez l'adresse web (https://…) de l'événement ou de la ressource.</p>
-        </div>
-
-        <div class="form-row">
-          <label for="c-description">Résumé (facultatif)</label>
-          <textarea id="c-description" name="description" rows="4" maxlength="3000"
-                    placeholder="En une ou deux phrases : de quoi s'agit-il ?"></textarea>
-        </div>
+        <!-- Outil publié : calque du formulaire Outilthèque, injecté par
+             common/js/contribution-forms.js (GrilleForms.outil.html()). -->
+        <div id="c-form-outil" class="c-form-variant" hidden></div>
 
         <p class="contribute-privacy">
           En envoyant, vous acceptez que ces informations soient publiées sur
@@ -236,6 +274,7 @@
   <script src="../common/js/pagination.js"></script>
   <script src="../common/js/dropdown.js"></script>
   <script src="../common/js/contribution.js"></script>
+  <script src="../common/js/contribution-forms.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

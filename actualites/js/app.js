@@ -648,48 +648,145 @@ function attachListeners() {
 }
 
 /* ---------- Contribution (esprit Datami) ----------
-   Calque médiathèque, socle commun common/js/contribution.js :
-   envoi silencieux au relais VPS → issue GitHub étiquetée
-   « contribution » ; repli manuel si le relais échoue. Les champs
-   (titre, type fermé, dates, lieu, lien, résumé) suivent le contrat
-   de scripts/fetch_actualites.py / valider_contribution.py
-   (labels extra ANGLAIS sans accents). */
+   Modale en 2 étapes (CEO 12/10/26) :
+   1) choix du type d'actualité (evenement / media_publie /
+      outil_publie / information) ;
+   2) formulaire selon le type — événement et information partagent le
+      formulaire propre à Actualités (dates, lieu, lien, résumé) ;
+      média publié et outil publié affichent les calques des
+      formulaires Médiathèque / Outilthèque (common/js/
+      contribution-forms.js — une seule forme dans le DOM à la fois,
+      aucune collision d'ids).
+
+   Derrière, le socle commun contribution.js (envoi silencieux au
+   relais VPS → issue GitHub, repli manuel). Le type choisi part dans
+   le payload (« type ») : c'est LUI qui décide de la forme des champs
+   attendus par le relais (contrat 3 formes) et du traitement Zotero à
+   la validation (item unique membre des collections Actualités +
+   Médiathèque/Outilthèque — décision CEO 12/10/26 « un seul et même
+   enregistrement »). */
 (function initContribution() {
   const GC = window.GrilleContribution;
-  if (!GC) return;
+  const GF = window.GrilleForms;
+  if (!GC || !GF) return;
 
-  const f = {
-    titre: () => document.getElementById("c-titre"),
-    type: () => document.getElementById("c-type"),
-    date: () => document.getElementById("c-date"),
-    dateFin: () => document.getElementById("c-date-fin"),
-    lieu: () => document.getElementById("c-lieu"),
-    url: () => document.getElementById("c-url"),
-    description: () => document.getElementById("c-description"),
+  const els2 = {
+    step: () => document.getElementById("c-type-step"),
+    form: () => document.getElementById("contribute-form"),
+    back: () => document.getElementById("c-back-btn"),
+    badge: () => document.getElementById("c-type-badge"),
+    actu: () => document.getElementById("c-form-actu"),
+    media: () => document.getElementById("c-form-media"),
+    outil: () => document.getElementById("c-form-outil"),
+    choices: () => document.querySelectorAll("#c-type-choices .c-type-choice"),
   };
 
-  // Calque de l'existant : sans accents (contrat valider_contribution.py).
+  // Type d'actualité choisi à l'étape 1 (null = étape 1 affichée).
+  let currentType = null;
+
   const TYPE_LABELS = {
-    evenement: "Evenement",
-    media_publie: "Media publie",
-    outil_publie: "Outil publie",
+    evenement: "Événement",
+    media_publie: "Média publié",
+    outil_publie: "Outil publié",
     information: "Information",
   };
 
+  // ---------- Étape 1 : choix du type ----------
+  function showStep1() {
+    currentType = null;
+    els2.step().hidden = false;
+    els2.form().hidden = true;
+    GC.setFieldError(document.getElementById("c-titre"), null);
+  }
+
+  function showStep2(type) {
+    currentType = type;
+    // PIÈGE ids partagés : les calques média/outil réutilisent les ids
+    // des apps d'origine (c-url, c-lieu…) — si les DEUX variants étaient
+    // injectés, getElementById lirait toujours le premier du DOM (celui
+    // du média), pas le champ affiché. On purge donc le variant non
+    // choisi : un SEUL formulaire mutualisé existe dans le DOM à la
+    // fois, ses ids sont uniques.
+    if (type === "media_publie") {
+      els2.outil().innerHTML = "";
+      delete els2.outil().dataset.injected;
+      if (!els2.media().dataset.injected) {
+        els2.media().innerHTML = GF.media.html();
+        els2.media().dataset.injected = "1";
+      }
+    } else if (type === "outil_publie") {
+      els2.media().innerHTML = "";
+      delete els2.media().dataset.injected;
+      if (!els2.outil().dataset.injected) {
+        els2.outil().innerHTML = GF.outil.html();
+        els2.outil().dataset.injected = "1";
+      }
+    }
+
+    // Badge du type en tête du formulaire (couleur du contrat).
+    const badge = els2.badge();
+    badge.innerHTML = "";
+    const dot = document.createElement("span");
+    dot.className = `c-type-dot type-${type}`;
+    const label = document.createElement("span");
+    label.textContent = TYPE_LABELS[type] || type;
+    badge.appendChild(dot);
+    badge.appendChild(label);
+
+    // Un seul variant visible.
+    els2.actu().hidden = type === "media_publie" || type === "outil_publie";
+    els2.media().hidden = type !== "media_publie";
+    els2.outil().hidden = type !== "outil_publie";
+
+    els2.step().hidden = true;
+    els2.form().hidden = false;
+    const first =
+      type === "media_publie" ? document.getElementById(GF.media.firstFieldId)
+      : type === "outil_publie" ? document.getElementById(GF.outil.firstFieldId)
+      : document.getElementById("c-titre");
+    setTimeout(() => first && first.focus(), 50);
+  }
+
+  // ---------- Collecte / validation selon le type ----------
+  const isMedia = () => currentType === "media_publie";
+  const isOutil = () => currentType === "outil_publie";
+  const isActu = () => currentType === "evenement" || currentType === "information";
+
+  function collect() {
+    if (isMedia()) return Object.assign({ type: currentType }, GF.media.get());
+    if (isOutil()) return Object.assign({ type: currentType }, GF.outil.get());
+    return {
+      type: currentType,
+      titre: document.getElementById("c-titre").value.trim(),
+      date: document.getElementById("c-date").value.trim(),
+      date_fin: document.getElementById("c-date-fin").value.trim(),
+      lieu: document.getElementById("c-a-lieu").value.trim(),
+      lien: document.getElementById("c-a-url").value.trim(),
+      description: document.getElementById("c-a-description").value.trim(),
+    };
+  }
+
   function validate() {
+    // Garde : pas d'envoi possible sans type choisi (étape 1).
+    if (!currentType) return false;
+    if (isMedia()) return GF.media.validate(GC.setFieldError);
+    if (isOutil()) return GF.outil.validate(GC.setFieldError);
+    // Formulaire actu : calque de l'existant (ids c-a-* propres à
+    // l'app pour ne pas entrer en collision avec les ids des formulaires
+    // mutualisés média/outil).
     let ok = true;
-    const titre = f.titre().value.trim();
-    const url = f.url().value.trim();
-    const date = f.date().value.trim();
+    const titre = document.getElementById("c-titre").value.trim();
+    const url = document.getElementById("c-a-url").value.trim();
+    const date = document.getElementById("c-date").value.trim();
 
     if (!titre) {
-      GC.setFieldError(f.titre(), "Le titre est nécessaire pour que l'équipe vérifie l'actualité.");
+      GC.setFieldError(document.getElementById("c-titre"), "Le titre est nécessaire pour que l'équipe vérifie l'actualité.");
       ok = false;
     } else if (titre.length < 3) {
-      GC.setFieldError(f.titre(), "Le titre paraît trop court — quelques mots suffisent.");
+      GC.setFieldError(document.getElementById("c-titre"), "Le titre paraît trop court — quelques mots suffisent.");
       ok = false;
     } else {
-      GC.setFieldError(f.titre(), null);
+      GC.setFieldError(document.getElementById("c-titre"), null);
     }
 
     let urlOk = false;
@@ -698,72 +795,115 @@ function attachListeners() {
       urlOk = u.protocol === "http:" || u.protocol === "https:";
     } catch { /* invalide */ }
     if (!urlOk) {
-      GC.setFieldError(f.url(), "Collez une adresse web complète commençant par https:// (ou http://).");
+      GC.setFieldError(document.getElementById("c-a-url"), "Collez une adresse web complète commençant par https:// (ou http://).");
       ok = false;
     } else {
-      GC.setFieldError(f.url(), null);
+      GC.setFieldError(document.getElementById("c-a-url"), null);
     }
 
     if (!date) {
-      GC.setFieldError(f.date(), "La date est nécessaire (jour de début de l'actualité).");
+      GC.setFieldError(document.getElementById("c-date"), "La date est nécessaire (jour de début de l'actualité).");
       ok = false;
     } else {
-      GC.setFieldError(f.date(), null);
+      GC.setFieldError(document.getElementById("c-date"), null);
     }
 
-    const df = f.dateFin().value.trim();
+    const df = document.getElementById("c-date-fin").value.trim();
     if (df && date && df < date) {
-      GC.setFieldError(f.dateFin(), "La date de fin doit suivre la date de début.");
+      GC.setFieldError(document.getElementById("c-date-fin"), "La date de fin doit suivre la date de début.");
       ok = false;
     } else {
-      GC.setFieldError(f.dateFin(), null);
+      GC.setFieldError(document.getElementById("c-date-fin"), null);
     }
 
     return ok;
   }
 
-  GC.init({
-    app: "actualites",
-    firstFieldId: "c-titre",
-    titleOf: (d) => d.titre,
-    collect: () => ({
-      titre: f.titre().value.trim(),
-      type: f.type().value,
-      date: f.date().value.trim(),
-      date_fin: f.dateFin().value.trim(),
-      lieu: f.lieu().value.trim(),
-      lien: f.url().value.trim(),
-      description: f.description().value.trim(),
-    }),
-    validate,
-    payload: (d) => ({
-      titre: d.titre,
+  // ---------- Payload / table / issue selon le type ----------
+  function payloadOf(d) {
+    if (isMedia()) return Object.assign({ type: d.type }, GF.media.payload(d));
+    if (isOutil()) return Object.assign({ type: d.type }, GF.outil.payload(d));
+    return {
       type: d.type,
+      titre: d.titre,
       date_debut: d.date,
       date_fin: d.date_fin,
       lieu: d.lieu,
       lien: d.lien,
       description: d.description,
-    }),
-    table: (d) => [
+    };
+  }
+
+  function tableOf(d) {
+    if (isMedia()) {
+      const rows = [["Type d'actualité", "Média publié"]];
+      return rows.concat(GF.media.table(d));
+    }
+    if (isOutil()) {
+      const rows = [["Type d'actualité", "Outil publié"]];
+      return rows.concat(GF.outil.table(d));
+    }
+    return [
       ["Titre", d.titre],
       ["Type", TYPE_LABELS[d.type] || d.type],
       ["Date", d.date + (d.date_fin ? ` → ${d.date_fin}` : "")],
       ["Lieu", d.lieu || "—"],
       ["Lien", d.lien],
       ["Résumé", d.description || "—"],
-    ],
+    ];
+  }
+
+  function titleOf(d) {
+    if (isMedia()) return GF.media.titleOf(d);
+    if (isOutil()) return GF.outil.titleOf(d);
+    return d.titre;
+  }
+
+  // ---------- Ouverture de la modale : retour à l'étape 1 ----------
+  // Marqueur « reset » : le socle contribution.js laisse l'app gérer
+  // la réinitialisation (étape 1 visible, formulaire masqué) au lieu
+  // de son comportement standard (form.hidden = false + reset()).
+  function contributionOnOpen() {
+    showStep1();
+    const form = els2.form();
+    form.reset(); // vide TOUS les champs (actu + variants injectés)
+    // Nettoyage des erreurs (calque du socle, non exposé par lui) :
+    // erreurs de champ + message global de refus de modération.
+    form.querySelectorAll(".field-error").forEach((e) => e.remove());
+    form.querySelectorAll(".invalid").forEach((i) => i.classList.remove("invalid"));
+  }
+  contributionOnOpen.reset = true;
+
+  // Initialisation du socle (bouton, modale, envoi, repli).
+  GC.init({
+    app: "actualites",
+    firstFieldId: "c-titre",
+    onOpen: contributionOnOpen,
+    titleOf: (d) => titleOf(d),
+    collect: () => collect(),
+    validate: () => validate(),
+    payload: (d) => payloadOf(d),
+    table: (d) => tableOf(d),
     issueTexts: {
       heading: "Proposition d'actualité",
       intro:
         "Un·e visiteur de la grille Actualités propose d'ajouter cette actualité.",
       closing:
-        "La validation crée l'item Zotero (collection « Actualités », citationKey A000N), " +
+        "La validation crée l'item Zotero (collections « Actualités » et " +
+        "« Médiathèque »/« Outilthèque » selon le type, citationKey A000N), " +
         "ferme cette issue et le prochain `deploy.sh` publie l'actualité.",
     },
   });
-})();
 
+  // Étape 1 : clic sur une carte de type → étape 2.
+  els2.choices().forEach((btn) => {
+    btn.addEventListener("click", () => showStep2(btn.dataset.actutype));
+  });
+
+  // Retour à l'étape 1 (les valeurs saisies sont conservées par type :
+  // les champs du variant restent dans le DOM, masqués).
+  els2.back().addEventListener("click", showStep1);
+})();
 /* ---------- Boot ---------- */
 grabEls();
 const yearDD = makeDropdown({

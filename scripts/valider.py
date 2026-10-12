@@ -62,6 +62,12 @@ PENDING = REPO / "actualites" / "data" / "pending_proposals.json"
 GROUP_ID = DEFAULT_GROUP_ID
 ACTUALITES_NAME = "Actualités"
 EXPECTED_COLLECTION_KEY = "U4HFDR68"
+# Collections cibles de la bi-collection (contrat 3 formes, CEO 12/10/26
+# « un seul et même enregistrement ») : un média publié validé via le
+# pipeline mail est aussi membre de la Médiathèque, un outil publié de
+# l'Outilthèque — la même fiche est servie par les deux grilles.
+MEDIATHEQUE_COLLECTION_KEY = "MCKNJI9M"
+OUTILTHEQUE_COLLECTION_KEY = "3Z7QJHRU"
 
 TYPE_TO_ITEMTYPE = {
     "evenement": "presentation",
@@ -172,6 +178,14 @@ def build_item(prop, new_id, collection_key):
 
     Le type est NORMALISÉ (alias legacy acceptés) : c'est le type
     normalisé qui part dans « Type: » et qui choisit l'itemType.
+
+    Contrat 3 formes (CEO 12/10/26 « un seul et même enregistrement ») :
+    un média publié est aussi membre de la collection Médiathèque, un
+    outil publié de la collection Outilthèque — la même fiche est servie
+    par les deux grilles (le fetch de chaque app lit ses propres
+    champs). Le pipeline mail ne collecte pas les champs propres aux
+    formulaires médiathèque/outilthèque (auteur·e·s, catégorie) : rien
+    n'est inventé, l'item garde les champs actualités du mail.
     """
     typ = normalize_type((prop.get("type") or "").strip())
     itype = TYPE_TO_ITEMTYPE.get(typ) if typ else None
@@ -183,6 +197,11 @@ def build_item(prop, new_id, collection_key):
         raise ZoteroError(f"proposition : date_debut vide")
     date = d1 if not d2 else f"{d1}/{d2}"
     added = f"{datetime.date.today().isoformat()}T00:00:00Z"
+    collections = [collection_key]
+    if typ == "media_publie":
+        collections.append(MEDIATHEQUE_COLLECTION_KEY)
+    elif typ == "outil_publie":
+        collections.append(OUTILTHEQUE_COLLECTION_KEY)
     return {
         "itemType": itype,
         "citationKey": new_id,
@@ -192,7 +211,7 @@ def build_item(prop, new_id, collection_key):
         "place": (prop.get("lieu") or "").strip(),
         "url": (prop.get("lien") or "").strip(),
         "extra": build_extra(typ, normalize_mid(prop.get("source_message_id", ""))),
-        "collections": [collection_key],
+        "collections": collections,
         "tags": [],
         "dateAdded": added,
         "dateModified": added,

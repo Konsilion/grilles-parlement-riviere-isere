@@ -102,6 +102,18 @@ window.GrilleContribution = (() => {
     // modale détail via cfg.onOpen (calque médiathèque).
     if (typeof cfg.onOpen === "function") cfg.onOpen();
     // Réinitialisation : formulaire visible, confirmations masquées.
+    // Une app hôte à étapes (Actualités : choix du type d'actualité
+    // puis formulaire) peut définir onOpen pour prendre la main sur
+    // la réinitialisation — elle reçoit les ids standard du socle.
+    if (typeof cfg.onOpen === "function" && cfg.onOpen.reset === true) {
+      // L'app gère elle-même l'état initial (étape 1 visible, formulaire
+      // masqué) ; le socle ne touche ni form.hidden ni form.reset().
+      elsC.success.hidden = true;
+      elsC.fallback.hidden = true;
+      elsC.modal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("modal-open");
+      return;
+    }
     elsC.form.hidden = false;
     elsC.success.hidden = true;
     elsC.fallback.hidden = true;
@@ -110,7 +122,8 @@ window.GrilleContribution = (() => {
     clearFormError();
     elsC.modal.setAttribute("aria-hidden", "false");
     document.body.classList.add("modal-open");
-    const first = cfg.firstFieldId ? document.getElementById(cfg.firstFieldId) : null;
+    const first = cfg.firstFieldId ? document.getElementById(cfg.firstFieldId) :
+      null;
     setTimeout(() => first && first.focus(), 50);
   }
 

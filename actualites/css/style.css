@@ -376,3 +376,118 @@ body.modal-open { overflow: hidden; }
 .card-link + .card-passe {
   margin-top: 0.25rem;
 }
+
+/* ============== Modale contribution : choix du type (CEO 12/10/26) ==============
+   Étape 1 de la proposition d'actualité : 4 cartes cliquables
+   (Événement / Média publié / Outil publié / Information), puis le
+   formulaire correspondant au type. Média = calque Médiathèque,
+   Outil = calque Outilthèque (socle common/js/contribution-forms.js).
+   Palette 100 % claire, tokens existants uniquement. */
+
+.c-step-label {
+  margin: 0.25rem 0 0.75rem;
+  font-weight: 600;
+}
+
+/* Grille 2×2 des cartes de type (1 colonne en écran étroit). */
+.c-type-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+@media (max-width: 540px) {
+  .c-type-grid { grid-template-columns: 1fr; }
+}
+
+.c-type-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.7rem 0.85rem;
+  text-align: left;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.c-type-choice:hover,
+.c-type-choice:focus-visible {
+  border-color: rgba(11, 67, 135, 0.45);
+  box-shadow: 0 0 0 1px rgba(11, 67, 135, 0.25),
+              0 4px 14px -2px rgba(11, 67, 135, 0.18);
+  outline: none;
+}
+
+/* Pastille de couleur du type — réutilise la palette des badges de
+   carte (.card-type.type-*) via la classe portée par le dot. */
+.c-type-dot {
+  display: inline-block;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: var(--border);
+}
+.c-type-dot.type-evenement   { background: #2b579a; }
+.c-type-dot.type-media-publie { background: #1e6b3c; }
+.c-type-dot.type-outil-publie { background: #12655f; }
+.c-type-dot.type-information { background: #8a6116; }
+
+.c-type-name {
+  font-weight: 600;
+  margin-top: 0.15rem;
+}
+.c-type-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+/* Badge de type en tête du formulaire (étape 2). */
+.c-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.9rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Lien « ← Changer de type » au-dessus du formulaire. */
+.c-step-back {
+  margin: 0 0 0.75rem;
+}
+.c-back-btn {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.c-back-btn:hover,
+.c-back-btn:focus-visible {
+  color: var(--accent-hover);
+  outline: none;
+}
+
+/* Le variant média/outil est un simple conteneur transparent : les
+   .form-row qu'il contient sont stylés par common/css/contribution.css. */
+.c-form-variant {
+  display: block;
+}
+.c-form-variant[hidden] {
+  display: none;
+}

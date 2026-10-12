@@ -148,6 +148,10 @@ def parse_contribution(body):
 
 MEDIATHEQUE_NAME = "Médiathèque"
 EXPECTED_MEDIATHEQUE_KEY = "MCKNJI9M"
+# Collections cibles de la bi-collection actualités (contrat 3 formes,
+# CEO 12/10/26) : un item média/outil créé via la grille Actualités est
+# membre des DEUX collections — même fiche servie par les deux grilles.
+OUTILTHEQUE_KEY = "3Z7QJHRU"
 
 # Types proposés par la modale médiathèque (liste fermée — cf.
 # mediatheque/index.html <select>) et leur itemType Zotero (inverse
@@ -282,16 +286,76 @@ def build_item_actualites(prop, collection_key, items):
     extra → « Type: <type normalisé> » + « Source: contribution » ;
     date → début seul ou « début/fin » (intervalle natif, OPTION B) ;
     citationKey A000N.
+
+    Contrat 3 formes (CEO 12/10/26 « un seul et même enregistrement ») :
+    - evenement / information : forme actualités (dates, lieu, lien) ;
+    - media_publie : forme MÉDIATHÈQUE (authors, year, doc_type, url,
+      abstract) — l'item porte l'itemType du doc_type et devient membre
+      des DEUX collections (Actualités + Médiathèque) : la même fiche
+      est servie par la grille Actualités (extra Type:) ET par la
+      médiathèque (itemType + creators + year) ;
+    - outil_publie : forme OUTILTHÈQUE (nom, categorie, lieu,
+      description, url) — itemType document, extra Categorie:, membre
+      des DEUX collections (Actualités + Outilthèque).
     """
     typ = normalize_actualites_type(prop["type"] or "")
-    itype = ACTUALITES_TYPES.get(typ) if typ else None
+    if not typ:
+        raise ZoteroError(f"type inconnu « {prop['type']} » (liste fermée de la modale actualités)")
+    today = datetime.date.today().isoformat()
+    source_line = "Source: contribution actualités (issue GitHub)"
+
+    # --- Forme média (calque build_item_mediatheque + bi-collection) ---
+    if typ == "media_publie":
+        itype = TYPE_TO_ITEMTYPE.get(prop.get("doc_type") or "")
+        if not itype:
+            raise ZoteroError(f"type de document inconnu « {prop.get('doc_type')} »")
+        item = {
+            "itemType": itype,
+            "citationKey": next_citation_key(items, "A"),
+            "title": prop["titre"],
+            "creators": build_creators(prop.get("authors") or ""),
+            "collections": [collection_key, EXPECTED_MEDIATHEQUE_KEY],
+            "tags": [],
+            "extra": f"Type: {typ}\n{source_line}",
+            "dateAdded": f"{today}T00:00:00Z",
+            "dateModified": f"{today}T00:00:00Z",
+        }
+        if prop.get("year"):
+            item["date"] = prop["year"]
+        if prop.get("url"):
+            item["url"] = prop["url"]
+        if prop.get("abstract"):
+            item["abstractNote"] = prop["abstract"]
+        return item
+
+    # --- Forme outil (calque build_item_outiltheque + bi-collection) ---
+    if typ == "outil_publie":
+        extra_lines = [f"Type: {typ}"]
+        if prop.get("categorie"):
+            extra_lines.append(f"Categorie: {prop['categorie']}")
+        extra_lines.append(source_line)
+        return {
+            "itemType": "document",
+            "citationKey": next_citation_key(items, "A"),
+            "title": prop["nom"],
+            "abstractNote": prop.get("description") or "",
+            "place": prop.get("lieu") or "",
+            "url": prop.get("url") or "",
+            "extra": "\n".join(extra_lines),
+            "collections": [collection_key, OUTILTHEQUE_KEY],
+            "tags": [],
+            "dateAdded": f"{today}T00:00:00Z",
+            "dateModified": f"{today}T00:00:00Z",
+        }
+
+    # --- Forme actualités (evenement / information) : calque d'origine ---
+    itype = ACTUALITES_TYPES.get(typ)
     if not itype:
         raise ZoteroError(f"type inconnu « {prop['type']} » (liste fermée de la modale actualités)")
     d1, d2 = prop["date_debut"], prop["date_fin"]
     if not d1:
         raise ZoteroError("date_debut vide")
     date = d1 if not d2 else f"{d1}/{d2}"
-    today = datetime.date.today().isoformat()
     return {
         "itemType": itype,
         "citationKey": next_citation_key(items, "A"),
@@ -300,7 +364,7 @@ def build_item_actualites(prop, collection_key, items):
         "date": date,
         "place": prop["lieu"] or "",
         "url": prop["lien"] or "",
-        "extra": f"Type: {typ}\nSource: contribution actualités (issue GitHub)",
+        "extra": f"Type: {typ}\n{source_line}",
         "collections": [collection_key],
         "tags": [],
         "dateAdded": f"{today}T00:00:00Z",
@@ -523,10 +587,19 @@ def clean_actualites(data):
     def s(k):
         v = str(data.get(k) or "").strip()
         return v or None
+    # Contrat 3 formes : les champs des formes média/outil sont
+    # conservés (nettoyés) et vivront côté build ; les champs de la
+    # forme actualités restent inchangés (rétrocompatibilité issues
+    # legacy et pipeline mail valider.py).
     return {
         "titre": s("titre"), "type": s("type"),
         "date_debut": s("date_debut"), "date_fin": s("date_fin"),
         "lieu": s("lieu"), "lien": s("lien"), "description": s("description"),
+        # forme média (calque médiathèque)
+        "authors": s("authors"), "year": s("year"), "doc_type": s("doc_type"),
+        "url": s("url"), "abstract": s("abstract"),
+        # forme outil (calque outilthèque)
+        "nom": s("nom"), "categorie": s("categorie"),
     }
 
 
@@ -622,17 +695,34 @@ APPS = {
     "actualites": {
         "collection": ("Actualités", "U4HFDR68"),
         "clean": clean_actualites,
-        "required": ("titre", "type", "date_debut", "lien"),
+        # Champs obligatoires PAR FORME (contrat 3 formes, CEO 12/10/26)
+        # : une fonction résout la liste selon le type — le registre
+        # ne peut plus porter un tuple figé unique.
+        "required": None,           # remplacé par required_fn ci-dessous
+        "required_fn": lambda prop: (
+            ("titre", "type", "doc_type", "url") if normalize_actualites_type(prop.get("type") or "") == "media_publie"
+            else ("nom", "type") if normalize_actualites_type(prop.get("type") or "") == "outil_publie"
+            else ("titre", "type", "date_debut", "lien")
+        ),
         "checks": ("check_actualites",),
         "build": build_item_actualites,
-        "list_fields": (
-            ("titre", "titre"), ("type", "type"),
-            ("dates", "dates"), ("lieu", "lieu"), ("lien", "lien"),
-            ("résumé", "description"),
+        # Aperçu --liste PAR FORME (mêmes champs que la table d'issue).
+        "list_fields": None,        # remplacé par list_fields_fn ci-dessous
+        "list_fields_fn": lambda prop: (
+            [("titre", "titre"), ("type", "type"), ("auteur·e·s", "authors"),
+             ("doc", "doc_type"), ("année", "year"), ("lien", "url"),
+             ("résumé", "abstract")]
+            if normalize_actualites_type(prop.get("type") or "") == "media_publie"
+            else [("titre", "nom"), ("type", "type"), ("catégorie", "categorie"),
+                  ("lieu", "lieu"), ("lien", "url"), ("résumé", "description")]
+            if normalize_actualites_type(prop.get("type") or "") == "outil_publie"
+            else [("titre", "titre"), ("type", "type"),
+                  ("dates", "dates"), ("lieu", "lieu"), ("lien", "lien"),
+                  ("résumé", "description")]
         ),
         "phrase": "L'actualité",
         "pronom": "Elle",
-        "publie": "la grille Actualités",
+        "publie": "la grille Actualités (et la médiathèque pour les médias, l'outilthèque pour les outils)",
     },
     "contacts": {
         "collection": ("Contacts", "JI7JP8AZ"),
@@ -749,12 +839,36 @@ def check_mediatheque(prop):
 
 
 def check_actualites(prop):
-    """Type fermé (alias legacy acceptés) + dates AAAA-MM-JJ + fin ≥ début.
+    """Type fermé (alias legacy acceptés) + garde-fous PAR FORME
+    (contrat 3 formes, CEO 12/10/26).
 
+    - evenement/information : dates AAAA-MM-JJ + fin ≥ début + lien ;
+    - media_publie : doc_type fermé médiathèque + année 4 chiffres +
+      url http/s ;
+    - outil_publie : nom ≥ 3 + url http/s facultative.
     Retourne motif de refus ou None.
     """
-    if not normalize_actualites_type(prop["type"] or ""):
+    typ = normalize_actualites_type(prop["type"] or "")
+    if not typ:
         return f"type inconnu « {prop['type']} »"
+
+    if typ == "media_publie":
+        if not TYPE_TO_ITEMTYPE.get(prop.get("doc_type") or ""):
+            return f"type de document inconnu « {prop.get('doc_type')} »"
+        if prop.get("year") and not re.fullmatch(r"\d{4}", prop["year"]):
+            return f"année invalide « {prop['year']} »"
+        if prop.get("url") and not re.match(r"^https?://", prop["url"]):
+            return "lien invalide (http/https attendu)"
+        return None
+
+    if typ == "outil_publie":
+        if not prop.get("nom") or len(prop["nom"]) < 3:
+            return "nom trop court"
+        if prop.get("url") and not re.match(r"^https?://", prop["url"]):
+            return "lien invalide (http/https attendu)"
+        return None
+
+    # evenement / information (forme actualités, inchangée)
     if not DATE_RE.match(prop["date_debut"] or ""):
         return f"date_debut invalide « {prop['date_debut']} »"
     if prop["date_fin"] and not DATE_RE.match(prop["date_fin"]):
@@ -879,8 +993,14 @@ def do_list():
             print(f"     ⚠️ app inconnue « {app} » — traiter à la main")
             continue
         print(f"     app          : {app}  →  collection « {fiche['collection'][0]} »")
-        if prop.get(fiche["required"][0]):
-            for label, key in fiche["list_fields"]:
+        req_list = fiche.get("required_fn") or fiche["required"]
+        if callable(req_list):
+            req_list = req_list(prop)
+        if prop.get(req_list[0]):
+            list_fields = fiche.get("list_fields_fn") or fiche["list_fields"]
+            if callable(list_fields):
+                list_fields = list_fields(prop)
+            for label, key in list_fields:
                 val = list_value(prop, key)
                 if len(str(val)) > 120:
                     val = str(val)[:120] + "…"
@@ -983,8 +1103,11 @@ def do_validate(numbers, reason=None):
         ckey, items, titles = scopes[app]
         prop = fiche["clean"](raw)
 
-        # champs obligatoires
-        manque = [k for k in fiche["required"] if not prop.get(k)]
+        # champs obligatoires (statique, ou résolus par forme)
+        req = fiche.get("required_fn") or fiche["required"]
+        if callable(req):
+            req = req(prop)
+        manque = [k for k in req if not prop.get(k)]
         if manque:
             rejected.append((n, f"issue malformée ({'/'.join(manque)} manquant) — traiter à la main"))
             continue

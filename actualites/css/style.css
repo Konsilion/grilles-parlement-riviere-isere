@@ -178,19 +178,19 @@
   white-space: nowrap;
 }
 
-/* ============== Filtre « Type d'actualité » en vert ==============
-   CEO 12/10/26 soir : différencier visuellement le filtre Type du
-   filtre Mois (bleu) — police et pastille du type en VERT. Surcharges
-   ciblées sur #type-dropdown/#type-pills UNIQUEMENT (le socle
-   common/css/base.css reste tel quel : il sert les 9 apps). Vert
-   sombre lisible sur fond blanc, thème clair unique. */
-#type-dropdown .dd-toggle {
+/* ============== Filtre « Type d'actualité » en vert EN SÉLECTION ==============
+   CEO 12/10/26 soir (inverse du 12/10 soir précédent) : le VERT ne
+   s'affiche plus en permanence — la police du filtre Type est
+   NORMALE (texte du socle) quand rien n'est coché, et passe au vert
+   (graisse 600) UNIQUEMENT si des types sont sélectionnés —
+   comportement aligné sur les filtres Année/Mois (bleu .active du
+   socle). Surcharges ciblées sur #type-dropdown/#type-pills
+   UNIQUEMENT (le socle common/css/base.css reste tel quel : il
+   sert les 9 apps). Vert sombre lisible sur fond blanc. */
+#type-dropdown .dd-toggle.active {
   color: #1e6b3a;
+  border-color: rgba(30, 107, 58, 0.45);
 }
-#type-dropdown .dd-pill {
-  color: #1e6b3a;
-}
-#type-dropdown.open .dd-pill,
 #type-dropdown .dd-toggle.active .dd-pill {
   color: #1e6b3a;
   font-weight: 600;
@@ -198,9 +198,6 @@
 #type-dropdown .dd-option input[type="checkbox"]:checked + .dd-option-name {
   color: #1e6b3a;
   font-weight: 600;
-}
-#type-dropdown .dd-toggle.active {
-  border-color: rgba(30, 107, 58, 0.45);
 }
 #type-pills .filter-pill {
   background: rgba(30, 107, 58, 0.08);

@@ -524,18 +524,20 @@ function renderTypePills() {
   }
 }
 
-/* ---------- Ligne commune des pastilles (CEO 12/10/26 soir) ----------
-   Les pastilles Année/Mois/Type partagent UNE ligne (#pills-row).
-   Elle n'existe que si au moins un filtre est actif — le socle ne
-   masque plus les groupes (display:contents les expose tous), c'est
-   ce contrôle qui tient la visibilité de la ligne entière. */
-function syncPillsRow() {
-  if (!els.pillsRow) return;
+/* ---------- Ligne commune des pastilles + bouton Réinitialiser (CEO 12/10/26 soir) ----------
+   Les pastilles Année/Mois/Type partagent UNE ligne (#pills-row) et
+   le bouton « Réinitialiser » vit à droite des filtres. L'un comme
+   l'autre n'existent QUE si au moins un filtre est actif (CEO
+   12/10/26 soir) — police normale et aucun bouton quand rien n'est
+   sélectionné. Appelée à CHAQUE renderGrid : aucun chemin de
+   changement ne peut désynchroniser l'état. */
+function syncFilterUI() {
   const active =
     state.selectedYears.size > 0 ||
     state.selectedMonths.size > 0 ||
     state.selectedTypes.size > 0;
-  els.pillsRow.hidden = !active;
+  if (els.pillsRow) els.pillsRow.hidden = !active;
+  if (els.resetBtn) els.resetBtn.hidden = !active;
 }
 
 /* ---------- Rendu de la page courante ---------- */
@@ -545,7 +547,7 @@ function renderGrid() {
   renderYearPills();
   renderMonthPills();
   renderTypePills();
-  syncPillsRow();
+  syncFilterUI();
 
   const items = getFilteredItems();
   const { totalPages, pageRows } = paginateItems(state, items);

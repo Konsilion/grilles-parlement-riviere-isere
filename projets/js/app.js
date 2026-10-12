@@ -28,6 +28,7 @@ const STATUTS = {
   "En cours": "en-cours",
   "À venir": "a-venir",
   "Terminé": "termine",
+  "En construction": "en-construction",
 };
 
 /* ---------- Mode intégré (?mode=integre) ----------
@@ -124,9 +125,10 @@ function statutOf(item) {
   const today = new Date();
   const debut = parseISO(item.date_debut);
   const fin = parseISO(item.date_fin);
+  if (!debut && !fin) return "En construction";
   if (fin && fin < today) return "Terminé";
   if (debut && debut > today) return "À venir";
-  return "En cours"; // y compris sans aucune date (défaut neutre)
+  return "En cours";
 }
 
 function statutSlug(statut) {
@@ -432,7 +434,6 @@ function attachListeners() {
     lieu: () => document.getElementById("c-lieu"),
     dateDebut: () => document.getElementById("c-date-debut"),
     dateFin: () => document.getElementById("c-date-fin"),
-    statut: () => document.getElementById("c-statut"),
     description: () => document.getElementById("c-description"),
     url: () => document.getElementById("c-url"),
   };
@@ -449,6 +450,7 @@ function attachListeners() {
     const porteur = f.porteur().value.trim();
     const debut = f.dateDebut().value.trim();
     const fin = f.dateFin().value.trim();
+    const description = f.description().value.trim();
     const url = f.url().value.trim();
 
     if (!titre) {
@@ -468,18 +470,20 @@ function attachListeners() {
       GC.setFieldError(f.porteur(), null);
     }
 
-    if (!debut) {
-      GC.setFieldError(f.dateDebut(), "La date de début est nécessaire.");
-      ok = false;
-    } else {
-      GC.setFieldError(f.dateDebut(), null);
-    }
+    GC.setFieldError(f.dateDebut(), null);
 
     if (fin && debut && fin < debut) {
       GC.setFieldError(f.dateFin(), "La date de fin doit suivre la date de début.");
       ok = false;
     } else {
       GC.setFieldError(f.dateFin(), null);
+    }
+
+    if (!description) {
+      GC.setFieldError(f.description(), "La description est nécessaire pour que l'équipe comprenne le projet.");
+      ok = false;
+    } else {
+      GC.setFieldError(f.description(), null);
     }
 
     if (url) {
@@ -510,7 +514,6 @@ function attachListeners() {
       lieu: f.lieu().value.trim(),
       date_debut: f.dateDebut().value.trim(),
       date_fin: f.dateFin().value.trim(),
-      statut: f.statut().value,
       description: f.description().value.trim(),
       url: f.url().value.trim(),
     }),
@@ -522,7 +525,6 @@ function attachListeners() {
       ["Lieu", d.lieu || "—"],
       ["Date de début", d.date_debut || "—"],
       ["Date de fin", d.date_fin || "—"],
-      ["Statut", d.statut || "—"],
       ["Description", d.description || "—"],
       ["Lien", d.url || "—"],
     ],
@@ -532,7 +534,7 @@ function attachListeners() {
         "Un·e visiteur de la grille Projets propose d'ajouter ce projet.",
       closing:
         "La validation crée l'item Zotero (collection « Projets », mapping P3 : " +
-        "extra « Statut: … », citationKey P000N), ferme cette issue et le prochain " +
+        "citationKey P000N), ferme cette issue et le prochain " +
         "`deploy.sh` publie le projet.",
     },
   });

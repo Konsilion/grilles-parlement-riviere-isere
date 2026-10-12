@@ -140,6 +140,13 @@
   border-color: #bfdccb;
   color: #1e6b3c;
 }
+/* En construction : projet sans dates — vignette neutre (palette
+   claire UNIQUE). */
+.card-type.statut-en-construction, .modal-type.statut-en-construction {
+  background: #f1f3f5;
+  border-color: var(--border-strong);
+  color: var(--text-muted);
+}
 /* Statut hors convention : vignette neutre du socle (var(--tag-bg)). */
 
 /* ============== Modale détail (calque contacts/médiathèque) ============== */
@@ -269,18 +276,9 @@ body.modal-open { overflow: hidden; }
 .propose-btn {
   white-space: nowrap;
 }
-/* Rangée 3 colonnes du formulaire projet (début/fin/statut) —
-   variante de .form-row-2 du socle contribution.css. */
-.form-row-3 {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 1rem;
-}
-@media (max-width: 600px) {
-  .form-row-3 {
-    grid-template-columns: 1fr;
-  }
-}
+/* La rangée dates du formulaire est passée à 2 colonnes : le socle
+   common/css/contribution.css fournit .form-row-2 (repli 1 colonne
+   ≤600px) — l'ancienne variante .form-row-3 est retirée. */
 .btn-secondary {
   background: transparent;
   color: var(--text);

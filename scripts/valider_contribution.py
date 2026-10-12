@@ -27,10 +27,10 @@ d'issue) :
     contacts     nom, organisation, lieu, email, telephone, role,
                  description, url → « Contacts » (JI7JP8AZ) — mapping
                  C2 (extra Email:/Telephone:/Role:, citationKey C000N) ;
-    projets      titre, porteur, lieu, date_debut, date_fin, statut
-                 (En cours/À venir/Terminé), description, url →
-                 « Projets » (RPZFWI9M) — mapping P3 (extra
-                 « Statut: … », citationKey P000N) ;
+    projets      titre, porteur, lieu, dates facultatives (sans date →
+                 « En construction » côté front), description (requise),
+                 url → « Projets » (RPZFWI9M) — mapping P3 (statut DÉDUIT
+                 des dates si absent, citationKey P000N) ;
     organisations nom, lieu, email, telephone, description, url →
                  « Organisations » (9DZCCXQE) — mapping (extra
                  Email:/Telephone: renseignés + Source, citationKey
@@ -626,7 +626,7 @@ APPS = {
     "projets": {
         "collection": ("Projets", "RPZFWI9M"),
         "clean": clean_projets,
-        "required": ("titre", "porteur", "date_debut"),
+        "required": ("titre", "porteur", "description"),
         "checks": ("check_projets",),
         "build": build_item_projets,
         "list_fields": (
@@ -749,15 +749,17 @@ def check_contacts(prop):
 
 
 def check_projets(prop):
-    """Statut fermé + dates AAAA-MM-JJ + fin ≥ début. Retourne motif ou None."""
-    if prop["statut"] and prop["statut"] not in PROJETS_STATUTS:
-        return f"statut inconnu « {prop['statut']} »"
-    if not DATE_RE.match(prop["date_debut"] or ""):
+    """Dates facultatives AAAA-MM-JJ + fin ≥ début + statut fermé
+    (compat anciennes issues) + url http/s. Retourne motif ou None."""
+    if prop["date_debut"] and not DATE_RE.match(prop["date_debut"]):
         return f"date_debut invalide « {prop['date_debut']} »"
     if prop["date_fin"] and not DATE_RE.match(prop["date_fin"]):
         return f"date_fin invalide « {prop['date_fin']} »"
-    if prop["date_fin"] and prop["date_fin"] < prop["date_debut"]:
+    if (prop["date_debut"] and prop["date_fin"]
+            and prop["date_fin"] < prop["date_debut"]):
         return "date_fin antérieure à date_debut"
+    if prop["statut"] and prop["statut"] not in PROJETS_STATUTS:
+        return f"statut inconnu « {prop['statut']} »"
     if prop["url"] and not re.match(r"^https?://", prop["url"]):
         return "lien invalide (http/https attendu)"
     return None

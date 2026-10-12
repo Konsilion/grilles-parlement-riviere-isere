@@ -145,29 +145,22 @@
                  placeholder="Ex. : Grenoble, bassin de l'Isère" />
         </div>
 
-        <div class="form-row form-row-3">
+        <div class="form-row form-row-2">
           <div>
-            <label for="c-date-debut">Date de début <span class="req">*</span></label>
-            <input type="date" id="c-date-debut" name="date_debut" required />
+            <label for="c-date-debut">Date de début (facultatif)</label>
+            <input type="date" id="c-date-debut" name="date_debut" />
           </div>
           <div>
             <label for="c-date-fin">Date de fin (facultatif)</label>
             <input type="date" id="c-date-fin" name="date_fin" />
           </div>
-          <div>
-            <label for="c-statut">Statut</label>
-            <select id="c-statut" name="statut">
-              <option value="En cours">En cours</option>
-              <option value="À venir">À venir</option>
-              <option value="Terminé">Terminé</option>
-            </select>
-          </div>
         </div>
+        <p class="field-hint">Pas encore de dates ? Le projet s'affichera « En construction ».</p>
 
         <div class="form-row">
-          <label for="c-description">Description (facultatif)</label>
-          <textarea id="c-description" name="description" rows="4" maxlength="3000"
-                    placeholder="En une ou deux phrases : en quoi consiste ce projet ?"></textarea>
+          <label for="c-description">Description <span class="req">*</span></label>
+          <textarea id="c-description" name="description" rows="4" maxlength="3000" required
+                    placeholder="Ex. : ce que fait le projet, où il se déroule, avec qui…"></textarea>
         </div>
 
         <div class="form-row">

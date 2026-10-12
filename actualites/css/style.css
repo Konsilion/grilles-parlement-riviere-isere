@@ -241,3 +241,29 @@ body.modal-open { overflow: hidden; }
   border-color: #f2dfa4;
   color: #8a6116; /* jaune Outlook */
 }
+
+/* ============== Pastille « Passé(e) » (CEO 12/10/26) ==============
+   Actualité dont la période est terminée (date_fin, ou date_debut
+   seul, antérieure à aujourd'hui) : pastille ROUGE en bas à droite
+   de la carte — margin-top:auto la colle en bas de la carte (elle
+   est toujours le DERNIER enfant), align-self:flex-end la pousse à
+   droite. Palette 100% claire, calque des badges de type ; le rouge
+   est codé en dur comme l'accent (grep #b3261e si palette). */
+.card-passe {
+  margin-top: auto;
+  padding: 0.2rem 0.6rem;
+  align-self: flex-end;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  border: 1px solid #f2c1bd;
+  background: #fdecea;
+  color: #b3261e;
+}
+/* Quand la carte porte un lien, c'est LUI qui colle au bas
+   (margin-top:auto du .card-link) : la pastille se glisse sous
+   le lien, coin bas-droite, sans lui voler son ancrage. */
+.card-link + .card-passe {
+  margin-top: 0.25rem;
+}

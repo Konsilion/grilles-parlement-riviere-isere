@@ -175,6 +175,14 @@ function renderCard(item) {
     card.appendChild(linkWrap);
   }
 
+  // Pastille rouge « Passé(e) » en bas à droite (période terminée) — CEO 12/10/26
+  if (isPastItem(item)) {
+    const past = document.createElement("span");
+    past.className = "card-passe";
+    past.textContent = "Passé(e)";
+    card.appendChild(past);
+  }
+
   return card;
 }
 
@@ -260,21 +268,21 @@ function onFilterChange(dd) {
   renderGrid();
 }
 
-/* ---------- Filtres cochés par défaut (CEO 11/10/26) ----------
-   À l'ouverture : année en cours + mois en cours et mois à venir
-   cochés — la page démarre sur l'actualité du moment, l'archive
-   reste accessible en décochant. En décembre, le mois à venir
-   est janvier de l'année suivante : on coche aussi l'année
-   suivante, sinon les items du mois à venir seraient filtrés.
-   `now` est paramétrable pour tester le passage d'année. */
-function applyDefaultFilters(now = new Date()) {
-  const year = String(now.getFullYear());
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const nextMonth = now.getMonth() === 11 ? "01" : String(now.getMonth() + 2).padStart(2, "0");
-  state.selectedYears.add(year);
-  state.selectedMonths.add(month);
-  state.selectedMonths.add(nextMonth);
-  if (nextMonth === "01") state.selectedYears.add(String(now.getFullYear() + 1));
+/* ---------- Actualité « passée » (CEO 12/10/26) ----------
+   Période terminée → pastille rouge « Passé(e) » en bas à droite.
+   - Avec date_fin : pastille dès que date_fin < aujourd'hui
+     (couvre l'événement d'un jour, où date_fin = date_debut).
+   - Sans date_fin : seuls les types « événement » peuvent être
+     passés (l'événement d'une date passée est terminé) ; une
+     ressource ou une information sans fin reste d'actualité
+     (ex. programme en cours) — pas de pastille. */
+function isPastItem(item) {
+  const fi = (item.date_fin || "").trim();
+  const end = parseISO(fi || (item.type.startsWith("evenement") ? item.date_debut : "") || "");
+  if (!end) return false;
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return end < today;
 }
 
 /* ---------- Pastilles des mois sélectionnés (CEO 11/10/26) ----------
@@ -374,7 +382,10 @@ async function load() {
     return;
   }
   state.currentPage = 0;
-  applyDefaultFilters(); // année en cours + mois en cours/à venir cochés (CEO 11/10/26)
+  // AUCUN filtre coché par défaut (CEO 12/10/26, inverse la règle du
+  // 11/10) : les actualités passées sont TOUJOURS affichées ; les
+  // filtres Année/Mois suffisent pour naviguer, et la pastille
+  // rouge « Passé(e) » marque les périodes terminées.
   buildFilterMenus();
   renderGrid();
 }

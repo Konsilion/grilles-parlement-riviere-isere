@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Idées — Parlement de la rivière Isère</title>
+  <!-- Socle commun des grilles (tokens, clair unique, pagination,
+       dropdowns, pastilles) — chargé AVANT les styles propres. -->
+  <link rel="stylesheet" href="../common/css/base.css" />
+  <link rel="stylesheet" href="../common/css/contribution.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <main class="layout">
+    <section class="content" aria-label="Idées">
+      <div class="content-header">
+        <span id="result-count" class="result-count">— idées</span>
+        <div class="toolbar">
+          <div class="filters">
+            <input
+              type="search"
+              id="search"
+              class="search-input"
+              placeholder="Titre, description, auteur…"
+              autocomplete="off"
+              aria-label="Rechercher dans les idées"
+            />
+            <div class="dropdown" id="cat-dropdown">
+              <button
+                type="button"
+                id="cat-toggle"
+                class="dd-toggle"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+              >
+                <span class="dd-pill" id="cat-pill">Toutes les catégories</span>
+                <span class="dd-caret" aria-hidden="true">▾</span>
+              </button>
+              <div
+                id="cat-menu"
+                class="dd-menu"
+                role="listbox"
+                aria-multiselectable="true"
+              ></div>
+            </div>
+            <label for="sort-select" class="sort-label">Trier par
+              <select id="sort-select">
+                <option value="titre" selected>Titre (A-Z)</option>
+                <option value="recent">Ajout le plus récent</option>
+              </select>
+            </label>
+            <!-- Parcours de contribution (esprit Datami) — calque organisations. -->
+            <button type="button" id="propose-btn" class="btn btn-primary propose-btn">
+              Proposer une idée
+            </button>
+          </div>
+          <div class="header-controls">
+            <nav id="pagination-top" class="pagination pagination-top" aria-label="Pagination haut"></nav>
+            <label for="page-size-select" class="page-size-label">Afficher
+              <select id="page-size-select">
+                <option value="9">9</option>
+                <option value="18">18</option>
+                <option value="36">36</option>
+                <option value="all">Tout</option>
+              </select>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div id="grid" class="grid">
+        <p class="muted center">Chargement des idées…</p>
+      </div>
+      <nav id="pagination" class="pagination" aria-label="Pagination bas"></nav>
+    </section>
+  </main>
+
+  <!-- Modale détail (calque organisations, sans avatar ni badge de type) -->
+  <div id="modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-content" role="document">
+      <button class="modal-close" type="button" data-close aria-label="Fermer">×</button>
+      <h2 id="modal-title" class="modal-title"></h2>
+      <p id="modal-meta-line" class="modal-meta-line"></p>
+      <div id="modal-cats" class="modal-tags"></div>
+      <div class="modal-section" id="modal-desc-section">
+        <h3>Description</h3>
+        <p id="modal-description" class="modal-description"></p>
+      </div>
+      <div class="modal-section" id="modal-coords-section">
+        <h3>Coordonnées</h3>
+        <ul id="modal-coords" class="modal-coords"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Modale contribution (calque organisations) ===== -->
+  <div id="contribute-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="contribute-title">
+    <div class="modal-backdrop" data-cclose></div>
+    <div class="modal-content" role="document">
+      <button class="modal-close" type="button" data-cclose aria-label="Fermer">×</button>
+      <h2 id="contribute-title" class="modal-title">Proposer une idée</h2>
+      <p class="contribute-intro">
+        Merci&nbsp;! Décrivez votre idée en quelques lignes&nbsp;: l'équipe du
+        Parlement de la rivière Isère vérifie chaque proposition avant
+        publication.
+      </p>
+
+      <form id="contribute-form" novalidate>
+        <div class="form-row">
+          <label for="c-titre">Titre de l'idée <span class="req">*</span></label>
+          <input type="text" id="c-titre" name="titre" required maxlength="300" autocomplete="off"
+                 placeholder="Ex. : Sentier pédagogique le long de la rivière" />
+        </div>
+
+        <div class="form-row">
+          <label for="c-auteur">Qui propose cette idée&nbsp;?</label>
+          <input type="text" id="c-auteur" name="auteur" maxlength="300" autocomplete="off"
+                 placeholder="Votre nom, collectif, association… (facultatif)" />
+        </div>
+
+        <div class="form-row">
+          <label for="c-description">Description <span class="req">*</span></label>
+          <textarea id="c-description" name="description" rows="4" maxlength="3000"
+                    placeholder="En une ou deux phrases : votre idée, ce qu'elle apporterait à la rivière Isère ?"></textarea>
+        </div>
+
+        <div class="form-row">
+          <label for="c-url">Lien (facultatif)</label>
+          <input type="url" id="c-url" name="url" maxlength="2000" autocomplete="off"
+                 placeholder="https://…" />
+          <p class="field-hint">Article, pétition, page de présentation…</p>
+        </div>
+
+        <p class="contribute-privacy">
+          En envoyant, vous acceptez que ces informations soient publiées sur
+          GitHub (la plateforme qui héberge ce projet) afin que l'équipe les
+          examine. Vous y serez automatiquement informé·e de la suite donnée
+          à votre proposition.
+        </p>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" data-cclose>Annuler</button>
+          <button type="submit" id="contribute-submit" class="btn btn-primary">Envoyer la proposition</button>
+        </div>
+
+        <!-- Piège à robots : champ invisible — tout robot qui le remplit ne
+             partira jamais vers GitHub (ignore silencieux côté navigateur). -->
+        <input type="text" id="c-gotcha" name="website" class="gotcha" tabindex="-1" autocomplete="off" />
+      </form>
+
+      <!-- Confirmation : envoi silencieux réussi (le visiteur ne voit
+           jamais GitHub). -->
+      <div id="contribute-success" class="contribute-success" hidden>
+        <p class="contribute-success-title">✓ Merci, votre proposition est envoyée !</p>
+        <p>
+          L'équipe du Parlement de la rivière Isère va l'examiner. Si
+          l'idée est retenue, elle apparaîtra dans la grille
+          d'ici quelques jours.
+        </p>
+        <p class="contribute-success-note">
+          Merci pour votre aide&nbsp;!
+        </p>
+      </div>
+
+      <!-- Repli : le relais est indisponible → parcours GitHub manuel. -->
+      <div id="contribute-fallback" class="contribute-success" hidden>
+        <p class="contribute-success-title">⚠️ L'envoi direct est indisponible pour le moment</p>
+        <p>
+          Vous pouvez tout de même transmettre votre proposition via GitHub
+          (la plateforme qui héberge ce site)&nbsp;: un onglet va s'ouvrir,
+          cliquez simplement sur «&nbsp;<em>Submit new issue</em>&nbsp;» pour
+          finaliser l'envoi. Un compte GitHub gratuit suffit.
+        </p>
+        <a id="contribute-link" class="btn btn-primary contribute-link" target="_blank" rel="noopener noreferrer">
+          Finaliser l'envoi sur GitHub →
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Socles communs (ordre imposé : dom, search, pagination, dropdown,
+       app-core, contribution, app) -->
+  <script src="../common/js/dom.js"></script>
+  <script src="../common/js/search.js"></script>
+  <script src="../common/js/pagination.js"></script>
+  <script src="../common/js/dropdown.js"></script>
+  <script src="../common/js/app-core.js"></script>
+  <script src="../common/js/contribution.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

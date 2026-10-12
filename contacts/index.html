@@ -8,6 +8,8 @@
        dropdowns, pastilles) — chargé AVANT les styles propres. -->
   <link rel="stylesheet" href="../common/css/base.css" />
   <link rel="stylesheet" href="../common/css/contribution.css" />
+  <!-- Modales (détail GrilleDetail + contribution) : socle structurel commun -->
+  <link rel="stylesheet" href="../common/css/modal.css" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -74,30 +76,9 @@
     </section>
   </main>
 
-  <!-- Modale détail (calque médiathèque) -->
-  <div id="modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-name">
-    <div class="modal-backdrop" data-close></div>
-    <div class="modal-content" role="document">
-      <button class="modal-close" type="button" data-close aria-label="Fermer">×</button>
-      <div class="modal-head">
-        <span id="modal-avatar" class="avatar" aria-hidden="true"></span>
-        <div class="modal-title-block">
-          <h2 id="modal-name" class="modal-title"></h2>
-          <p id="modal-org" class="modal-org"></p>
-        </div>
-      </div>
-      <p id="modal-meta-line" class="modal-meta-line"></p>
-      <div id="modal-cats" class="modal-tags"></div>
-      <div class="modal-section" id="modal-desc-section">
-        <h3>Description</h3>
-        <p id="modal-description" class="modal-description"></p>
-      </div>
-      <div class="modal-section" id="modal-coords-section">
-        <h3>Coordonnées</h3>
-        <ul id="modal-coords" class="modal-coords"></ul>
-      </div>
-    </div>
-  </div>
+  <!-- Modale détail : plus d'inline — le socle commun GrilleDetail
+       (common/js/detail.js) monte le pop-up de la définition
+       « contacts » (common/js/details/contacts.js) à la demande. -->
 
   <!-- ===== Modale contribution (calque médiathèque) ===== -->
   <div id="contribute-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="contribute-title">
@@ -216,6 +197,10 @@
   <script src="../common/js/search.js"></script>
   <script src="../common/js/pagination.js"></script>
   <script src="../common/js/dropdown.js"></script>
+  <!-- Modale détail : engine + définition « contacts » (s'auto-enregistre
+       dans GrilleDetail), chargés avant contribution.js et app.js -->
+  <script src="../common/js/detail.js"></script>
+  <script src="../common/js/details/contacts.js"></script>
   <script src="../common/js/contribution.js"></script>
   <script src="js/app.js"></script>
 </body>

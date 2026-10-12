@@ -17,19 +17,16 @@ const { parseISO, formatDate } = window.GrilleDom;
 const GS = window.GrilleSearch;
 const { paginate: paginateItems, renderPagination } = window.GrillePagination;
 const { makeDropdown } = window.GrilleDropdown;
+const GD = window.GrilleDetail;
 
 /* ---------- Statuts ----------
    Les trois statuts conseillés (ajouter_projet.py) portent une
    vignette colorée (palette claire existante de la médiathèque) ;
    tout autre statut s'affiche tel quel sur la vignette neutre.
    Sans statut renseigné : déduction depuis les dates (Terminé si
-   date de fin passée, À venir si début futur, En cours sinon). */
-const STATUTS = {
-  "En cours": "en-cours",
-  "À venir": "a-venir",
-  "Terminé": "termine",
-  "En construction": "en-construction",
-};
+   date de fin passée, À venir si début futur, En cours sinon) —
+   logique portée par la définition GrilleDetail « projets »
+   (helpers statutOf/statutSlug/formatPeriode). */
 
 /* ---------- Mode intégré (?mode=integre) ----------
    Calque contacts : aucune iframe prévue aujourd'hui, le mode est
@@ -66,14 +63,6 @@ const els = {
   catToggle: null,
   catPill: null,
   catMenu: null,
-  modal: null,
-  modalStatut: null,
-  modalTitle: null,
-  modalMetaLine: null,
-  modalCats: null,
-  modalDescSection: null,
-  modalDescription: null,
-  modalSource: null,
 };
 
 function grabEls() {
@@ -92,14 +81,6 @@ function grabEls() {
   els.catToggle = document.getElementById("cat-toggle");
   els.catPill = document.getElementById("cat-pill");
   els.catMenu = document.getElementById("cat-menu");
-  els.modal = document.getElementById("modal");
-  els.modalStatut = document.getElementById("modal-statut");
-  els.modalTitle = document.getElementById("modal-title");
-  els.modalMetaLine = document.getElementById("modal-meta-line");
-  els.modalCats = document.getElementById("modal-cats");
-  els.modalDescSection = document.getElementById("modal-desc-section");
-  els.modalDescription = document.getElementById("modal-description");
-  els.modalSource = document.getElementById("modal-source");
 }
 
 /* ---------- Normalisation (contrat P3, valeurs absentes → "") ---------- */
@@ -119,21 +100,12 @@ function normalizeItems(raw) {
   }));
 }
 
-/* ---------- Statut effectif (renseigné sinon déduit des dates) ---------- */
-function statutOf(item) {
-  if (item.statut) return item.statut;
-  const today = new Date();
-  const debut = parseISO(item.date_debut);
-  const fin = parseISO(item.date_fin);
-  if (!debut && !fin) return "En construction";
-  if (fin && fin < today) return "Terminé";
-  if (debut && debut > today) return "À venir";
-  return "En cours";
-}
-
-function statutSlug(statut) {
-  return STATUTS[statut] || "autre";
-}
+/* ---------- Statut effectif & période (helpers de la définition
+   GrilleDetail « projets » — common/js/details/projets.js) ---------- */
+const GDH = GD.helpers("projets");
+const statutOf = GDH.statutOf;
+const statutSlug = GDH.statutSlug;
+const formatPeriode = GDH.formatPeriode;
 
 /* ---------- Tri ---------- */
 function sortTie(a, b) {
@@ -185,16 +157,6 @@ const getSearchIndex = GS.makeSearchCache(
   (item) =>
     [item.titre, item.porteur, item.description, item.lieu, statutOf(item)].join(" ")
 );
-
-/* ---------- Période affichée ---------- */
-function formatPeriode(item) {
-  const de = (item.date_debut || "").trim();
-  const fi = (item.date_fin || "").trim();
-  if (de && fi && de !== fi) return `Du ${formatDate(de)} au ${formatDate(fi)}`;
-  if (de) return `À partir du ${formatDate(de)}`;
-  if (fi) return `Jusqu'au ${formatDate(fi)}`;
-  return "";
-}
 
 /* ---------- Filtrage combiné (recherche ∧ statut ∧ catégories) ---------- */
 function getFilteredItems() {
@@ -284,49 +246,12 @@ function updateCount(n) {
   els.count.textContent = n === 0 ? "aucun projet" : `${n} projet${n > 1 ? "s" : ""}`;
 }
 
-/* ---------- Modale détail (calque médiathèque) ---------- */
+/* ---------- Modale détail : consommation du socle GrilleDetail
+   (définition « projets », common/js/details/projets.js — le
+   conteneur, la fermeture ×/voile/Échap et le scroll-lock sont
+   portés par l'engine common/js/detail.js) ---------- */
 function openModal(item) {
-  const statut = statutOf(item);
-
-  els.modalStatut.className = `card-type modal-type statut-${statutSlug(statut)}`;
-  els.modalStatut.textContent = statut;
-  els.modalTitle.textContent = item.titre || "(sans titre)";
-
-  // Ligne meta : porteur · période · lieu · ajouté le
-  const segs = [];
-  if (item.porteur) segs.push(item.porteur);
-  const periode = formatPeriode(item);
-  if (periode) segs.push(periode);
-  if (item.lieu) segs.push(item.lieu);
-  if (item.date_ajout) segs.push(`Ajouté le ${formatDate(item.date_ajout)}`);
-  els.modalMetaLine.textContent = segs.join(" · ");
-
-  els.modalCats.innerHTML = item.categories
-    .map((c) => `<span class="card-tag">${esc(c)}</span>`)
-    .join("");
-
-  if (item.description && item.description.trim()) {
-    els.modalDescSection.style.display = "";
-    els.modalDescription.textContent = item.description;
-  } else {
-    els.modalDescSection.style.display = "none";
-  }
-
-  // Lien du projet : masqué si absent/non-http
-  if (item.lien && /^https?:\/\//i.test(item.lien)) {
-    els.modalSource.style.display = "";
-    els.modalSource.href = item.lien;
-  } else {
-    els.modalSource.style.display = "none";
-  }
-
-  els.modal.setAttribute("aria-hidden", "false");
-  document.body.classList.add("modal-open");
-}
-
-function closeModal() {
-  els.modal.setAttribute("aria-hidden", "true");
-  document.body.classList.remove("modal-open");
+  GD.open("projets", item);
 }
 
 /* ---------- Menus Statut + Catégories (dropdowns communs) ---------- */
@@ -404,17 +329,9 @@ function attachListeners() {
     });
   }
 
-  els.modal.querySelectorAll("[data-close]").forEach((el) => {
-    el.addEventListener("click", closeModal);
-  });
-  // Échap : les dropdowns communs ferment les menus en premier ;
-  // la modale ne se ferme que si aucun menu n'est ouvert.
-  document.addEventListener("keydown", (e) => {
-    if (e.key !== "Escape") return;
-    if (els.statutMenu.classList.contains("open")) return;
-    if (els.catMenu.classList.contains("open")) return;
-    if (els.modal.getAttribute("aria-hidden") === "false") closeModal();
-  });
+  // Fermeture de la modale détail (×, voile, Échap) : portée par
+  // l'engine GrilleDetail — Échap rend d'abord la main aux menus
+  // déroulants ouverts (comportement historique des apps).
 }
 
 /* ---------- Contribution (esprit Datami) ----------
@@ -439,9 +356,7 @@ function attachListeners() {
   };
 
   function closeDetailModal() {
-    if (els.modal && els.modal.getAttribute("aria-hidden") === "false") {
-      closeModal();
-    }
+    if (GD.isOpen("projets")) GD.close("projets");
   }
 
   function validate() {

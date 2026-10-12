@@ -1,0 +1,41 @@
+/* =========================================================
+   GrilleDetail — styles « projets » (badge statut de la modale)
+
+   Uniquement le BADGE de la modale détail projet, scopé .gd-modal
+   (convention du socle) : vignettes de statut + marge du badge.
+   Palette claire reprise des vignettes de type de la médiathèque —
+   AUCUNE nouvelle couleur. Les vignettes de CARTE
+   (.card-type.statut-*) restent dans projets/css/style.css.
+   Conteneur et blocs structurels : common/css/modal.css (socle).
+   ========================================================= */
+
+/* Badge statut (structure propre à la modale projets) */
+.gd-modal .modal-type {
+  margin-bottom: 0.35rem;
+}
+
+/* En cours : bleu rapport (#e3ecf7 / #c3d3eb / #2b579a). */
+.gd-modal .modal-type.statut-en-cours {
+  background: #e3ecf7;
+  border-color: #c3d3eb;
+  color: #2b579a;
+}
+/* À venir : orange présentation (#fbeae3 / #f2c9bc / #c2401f). */
+.gd-modal .modal-type.statut-a-venir {
+  background: #fbeae3;
+  border-color: #f2c9bc;
+  color: #c2401f;
+}
+/* Terminé : vert article de revue (#e3f1e8 / #bfdccb / #1e6b3c). */
+.gd-modal .modal-type.statut-termine {
+  background: #e3f1e8;
+  border-color: #bfdccb;
+  color: #1e6b3c;
+}
+/* En construction : projet sans dates — vignette neutre. */
+.gd-modal .modal-type.statut-en-construction {
+  background: #f1f3f5;
+  border-color: var(--border-strong);
+  color: var(--text-muted);
+}
+/* Statut hors convention : vignette neutre du socle (var(--tag-bg)). */

@@ -122,178 +122,53 @@
 }
 
 /* ============== Vignettes de statut (palette médiathèque) ============== */
+/* Cartes uniquement — les vignettes de la modale détail
+   (.modal-type.statut-*) vivent dans la définition
+   ../common/css/details/projets.css (GrilleDetail). */
 /* En cours : bleu rapport (#e3ecf7 / #c3d3eb / #2b579a). */
-.card-type.statut-en-cours, .modal-type.statut-en-cours {
+.card-type.statut-en-cours {
   background: #e3ecf7;
   border-color: #c3d3eb;
   color: #2b579a;
 }
 /* À venir : orange présentation (#fbeae3 / #f2c9bc / #c2401f). */
-.card-type.statut-a-venir, .modal-type.statut-a-venir {
+.card-type.statut-a-venir {
   background: #fbeae3;
   border-color: #f2c9bc;
   color: #c2401f;
 }
 /* Terminé : vert article de revue (#e3f1e8 / #bfdccb / #1e6b3c). */
-.card-type.statut-termine, .modal-type.statut-termine {
+.card-type.statut-termine {
   background: #e3f1e8;
   border-color: #bfdccb;
   color: #1e6b3c;
 }
 /* En construction : projet sans dates — vignette neutre (palette
    claire UNIQUE). */
-.card-type.statut-en-construction, .modal-type.statut-en-construction {
+.card-type.statut-en-construction {
   background: #f1f3f5;
   border-color: var(--border-strong);
   color: var(--text-muted);
 }
 /* Statut hors convention : vignette neutre du socle (var(--tag-bg)). */
 
-/* ============== Modale détail (calque contacts/médiathèque) ============== */
-.modal {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
-.modal[aria-hidden="false"] { display: flex; }
-.modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(2px);
-}
-.modal-content {
-  position: relative;
-  background: var(--bg-card);
-  border-radius: var(--radius);
-  max-width: 640px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 2rem 2rem 1.5rem;
-  box-shadow: var(--shadow-lg);
-  animation: modal-in 0.2s ease-out;
-}
-@keyframes modal-in {
-  from { opacity: 0; transform: translateY(10px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-.modal-close {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  background: transparent;
-  border: none;
-  font-size: 1.8rem;
-  line-height: 1;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--radius-sm);
-}
-.modal-close:hover {
-  background: var(--bg-soft);
-  color: var(--text);
-}
-.modal-type {
-  margin-bottom: 0.35rem;
-}
-.modal-title {
-  margin: 0;
-  font-size: 1.4rem;
-  font-weight: 600;
-  line-height: 1.3;
-}
-/* Ligne meta compacte : « Porteur · Du … au … · Lieu · Ajouté le … » */
-.modal-meta-line {
-  margin: 0.5rem 0 0.25rem;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-.modal-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin: 0.75rem 0 1rem;
-}
-.modal-section h3 {
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
-  margin: 1rem 0 0.5rem;
-}
-.modal-description {
-  white-space: pre-wrap;
-  line-height: 1.6;
-  margin: 0;
-}
+/* ---------- Nettoyage CSS : modale détail mutualisée ----------
+   Le bloc modale inline est retiré de projets/index.html ; le
+   conteneur (.modal/.modal-content/.modal-close/.modal-title/
+   .modal-meta-line/.modal-tags/.modal-section/.modal-description/
+   .modal-actions), les .btn/.btn-primary/.btn-secondary et le
+   scroll-lock body.modal-open viennent du socle commun
+   ../common/css/modal.css ; les vignettes de statut de la modale
+   (.modal-type.statut-*) vivent dans la définition
+   ../common/css/details/projets.css. */
 
-/* Bouton d'action (calque médiathèque .btn.btn-primary) */
-.modal-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1.25rem;
-}
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  font-family: inherit;
-  font-weight: 600;
-  text-decoration: none;
-  border-radius: var(--radius-sm);
-  border: 1px solid transparent;
-  cursor: pointer;
-}
-.btn-primary {
-  background: var(--accent);
-  color: #ffffff;
-}
-.btn-primary:hover {
-  background: var(--accent-hover);
-}
-.btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-/* Body scroll lock quand modale ouverte (calque médiathèque) */
-body.modal-open { overflow: hidden; }
-
-/* ============== Bouton contribution (toolbar) ==============
-   Calque médiathèque : .btn/.btn-primary existent déjà (modale
-   détail), le formulaire et la modale viennent du socle commun
-   contribution.css + des .modal/.modal-title existants. */
+/* ============== Bouton contribution (toolbar) ============== */
 .propose-btn {
   white-space: nowrap;
 }
 /* La rangée dates du formulaire est passée à 2 colonnes : le socle
    common/css/contribution.css fournit .form-row-2 (repli 1 colonne
    ≤600px) — l'ancienne variante .form-row-3 est retirée. */
-.btn-secondary {
-  background: transparent;
-  color: var(--text);
-  border-color: var(--border-strong);
-}
-.btn-secondary:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.btn[disabled] {
-  background: var(--border);
-  color: var(--text-muted);
-  cursor: not-allowed;
-  pointer-events: none;
-}
 
 
 /* ============== Mode intégré (?mode=integre) ============= */

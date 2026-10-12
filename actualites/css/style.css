@@ -18,25 +18,31 @@
 
 .content { flex: 1; }
 
-/* ============== Entête (compteur, puis barre unique) ============== */
+/* ============== Entête : compteur + bouton sur la ligne du haut ============== */
 .content-header {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
   margin-bottom: 1rem;
+}
+/* Ligne tout en haut (CEO 12/10/26 soir) : compteur d'actualités à
+   gauche, bouton « Proposer une actualité » à droite. La toolbar
+   (filtres, pagination, pastilles) vit en dessous. */
+.header-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
 }
 .result-count {
   color: var(--text-muted);
   font-size: 0.9rem;
 }
 
-/* Barre unique : filtres à gauche, pagination + bouton « Proposer »
-   tout à droite via margin-left:auto (le bouton reste sur LA LIGNE
-   DES FILTRES même quand des pastilles sont sélectionnées — CEO
-   12/10/26 soir) ; les pastilles Mois/Type prennent leurs lignes
-   propres en dessous (flex-basis:100%). En écran étroit chaque
-   groupe repasse à la ligne, aligné à GAUCHE. */
+/* Barre des filtres : recherche/dropdowns à gauche, pagination haut
+   à droite via margin-left:auto (CEO 12/10/26 soir) ; les pastilles
+   Mois/Type prennent leurs lignes propres en dessous
+   (flex-basis:100%). En écran étroit chaque groupe repasse à la
+   ligne, aligné à GAUCHE. */
 .toolbar {
   display: flex;
   flex-wrap: wrap;

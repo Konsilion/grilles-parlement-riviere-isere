@@ -14,7 +14,15 @@
   <main class="layout">
     <section class="content" aria-label="Actualités">
       <div class="content-header">
-        <span id="result-count" class="result-count">— actualités</span>
+        <!-- Ligne tout en haut : compteur à gauche, bouton « Proposer »
+             à droite (CEO 12/10/26 soir). L'id propose-btn reste
+             OBLIGATOIRE (le socle commun y attache l'ouverture). -->
+        <div class="header-top">
+          <span id="result-count" class="result-count">— actualités</span>
+          <button type="button" id="propose-btn" class="btn btn-primary propose-btn">
+            Proposer une actualité
+          </button>
+        </div>
         <div class="toolbar">
           <div class="filters">
             <input
@@ -83,20 +91,11 @@
               ></div>
             </div>
           </div>
-          <!-- Groupe pagination + bouton AVANT les pastilles : il reste sur
-               la LIGNE DES FILTRES (bouton aligné à droite par le
-               margin-left:auto) même quand des pastilles Mois/Type sont
-               sélectionnées — elles prennent leurs lignes propres EN
-               DESSOUS (flex-basis:100%). CEO 12/10/26 soir. -->
+          <!-- Groupe pagination haut : sur la ligne des filtres, à droite
+               (le bouton « Proposer » vit désormais sur la ligne du
+               compteur, tout en haut — CEO 12/10/26 soir). -->
           <div class="header-controls">
             <nav id="pagination-top" class="pagination pagination-top" aria-label="Pagination haut"></nav>
-            <!-- Bouton contribution EN HAUT À DROITE (CEO 12/10/26 soir,
-                 inverse « en bas ») : dans .header-controls, donc poussé à
-                 droite par son margin-left:auto. L'id propose-btn reste
-                 OBLIGATOIRE (le socle commun y attache l'ouverture). -->
-            <button type="button" id="propose-btn" class="btn btn-primary propose-btn">
-              Proposer une actualité
-            </button>
           </div>
           <div id="month-pills" class="filter-pills" aria-label="Mois sélectionnés"></div>
           <div id="type-pills" class="filter-pills" aria-label="Types sélectionnés"></div>

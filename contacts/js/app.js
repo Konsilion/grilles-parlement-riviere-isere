@@ -14,7 +14,6 @@
 const DATA_URL = "data/contacts.json";
 
 const { esc } = window.GrilleDom;
-const { formatDate } = window.GrilleDom;
 const GS = window.GrilleSearch;
 const { paginate: paginateItems, renderPagination } = window.GrillePagination;
 const { makeDropdown } = window.GrilleDropdown;
@@ -51,16 +50,6 @@ const els = {
   catToggle: null,
   catPill: null,
   catMenu: null,
-  modal: null,
-  modalAvatar: null,
-  modalName: null,
-  modalOrg: null,
-  modalMetaLine: null,
-  modalCats: null,
-  modalDescSection: null,
-  modalDescription: null,
-  modalCoordsSection: null,
-  modalCoords: null,
 };
 
 function grabEls() {
@@ -75,16 +64,6 @@ function grabEls() {
   els.catToggle = document.getElementById("cat-toggle");
   els.catPill = document.getElementById("cat-pill");
   els.catMenu = document.getElementById("cat-menu");
-  els.modal = document.getElementById("modal");
-  els.modalAvatar = document.getElementById("modal-avatar");
-  els.modalName = document.getElementById("modal-name");
-  els.modalOrg = document.getElementById("modal-org");
-  els.modalMetaLine = document.getElementById("modal-meta-line");
-  els.modalCats = document.getElementById("modal-cats");
-  els.modalDescSection = document.getElementById("modal-desc-section");
-  els.modalDescription = document.getElementById("modal-description");
-  els.modalCoordsSection = document.getElementById("modal-coords-section");
-  els.modalCoords = document.getElementById("modal-coords");
 }
 
 /* ---------- Normalisation (contrat C2, valeurs absentes → "") ---------- */
@@ -223,72 +202,15 @@ function updateCount(n) {
   els.count.textContent = n === 0 ? "aucun contact" : `${n} contact${n > 1 ? "s" : ""}`;
 }
 
-/* ---------- Modale détail (calque médiathèque) ---------- */
-function addCoord(list, label, value, href, external) {
-  const li = document.createElement("li");
-  li.className = "coord";
-  const lab = document.createElement("span");
-  lab.className = "coord-label";
-  lab.textContent = label;
-  li.appendChild(lab);
-  const a = document.createElement("a");
-  a.href = href;
-  if (external) {
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-  }
-  a.textContent = value;
-  li.appendChild(a);
-  list.appendChild(li);
-}
+/* ---------- Modale détail (définition « contacts » du socle GrilleDetail,
+   common/js/details/contacts.js — aucune duplication : le conteneur et
+   les blocs structurels viennent du socle commun modal.css, l'avatar
+   et la tête de modale de common/css/details/contacts.css). ---------- */
+const GD = window.GrilleDetail;
 
+/* ---------- Modale détail : consommation du socle GrilleDetail ---------- */
 function openModal(item) {
-  els.modalAvatar.textContent = initialsOf(item.nom);
-  els.modalName.textContent = item.nom || "(sans nom)";
-
-  els.modalOrg.textContent = "";
-  if (item.organisation) {
-    els.modalOrg.textContent = item.organisation;
-    els.modalOrg.style.display = "";
-  } else {
-    els.modalOrg.style.display = "none";
-  }
-
-  // Ligne meta : rôle · lieu · date de contact · ajouté le
-  const segs = [];
-  if (item.role) segs.push(item.role);
-  if (item.lieu) segs.push(item.lieu);
-  if (item.date_contact) segs.push(`Contact : ${formatDate(item.date_contact)}`);
-  if (item.date_ajout) segs.push(`Ajouté le ${formatDate(item.date_ajout)}`);
-  els.modalMetaLine.textContent = segs.join(" · ");
-
-  els.modalCats.innerHTML = item.categories
-    .map((c) => `<span class="card-tag">${esc(c)}</span>`)
-    .join("");
-
-  if (item.description && item.description.trim()) {
-    els.modalDescSection.style.display = "";
-    els.modalDescription.textContent = item.description;
-  } else {
-    els.modalDescSection.style.display = "none";
-  }
-
-  // Coordonnées : email (mailto:), téléphone (tel:), lien externe (_blank)
-  els.modalCoords.innerHTML = "";
-  if (item.email) addCoord(els.modalCoords, "Email", item.email, `mailto:${item.email}`, false);
-  if (item.telephone) addCoord(els.modalCoords, "Téléphone", item.telephone, `tel:${item.telephone.replace(/\s+/g, "")}`, false);
-  if (item.lien && /^https?:\/\//i.test(item.lien)) {
-    addCoord(els.modalCoords, "Lien", item.lien, item.lien, true);
-  }
-  els.modalCoordsSection.style.display = els.modalCoords.children.length ? "" : "none";
-
-  els.modal.setAttribute("aria-hidden", "false");
-  document.body.classList.add("modal-open");
-}
-
-function closeModal() {
-  els.modal.setAttribute("aria-hidden", "true");
-  document.body.classList.remove("modal-open");
+  GD.open("contacts", item);
 }
 
 /* ---------- Menu Catégories (dropdown commun) ---------- */
@@ -356,17 +278,10 @@ function attachListeners() {
     });
   }
 
-  els.modal.querySelectorAll("[data-close]").forEach((el) => {
-    el.addEventListener("click", closeModal);
-  });
-  // Échap : le dropdown commun ferme le menu Catégories en premier
-  // (il rend le focus au bouton) ; la modale ne se ferme que si le
-  // menu était déjà fermé (comportement médiathèque).
-  document.addEventListener("keydown", (e) => {
-    if (e.key !== "Escape") return;
-    if (els.catMenu.classList.contains("open")) return;
-    if (els.modal.getAttribute("aria-hidden") === "false") closeModal();
-  });
+  // Fermeture de la modale détail (×, voile, Échap) : l'engine
+  // GrilleDetail gère tout — plus d'écouteur dédié ici (Échap
+  // rend d'abord la priorité au menu Catégories ouvert, puis
+  // ferme la modale détail la plus récente).
 }
 
 /* ---------- Contribution (esprit Datami) ----------
@@ -392,9 +307,7 @@ function attachListeners() {
   };
 
   function closeDetailModal() {
-    if (els.modal && els.modal.getAttribute("aria-hidden") === "false") {
-      closeModal();
-    }
+    if (GD.isOpen("contacts")) GD.close("contacts");
   }
 
   function validate() {

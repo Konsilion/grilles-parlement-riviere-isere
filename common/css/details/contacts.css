@@ -1,0 +1,68 @@
+/* =========================================================
+   GrilleDetail — styles PROPRES à la modale « contacts »
+
+   Seuls les blocs spécifiques au répertoire (avatar pastille,
+   tête de modale avatar + nom + organisation) vivent ici :
+   le conteneur et les blocs structurels viennent du socle
+   commun common/css/modal.css. Tout est scopé .gd-modal —
+   la modale est montée par l'engine GrilleDetail (racine
+   #gd-modal-contacts.gd-modal), et ces règles ne touchent
+   ni les cartes de l'app, ni la modale de contribution.
+
+   AUCUNE nouvelle couleur : tokens du socle uniquement
+   (--accent, --tag-bg existants).
+   ========================================================= */
+
+/* Avatar pastille (initiales) — même gabarit que la carte,
+   agrandi pour la modale. */
+.gd-modal .avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 50%;
+  background: var(--tag-bg);
+  color: var(--accent);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+
+/* Tête de modale : avatar + bloc nom/organisation */
+.gd-modal .modal-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+.gd-modal .modal-title-block {
+  min-width: 0;
+}
+.gd-modal .modal-org {
+  margin: 0.2rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* Pastilles catégories dans la modale (le socle .card-tag vit
+   dans le style.css de chaque app, pas dans base.css). */
+.gd-modal .card-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--tag-text);
+  background: var(--tag-bg);
+}
+
+/* Ligne meta compacte : « Rôle · Lieu · Contact : … · Ajouté le … »
+   (le socle pose margin: 0.2rem 0 0.25rem ; la modale contacts
+   tient la médiathèque historique : margin haute nulle). */
+.gd-modal .modal-meta-line {
+  margin: 0 0 0.25rem;
+}

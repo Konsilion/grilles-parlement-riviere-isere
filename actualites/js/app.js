@@ -48,6 +48,88 @@ const MONTHS_FR = [
   "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre",
 ];
 
+/* ---------- Lot E : pop-up de l'app cible depuis une fiche agrégée ----------
+   Un lien « Voir le X » d'une fiche agrégée (source_app non vide)
+   n'ouvre PLUS l'URL externe : il ouvre le pop-up de détail DE L'APP
+   CIBLE (socle commun GrilleDetail, common/js/detail.js) monté dans
+   CETTE page. La définition de l'app cible
+   (common/js/details/<app>.js) est chargée À LA DEMANDE par
+   GrilleDetail.openFrom — aucune des 8 n'est embarquée au boot.
+
+   Table générique type → app cible : elle ne dépend PAS des
+   définitions présentes dans CE dépôt à un instant donné (les apps
+   migrent sur GrilleDetail par lots, la table liste les 8 cibles du
+   contrat dès maintenant). */
+const SOURCE_APPS = { // type → { app, dataUrl, script }
+  media_publie:  { app: "mediatheque",  dataUrl: "../mediatheque/data/collection.json", script: "../common/js/details/mediatheque.js" },
+  outil_publie:  { app: "outiltheque",  dataUrl: "../outiltheque/data/outils.json",    script: "../common/js/details/outiltheque.js" },
+  contact:       { app: "contacts",     dataUrl: "../contacts/data/contacts.json",     script: "../common/js/details/contacts.js" },
+  projet:        { app: "projets",      dataUrl: "../projets/data/projets.json",        script: "../common/js/details/projets.js" },
+  organisation:  { app: "organisations",dataUrl: "../organisations/data/organisations.json", script: "../common/js/details/organisations.js" },
+  lieu:         { app: "lieux",        dataUrl: "../lieux/data/lieux.json",            script: "../common/js/details/lieux.js" },
+  question:      { app: "questions",   dataUrl: "../questions/data/questions.json",    script: "../common/js/details/questions.js" },
+  idee:          { app: "idees",       dataUrl: "../idees/data/idees.json",           script: "../common/js/details/idees.js" },
+};
+
+// Cache mémoire des JSON des apps cibles : UN fetch par app, max.
+const sourceAppData = new Map(); // app → Promise<Array|Erreur>
+
+function fetchSourceAppData(target) {
+  if (!sourceAppData.has(target.app)) {
+    sourceAppData.set(
+      target.app,
+      fetch(target.dataUrl, { cache: "no-cache" })
+        .then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.json();
+        })
+        .then((data) => (Array.isArray(data) ? data : data.items || []))
+        // Échec mémorisé dans la Promise : les clics suivants sur la
+        // même app rejettent immédiatement (pas de refetch en boucle)
+        // et chaque clic retombe sur le repli window.open — en
+        // silence, sans erreur console (le repli EST le comportement
+        // attendu, pas une panne à signaler).
+    );
+  }
+  return sourceAppData.get(target.app);
+}
+
+// Retrouve la fiche source dans le JSON de l'app cible par zotero_key.
+// La médiathèque porte la clé dans « key », les autres apps dans
+// « zotero_key » — on lit les deux sans présumer du conteneur.
+function findSourceItem(items, zoteroKey) {
+  if (!zoteroKey) return null;
+  return items.find((it) => it && (it.key === zoteroKey || it.zotero_key === zoteroKey)) || null;
+}
+
+// Repli = l'ancien comportement : ouvrir l'URL externe dans un nouvel
+// onglet. Jamais un silence — quelque chose doit toujours s'ouvrir.
+function openExternally(item) {
+  window.open(item.lien, "_blank", "noopener");
+}
+
+// Clic sur le lien d'une fiche agrégée : charge le JSON de l'app
+// cible, retrouve la fiche source par zotero_key, ouvre son pop-up
+// de détail DANS cette page. Toute défaillance (fetch, fiche
+// introuvable, clé vide) retombe sur l'ouverture externe du lien.
+function openSourceAppModal(item) {
+  const target = SOURCE_APPS[item.type];
+  if (!target || !item.source_app || !window.GrilleDetail) {
+    openExternally(item);
+    return;
+  }
+  fetchSourceAppData(target)
+    .then((items) => {
+      const fiche = findSourceItem(items, item.zotero_key);
+      if (!fiche) {
+        openExternally(item);
+        return;
+      }
+      return window.GrilleDetail.openFrom(target.app, target.script, fiche, {});
+    })
+    .catch(() => openExternally(item));
+}
+
 /* ---------- État ---------- */
 const state = {
   items: [],
@@ -312,6 +394,17 @@ function renderCard(item) {
     // linkLabel « Voir le X », les types natifs (evenement,
     // information) retombent sur « En savoir plus ».
     a.textContent = TYPES[item.type]?.linkLabel || "En savoir plus";
+    // Lot E : pour une fiche agrégée (source_app non vide) dont le
+    // type a une app cible, le clic ouvre le POP-UP de détail de
+    // l'app cible dans cette page (GrilleDetail.openFrom) au lieu de
+    // naviguer. L'href reste pour le clic-milieu / menu contextuel ;
+    // preventDefault n'agit que sur le clic gauche ordinaire.
+    if (item.source_app && SOURCE_APPS[item.type]) {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        openSourceAppModal(item);
+      });
+    }
     linkWrap.appendChild(a);
     card.appendChild(linkWrap);
   }

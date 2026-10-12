@@ -6,13 +6,20 @@
    .pagination/.page-*, .page-size-label, .header-controls,
    .search-input, .card (socle + halo), .card-type, .card-title,
    .card-meta, .empty, .muted, .center, .grid (display/gap).
+
    Ce fichier garde : sidebar, filtres Type, variantes year-*
-   (largeur pleine sidebar), modale, palette des types, mode
-   intégré (?mode=integre) et tokens supplémentaires.
+   (largeur pleine sidebar), palette des types des CARTES, mode
+   intégré (?mode=integre) et tokens supplémentaires. La modale
+   détail vit dans le socle GrilleDetail (common/js/details/
+   mediatheque.js + common/css/details/mediatheque.css) ; les
+   styles structurels des modales dans common/css/modal.css.
    ========================================================= */
 
 /* ============== Tokens supplémentaires (médiathèque) ============== */
 :root {
+  /* Largeur historique des modales médiathèque (détail + contribution) ;
+     le socle pose --modal-maxw: 640px, l'app le surcharge. */
+  --modal-maxw: 700px;
   --bg-sidebar: #ffffff;
   --bg-modal: #ffffff;
   --tag-active-bg: #0b4387;
@@ -240,194 +247,55 @@ select:focus {
 }
 .card-tag.more { background: transparent; color: var(--text-muted); }
 
-/* ============== Vignettes par type (palette Office) ==============
-   Applicables carte ET modale. */
-.modal-type {
-  display: inline-block;
-  align-self: flex-start;
-  font-size: 0.72rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  color: var(--accent);
-  background: var(--tag-bg);
-}
-.card-type.type-rapport, .modal-type.type-rapport {
+
+
+/* ============== Vignettes de type des CARTES (palette Office) ==============
+   Base .card-type = socle base.css. Le badge de la modale détail ET le
+   badge « Contribuer » de la modale contribution (.modal-type) vivent
+   dans common/css/details/mediatheque.css (définition GrilleDetail),
+   chargée dans le <head> — même palette, zéro duplication. */
+.card-type.type-rapport {
   background: #e3ecf7;
   border-color: #c3d3eb;
   color: #2b579a; /* bleu Word */
 }
-.card-type.type-document, .modal-type.type-document {
+.card-type.type-document {
   background: #f0f0f1;
   border-color: #d9d9dc;
   color: #5a5a5e; /* gris */
 }
-.card-type.type-presentation, .modal-type.type-presentation {
+.card-type.type-presentation {
   background: #fbeae3;
   border-color: #f2c9bc;
   color: #c2401f; /* orange PowerPoint */
 }
-.card-type.type-audio, .modal-type.type-audio {
+.card-type.type-audio {
   background: #f1e9fb;
   border-color: #dccaf4;
   color: #6d28d9; /* violet */
 }
-.card-type.type-article, .modal-type.type-article {
+.card-type.type-article {
   background: #e3f1e8;
   border-color: #bfdccb;
   color: #1e6b3c; /* vert Excel */
 }
-.card-type.type-newsletter, .modal-type.type-newsletter {
+.card-type.type-newsletter {
   background: #fdf3d8;
   border-color: #f2dfa4;
   color: #8a6116; /* jaune Outlook */
 }
-.card-type.type-autre, .modal-type.type-autre {
+.card-type.type-autre {
   background: var(--tag-bg);
   border-color: var(--border);
   color: var(--accent);
 }
 
-/* ============== Modale ============== */
-.modal {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
-.modal[aria-hidden="false"] {
-  display: flex;
-}
-.modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(2px);
-}
-.modal-content {
-  position: relative;
-  background: var(--bg-modal);
-  border-radius: var(--radius);
-  max-width: 700px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 2rem 2rem 1.5rem;
-  box-shadow: var(--shadow-lg);
-  animation: modal-in 0.2s ease-out;
-}
-@keyframes modal-in {
-  from { opacity: 0; transform: translateY(10px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-.modal-close {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  background: transparent;
-  border: none;
-  font-size: 1.8rem;
-  line-height: 1;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--radius-sm);
-}
-.modal-close:hover {
-  background: var(--bg-soft);
-  color: var(--text);
-}
-.modal-type {
-  margin-bottom: 0.5rem;
-}
-.modal-title {
-  margin: 0 0 0.75rem;
-  font-size: 1.4rem;
-  font-weight: 600;
-  line-height: 1.3;
-}
-/* Ligne meta compacte (CEO 10/10/26) : « Par : … · 📅 … · Ajouté le … » */
-.modal-meta-line {
-  margin: 0 0 0.25rem;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-.modal-meta-line .modal-meta-authors {
-  color: var(--text);
-}
-.modal-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin: 0.75rem 0 1rem;
-}
-.modal-tags .card-tag { font-size: 0.8rem; padding: 0.25rem 0.6rem; }
-.modal-section h3 {
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
-  margin: 1rem 0 0.5rem;
-}
-.modal-abstract {
-  white-space: pre-wrap;
-  line-height: 1.6;
-  margin: 0;
-}
-.modal-abstract.empty {
-  color: var(--text-muted);
-  font-style: italic;
-}
-.modal-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1.25rem;
-}
-.btn {
-  display: inline-block;
-  padding: 0.6rem 1rem;
-  border-radius: var(--radius-sm);
-  font-size: 0.9rem;
-  text-decoration: none;
-  font-family: inherit;
-  cursor: pointer;
-  border: 1px solid transparent;
-}
-.btn-primary {
-  background: var(--accent);
-  color: #fff;
-}
-.btn-primary:hover { background: var(--accent-hover); color: #fff; }
-.btn-primary.disabled {
-  background: var(--border);
-  color: var(--text-muted);
-  cursor: not-allowed;
-  pointer-events: none;
-}
-.btn-secondary {
-  background: transparent;
-  color: var(--text);
-  border-color: var(--border-strong);
-}
-.btn-secondary:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.copied-msg {
-  display: inline-block;
-  margin: 0.5rem 0 0;
-  color: #16a34a;
-  font-size: 0.85rem;
-  min-height: 1.2em;
-}
+/* ============== Modale ==============
+   Le conteneur, les boutons et les blocs structurels viennent du socle
+   commun common/css/modal.css (chargé AVANT ce fichier) ; les écarts
+   propres à la modale détail (badge type, meta, résumé, copied-msg)
+   vivent dans common/css/details/mediatheque.css (définition GrilleDetail).
+   Reste ici, propre à l'app : la modale contribution inline. */
 
 /* ============== Bloc contribution ============== */
 .propose-block {
@@ -489,32 +357,29 @@ html[data-embed="1"] select { background: #ffffff; }
 html[data-embed="1"] .dd-toggle,
 html[data-embed="1"] .dd-menu { background: #ffffff; }
 
-/* Vignettes de type : re-forçage des variantes claires (les variantes
-   sombres via prefers-color-scheme passeraient au travers sinon). */
-html[data-embed="1"] .card-type.type-rapport,
-html[data-embed="1"] .modal-type.type-rapport {
+/* Vignettes de type des CARTES : re-forçage des variantes claires (les
+   variantes sombres via prefers-color-scheme passeraient au travers
+   sinon). Le badge .modal-type (détail + contribution) est re-forcé
+   dans common/css/details/mediatheque.css, même logique. */
+html[data-embed="1"] .card-type.type-rapport {
   background: #e3ecf7; border-color: #c3d3eb; color: #2b579a;
 }
-html[data-embed="1"] .card-type.type-document,
-html[data-embed="1"] .modal-type.type-document {
+html[data-embed="1"] .card-type.type-document {
   background: #f0f0f1; border-color: #d9d9dc; color: #5a5a5e;
 }
-html[data-embed="1"] .card-type.type-presentation,
-html[data-embed="1"] .modal-type.type-presentation {
+html[data-embed="1"] .card-type.type-presentation {
   background: #fbeae3; border-color: #f2c9bc; color: #c2401f;
 }
-html[data-embed="1"] .card-type.type-audio,
-html[data-embed="1"] .modal-type.type-audio {
+html[data-embed="1"] .card-type.type-audio {
   background: #f1e9fb; border-color: #dccaf4; color: #6d28d9;
 }
-html[data-embed="1"] .card-type.type-article,
-html[data-embed="1"] .modal-type.type-article {
+html[data-embed="1"] .card-type.type-article {
   background: #e3f1e8; border-color: #bfdccb; color: #1e6b3c;
 }
-html[data-embed="1"] .card-type.type-newsletter,
-html[data-embed="1"] .modal-type.type-newsletter {
+html[data-embed="1"] .card-type.type-newsletter {
   background: #fdf3d8; border-color: #f2dfa4; color: #8a6116;
 }
+
 
 /* Modale ancrée en mode intégré (le JS pose le top inline) */
 html[data-embed="1"] .modal {

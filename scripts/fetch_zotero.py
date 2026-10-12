@@ -231,10 +231,6 @@ def main():
     raw_items = fetch_items(ZOTERO_GROUP_ID, ZOTERO_API_KEY)
     print(f"  {len(raw_items)} items bruts récupérés")
 
-    # Ordre du dérivé : dateModified décroissante — celle de l'ancien balayage
-    # groupe (le front ne trie pas les items, il affiche le JSON tel quel ;
-    # l'ordre affiché de la grille est ainsi préservé).
-    raw_items.sort(key=lambda r: r.get("data", {}).get("dateModified") or "", reverse=True)
     formatted = [
         it for it in (format_item(r, collection_map) for r in raw_items) if it is not None
     ]

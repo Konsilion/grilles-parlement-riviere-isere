@@ -350,6 +350,43 @@ body.modal-open { overflow: hidden; }
   border-color: #f2dfa4;
   color: #8a6116; /* jaune Outlook */
 }
+/* ============== Vignettes des 6 types agrégés (lot 3) ==============
+   Fiches des autres apps : contact, projet, organisation, lieu,
+   question, idee. Calque strict des 4 règles ci-dessus — palette
+   CLAIRE UNIQUE (fonds très clairs, texte foncé lisible), 6 teintes
+   distinctes entre elles ET des 4 natives (bleu, vert, teal, jaune)
+   et du rouge « Passé(e) ». Pas de prefers-color-scheme, pas de
+   dark mode ; common/css/base.css intouchable. */
+.card-type.type-contact {
+  background: #ece9f7;
+  border-color: #d0c9ec;
+  color: #4b3a9e; /* violet */
+}
+.card-type.type-projet {
+  background: #fdeadd;
+  border-color: #f6d3b3;
+  color: #a3541a; /* orange brûlé */
+}
+.card-type.type-organisation {
+  background: #fbe4ec;
+  border-color: #f3c2d4;
+  color: #a63a63; /* rose framboise */
+}
+.card-type.type-lieu {
+  background: #f3e7dd;
+  border-color: #ddc6b0;
+  color: #7a4a24; /* brun terre */
+}
+.card-type.type-question {
+  background: #def1fa;
+  border-color: #b6dcee;
+  color: #175f80; /* bleu ciel soutenu */
+}
+.card-type.type-idee {
+  background: #f7e0f4;
+  border-color: #e5bcdc;
+  color: #933385; /* magenta */
+}
 
 /* ============== Pastille « Passé(e) » (CEO 12/10/26) ==============
    Actualité dont la période est terminée (date_fin, ou date_debut

@@ -3,14 +3,15 @@
 #
 # Étendu (5e grille, 12/10/26) : les NEUF fetchs —
 #   1. scripts/fetch_zotero.py           -> mediatheque/data/collection.json
-#   2. scripts/fetch_actualites.py       -> actualites/data/actualites.json
-#   3. scripts/fetch_contacts.py         -> contacts/data/contacts.json
-#   4. scripts/fetch_projets.py          -> projets/data/projets.json
-#   5. scripts/fetch_organisations.py    -> organisations/data/organisations.json
-#   6. scripts/fetch_outils.py           -> outiltheque/data/outils.json
-#   7. scripts/fetch_lieux.py            -> lieux/data/lieux.json
-#   8. scripts/fetch_questions.py        -> questions/data/questions.json
-#   9. scripts/fetch_idees.py            -> idees/data/idees.json
+#   2. scripts/fetch_contacts.py         -> contacts/data/contacts.json
+#   3. scripts/fetch_projets.py          -> projets/data/projets.json
+#   4. scripts/fetch_organisations.py    -> organisations/data/organisations.json
+#   5. scripts/fetch_outils.py           -> outiltheque/data/outils.json
+#   6. scripts/fetch_lieux.py            -> lieux/data/lieux.json
+#   7. scripts/fetch_questions.py        -> questions/data/questions.json
+#   8. scripts/fetch_idees.py            -> idees/data/idees.json
+#   9. scripts/fetch_actualites.py       -> actualites/data/actualites.json
+#      (EN DERNIER : il agrège les 8 data/*.json fraîchement régénérés)
 # puis commit des neuf data/ et push vers GitHub Pages.
 #
 # Usage:
@@ -51,14 +52,17 @@ fi
 if [ "$DRY_RUN" = "1" ]; then
     echo ""
     echo "[DRY-RUN] Étapes qui seraient exécutées :"
-    echo "  1-9. les NEUF fetchs (fetch_zotero, fetch_actualites, fetch_contacts,"
+    echo "  1-8. les HUIT fetchs sources (fetch_zotero, fetch_contacts,"
     echo "        fetch_projets, fetch_organisations, fetch_outils, fetch_lieux,"
     echo "        fetch_questions, fetch_idees) — chaque script présent est exécuté"
+    echo "  9. fetch_actualites.py EN DERNIER (agrège les 8 data/*.json"
+    echo "        fraîchement régénérés) — script présent exécuté"
     echo "  10. git add des data/*.json présents + commit + push origin main"
     exit 0
 fi
 
-# 3. Les NEUF fetchs Zotero
+# 3. Les NEUF fetchs Zotero (fetch_actualites EN DERNIER : il agrège
+#    les 8 data/*.json fraîchement régénérés par les fetchs précédents)
 run_fetch() {
     # $1 = nom du script, $2 = libellé
     if [ -f "scripts/$1" ]; then
@@ -72,7 +76,6 @@ run_fetch() {
 }
 
 run_fetch fetch_zotero.py "médiathèque"
-run_fetch fetch_actualites.py "actualités"
 run_fetch fetch_contacts.py "contacts"
 run_fetch fetch_projets.py "projets"
 run_fetch fetch_organisations.py "organisations"
@@ -80,6 +83,7 @@ run_fetch fetch_outils.py "outilthèque"
 run_fetch fetch_lieux.py "lieux"
 run_fetch fetch_questions.py "questions"
 run_fetch fetch_idees.py "idées"
+run_fetch fetch_actualites.py "actualités (agrégation des 8 autres apps)"
 
 # 4. Commit + push des data/ présents (le timer horaire ne pousse JAMAIS
 #    les pending_proposals.json — règle anti-fuite message-ids)

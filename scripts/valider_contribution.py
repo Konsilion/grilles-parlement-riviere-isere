@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """valider_contribution.py — modération des propositions (issues GitHub).
 
-Parcours « esprit Datami » des 4 applications (parlement de la rivière
+Parcours « esprit Datami » des applications (parlement de la rivière
 Isère) : un·e visiteur remplit la modale « Proposer … » → une issue
 GitHub pré-remplie (étiquette `contribution`) est soumise → l'équipe
 vérifie → CE script valide la proposition :
@@ -30,7 +30,23 @@ d'issue) :
     projets      titre, porteur, lieu, date_debut, date_fin, statut
                  (En cours/À venir/Terminé), description, url →
                  « Projets » (RPZFWI9M) — mapping P3 (extra
-                 « Statut: … », citationKey P000N).
+                 « Statut: … », citationKey P000N) ;
+    organisations nom, lieu, email, telephone, description, url →
+                 « Organisations » (9DZCCXQE) — mapping (extra
+                 Email:/Telephone: renseignés + Source, citationKey
+                 O000N) ;
+    outiltheque  nom, categorie, lieu, description, url →
+                 « Outilthèque » (3Z7QJHRU) — mapping (extra
+                 Categorie:/Disponibilite: + Source, citationKey
+                 U000N) ;
+    lieux        nom, adresse, description, url → « Lieux »
+                 (UMMXNXDJ) — mapping (extra Source, citationKey
+                 L000N) ;
+    questions    titre, question, description, url → « Questions »
+                 (6IEE7MF2) — mapping (abstractNote=description,
+                 extra « Question: … » + Source, citationKey Q000N) ;
+    idees        titre, description, url → « Idées » (99X4HHIB) —
+                 mapping (extra Source, citationKey I000N).
 
 Usage (interface inchangée depuis la médiathèque) :
     python3 scripts/valider_contribution.py --liste        # propositions en attente (toutes apps)
@@ -164,7 +180,7 @@ ACTUALITES_TYPES = {
 PROJETS_STATUTS = {"En cours", "À venir", "Terminé"}
 
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-CITATION_RE = re.compile(r"^([ACP])(\d{4,})$")   # A/C/P0001… (tolère > 9999)
+CITATION_RE = re.compile(r"^([ACPOULQI])(\d{4,})$")   # A/C/P/O/U/L/Q/I0001… (tolère > 9999)
 
 
 def _s(v):
@@ -332,6 +348,141 @@ def build_item_projets(prop, collection_key, items):
     return item
 
 
+def build_item_organisations(prop, collection_key, items):
+    """proposition organisation → item Zotero (mapping contrats 5-9).
+
+    title=nom, abstractNote=description, place=lieu, url=url,
+    extra=lignes « Email: »/« Telephone: » (seulement les renseignées)
+    + « Source: contribution organisations (issue GitHub) »,
+    citationKey O000N. Aucun champ publisher (pas de champ
+    organisation dans la modale).
+    """
+    extra_lines = []
+    if prop["email"]:
+        extra_lines.append(f"Email: {prop['email']}")
+    if prop["telephone"]:
+        extra_lines.append(f"Telephone: {prop['telephone']}")
+    extra_lines.append("Source: contribution organisations (issue GitHub)")
+    today = datetime.date.today().isoformat()
+    return {
+        "itemType": "document",
+        "title": prop["nom"],
+        "citationKey": next_citation_key(items, "O"),
+        "collections": [collection_key],
+        "tags": [],
+        "abstractNote": prop["description"] or "",
+        "place": prop["lieu"] or "",
+        "url": prop["url"] or "",
+        "extra": "\n".join(extra_lines),
+        "dateAdded": f"{today}T00:00:00Z",
+        "dateModified": f"{today}T00:00:00Z",
+    }
+
+
+def build_item_outiltheque(prop, collection_key, items):
+    """proposition outil → item Zotero (mapping contrat Outilthèque).
+
+    title=nom, abstractNote=description, place=lieu, url=url,
+    extra=lignes « Categorie: »/« Disponibilite: » (seulement si
+    renseignées — la modale ne propose pas de disponibilité, la ligne
+    n'apparaît que si le champ existe) + « Source: contribution
+    outilthèque (issue GitHub) », citationKey U000N.
+    """
+    extra_lines = []
+    if prop.get("categorie"):
+        extra_lines.append(f"Categorie: {prop['categorie']}")
+    if prop.get("disponibilite"):
+        extra_lines.append(f"Disponibilite: {prop['disponibilite']}")
+    extra_lines.append("Source: contribution outilthèque (issue GitHub)")
+    today = datetime.date.today().isoformat()
+    return {
+        "itemType": "document",
+        "title": prop["nom"],
+        "citationKey": next_citation_key(items, "U"),
+        "collections": [collection_key],
+        "tags": [],
+        "abstractNote": prop["description"] or "",
+        "place": prop["lieu"] or "",
+        "url": prop["url"] or "",
+        "extra": "\n".join(extra_lines),
+        "dateAdded": f"{today}T00:00:00Z",
+        "dateModified": f"{today}T00:00:00Z",
+    }
+
+
+def build_item_lieux(prop, collection_key, items):
+    """proposition lieu → item Zotero (mapping contrat Lieux).
+
+    title=nom, abstractNote=description, place=adresse, url=url,
+    extra=« Source: contribution lieux (issue GitHub) »,
+    citationKey L000N.
+    """
+    today = datetime.date.today().isoformat()
+    return {
+        "itemType": "document",
+        "title": prop["nom"],
+        "citationKey": next_citation_key(items, "L"),
+        "collections": [collection_key],
+        "tags": [],
+        "abstractNote": prop["description"] or "",
+        "place": prop["adresse"] or "",
+        "url": prop["url"] or "",
+        "extra": "Source: contribution lieux (issue GitHub)",
+        "dateAdded": f"{today}T00:00:00Z",
+        "dateModified": f"{today}T00:00:00Z",
+    }
+
+
+def build_item_questions(prop, collection_key, items):
+    """proposition question → item Zotero (mapping contrat Questions).
+
+    title=titre, abstractNote=description (la QUESTION vit dans extra,
+    ligne « Question: … »), url=url, extra=« Question: … » +
+    « Source: contribution questions (issue GitHub) »,
+    citationKey Q000N.
+    """
+    today = datetime.date.today().isoformat()
+    return {
+        "itemType": "document",
+        "title": prop["titre"],
+        "citationKey": next_citation_key(items, "Q"),
+        "collections": [collection_key],
+        "tags": [],
+        "abstractNote": prop["description"] or "",
+        "url": prop["url"] or "",
+        "extra": "\n".join(
+            [
+                f"Question: {prop['question']}",
+                "Source: contribution questions (issue GitHub)",
+            ]
+        ),
+        "dateAdded": f"{today}T00:00:00Z",
+        "dateModified": f"{today}T00:00:00Z",
+    }
+
+
+def build_item_idees(prop, collection_key, items):
+    """proposition idée → item Zotero (mapping contrat Idées).
+
+    title=titre, abstractNote=description, url=url,
+    extra=« Source: contribution idées (issue GitHub) »,
+    citationKey I000N.
+    """
+    today = datetime.date.today().isoformat()
+    return {
+        "itemType": "document",
+        "title": prop["titre"],
+        "citationKey": next_citation_key(items, "I"),
+        "collections": [collection_key],
+        "tags": [],
+        "abstractNote": prop["description"] or "",
+        "url": prop["url"] or "",
+        "extra": "Source: contribution idées (issue GitHub)",
+        "dateAdded": f"{today}T00:00:00Z",
+        "dateModified": f"{today}T00:00:00Z",
+    }
+
+
 def clean_mediatheque(data):
     def s(k):
         v = str(data.get(k) or "").strip()
@@ -372,6 +523,56 @@ def clean_projets(data):
         "titre": s("titre"), "porteur": s("porteur"), "lieu": s("lieu"),
         "date_debut": s("date_debut"), "date_fin": s("date_fin"),
         "statut": s("statut"), "description": s("description"), "url": s("url"),
+    }
+
+
+def clean_organisations(data):
+    def s(k):
+        v = str(data.get(k) or "").strip()
+        return v or None
+    return {
+        "nom": s("nom"), "lieu": s("lieu"), "email": s("email"),
+        "telephone": s("telephone"), "description": s("description"),
+        "url": s("url"),
+    }
+
+
+def clean_outiltheque(data):
+    def s(k):
+        v = str(data.get(k) or "").strip()
+        return v or None
+    return {
+        "nom": s("nom"), "categorie": s("categorie"), "lieu": s("lieu"),
+        "description": s("description"), "url": s("url"),
+    }
+
+
+def clean_lieux(data):
+    def s(k):
+        v = str(data.get(k) or "").strip()
+        return v or None
+    return {
+        "nom": s("nom"), "adresse": s("adresse"),
+        "description": s("description"), "url": s("url"),
+    }
+
+
+def clean_questions(data):
+    def s(k):
+        v = str(data.get(k) or "").strip()
+        return v or None
+    return {
+        "titre": s("titre"), "question": s("question"),
+        "description": s("description"), "url": s("url"),
+    }
+
+
+def clean_idees(data):
+    def s(k):
+        v = str(data.get(k) or "").strip()
+        return v or None
+    return {
+        "titre": s("titre"), "description": s("description"), "url": s("url"),
     }
 
 
@@ -437,6 +638,76 @@ APPS = {
         "pronom": "Il",
         "publie": "la grille Projets",
     },
+    "organisations": {
+        "collection": ("Organisations", "9DZCCXQE"),
+        "clean": clean_organisations,
+        "required": ("nom",),
+        "checks": ("check_organisations",),
+        "build": build_item_organisations,
+        "list_fields": (
+            ("nom", "nom"), ("lieu", "lieu"), ("e-mail", "email"),
+            ("téléphone", "telephone"), ("description", "description"),
+            ("lien", "url"),
+        ),
+        "phrase": "L'organisation",
+        "pronom": "Elle",
+        "publie": "la grille Organisations",
+    },
+    "outiltheque": {
+        "collection": ("Outilthèque", "3Z7QJHRU"),
+        "clean": clean_outiltheque,
+        "required": ("nom",),
+        "checks": ("check_outiltheque",),
+        "build": build_item_outiltheque,
+        "list_fields": (
+            ("nom", "nom"), ("categorie", "categorie"), ("lieu", "lieu"),
+            ("description", "description"), ("lien", "url"),
+        ),
+        "phrase": "L'outil",
+        "pronom": "Il",
+        "publie": "la grille Outilthèque",
+    },
+    "lieux": {
+        "collection": ("Lieux", "UMMXNXDJ"),
+        "clean": clean_lieux,
+        "required": ("nom",),
+        "checks": ("check_lieux",),
+        "build": build_item_lieux,
+        "list_fields": (
+            ("nom", "nom"), ("adresse", "adresse"),
+            ("description", "description"), ("lien", "url"),
+        ),
+        "phrase": "Le lieu",
+        "pronom": "Il",
+        "publie": "la grille Lieux",
+    },
+    "questions": {
+        "collection": ("Questions", "6IEE7MF2"),
+        "clean": clean_questions,
+        "required": ("titre",),
+        "checks": ("check_questions",),
+        "build": build_item_questions,
+        "list_fields": (
+            ("titre", "titre"), ("question", "question"),
+            ("description", "description"), ("lien", "url"),
+        ),
+        "phrase": "La question",
+        "pronom": "Elle",
+        "publie": "la grille Questions",
+    },
+    "idees": {
+        "collection": ("Idées", "99X4HHIB"),
+        "clean": clean_idees,
+        "required": ("titre",),
+        "checks": ("check_idees",),
+        "build": build_item_idees,
+        "list_fields": (
+            ("titre", "titre"), ("description", "description"), ("lien", "url"),
+        ),
+        "phrase": "L'idée",
+        "pronom": "Elle",
+        "publie": "la grille Idées",
+    },
 }
 
 
@@ -492,11 +763,59 @@ def check_projets(prop):
     return None
 
 
+def check_organisations(prop):
+    """Email/téléphone simples + url http/s. Retourne motif ou None.
+
+    Calque check_contacts (mêmes règles) : email regex, téléphone
+    ≥ 6 chiffres, url http/s — aucun champ obligatoire hors nom.
+    """
+    if prop["email"] and not re.match(r"^[^\s@]+@[^\s@]+\.[^\s@]+$", prop["email"]):
+        return f"e-mail invalide « {prop['email']} »"
+    if prop["telephone"] and len(re.sub(r"[^\d+]", "", prop["telephone"])) < 6:
+        return "téléphone invalide"
+    if prop["url"] and not re.match(r"^https?://", prop["url"]):
+        return "lien invalide (http/https attendu)"
+    return None
+
+
+def check_outiltheque(prop):
+    """Url http/s. Retourne motif ou None."""
+    if prop["url"] and not re.match(r"^https?://", prop["url"]):
+        return "lien invalide (http/https attendu)"
+    return None
+
+
+def check_lieux(prop):
+    """Url http/s. Retourne motif ou None."""
+    if prop["url"] and not re.match(r"^https?://", prop["url"]):
+        return "lien invalide (http/https attendu)"
+    return None
+
+
+def check_questions(prop):
+    """Url http/s. Retourne motif ou None."""
+    if prop["url"] and not re.match(r"^https?://", prop["url"]):
+        return "lien invalide (http/https attendu)"
+    return None
+
+
+def check_idees(prop):
+    """Url http/s. Retourne motif ou None."""
+    if prop["url"] and not re.match(r"^https?://", prop["url"]):
+        return "lien invalide (http/https attendu)"
+    return None
+
+
 CHECKS = {
     "check_mediatheque": check_mediatheque,
     "check_actualites": check_actualites,
     "check_contacts": check_contacts,
     "check_projets": check_projets,
+    "check_organisations": check_organisations,
+    "check_outiltheque": check_outiltheque,
+    "check_lieux": check_lieux,
+    "check_questions": check_questions,
+    "check_idees": check_idees,
 }
 
 

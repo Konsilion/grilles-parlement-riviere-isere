@@ -21,3 +21,7 @@ mcd/
 
 # (11/10/26 soir) Annulation : le relais contribution ne vit plus dans ce
 # repo — déplacé dans ~/apps/ sur le VPS (décision CEO). Plus rien à ignorer.
+# Pending de propositions (règle CEO 12/10) : JAMAIS poussés — ils portent
+# des message-ids de mails privés. Le fichier reste sur disque (cron + scripts)
+# mais hors du suivi git.
+**/data/pending_proposals.json

@@ -1,34 +1,82 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""fetch_actualites.py — génère actualites/data/actualites.json depuis Zotero.
+"""fetch_actualites.py — génère actualites/data/actualites.json depuis Zotero
++ AGRÈGE les 8 autres applications du repo (règle CEO 12/10/26 : tout nouvel
+ajout d'une app doit apparaître dans « Actualités », tri d'affichage par
+date d'ajout/modification).
 
-Carte K4 : l'app Actualités consomme désormais data/actualites.json (fin du
-CSV). Ce script lit la collection « Actualités » du groupe Zotero 6610185 et
-restitue chaque item avec les noms de champs IDENTIQUES aux colonnes du CSV
-historique (contrat de données K5) :
+Deux périmètres :
 
-  id (citationKey), type (extra « Type: »), titre (title),
-  description (abstractNote), date_debut/date_fin (champ date : split « / »),
-  lieu (place), lien (url), date_ajout (dateAdded coupé AAAA-MM-JJ),
-  source_message_id (extra « Source message id: »)
+1. FICHES NATIVES — collection « Actualités » (U4HFDR68) du groupe Zotero
+   6610185, items/top, noms de champs IDENTIQUES aux colonnes du CSV
+   historique (contrat de données K5) + 3 champs additifs :
+     zotero_key       = clé d'item Zotero (racine de l'item API)
+     date_modif       = data.dateModified coupé au « T » ("" si absent)
+     source_app       = "" (les natives n'ont pas d'app d'origine)
 
-Le champ date Zotero encode l'intervalle OPTION B du CEO :
-« AAAA-MM-JJ » seul, sinon « AAAA-MM-JJ/AAAA-MM-JJ » (split sur « / »).
+2. AGRÉGATION — les 8 autres apps du repo sont relues dans le REPO (chemins
+   relatifs à la racine) et chaque fiche devient une fiche au CONTRAT
+   ACTUALITÉS + extensions :
+     source_app      fichier                              structure
+     mediatheque     mediatheque/data/collection.json     dict {items: [...]}
+     contacts        contacts/data/contacts.json          liste
+     projets         projets/data/projets.json            liste
+     organisations   organisations/data/organisations.json liste
+     outiltheque     outiltheque/data/outils.json         liste
+     lieux           lieux/data/lieux.json                liste
+     questions       questions/data/questions.json        liste
+     idees           idees/data/idees.json                liste
+   Mapping FIGÉ par app (contrat — ne pas inventer) :
+     id          = id de la fiche source (médiathèque : la « key » Zotero)
+     type        = media_publie | contact | projet | organisation |
+                   outil_publie | lieu | question | idee (fermé)
+     titre       = title (médiathèque) | nom (contacts/organisations/
+                   outiltheque/lieux) | titre (projets/questions/idees)
+     description = abstract (médiathèque) | description (autres)
+     date_debut / date_fin = TOUJOURS "" (règle CEO : le tri d'affichage se
+                   fait par date d'ajout — même les projets qui ont des dates)
+     lieu        = lieu (contacts/projets/organisations/outiltheque) |
+                   adresse (lieux) | "" (médiathèque/questions/idees)
+     lien        = « lien » de la source ; médiathèque : « url »
+     date_ajout  = « date_ajout » de la source ; médiathèque : « dateAdded »
+     source_message_id = "" (propre aux natives)
+     zotero_key  = « zotero_key » de la source si présent, sinon "" (les
+                   fetchs des autres apps l'ajoutent en parallèle ; la
+                   médiathèque porte déjà sa clé dans « key »)
+     date_modif  = « date_modif » de la source si présent, sinon ""
+     source_app  = nom de l'app d'origine
+   Tolérance : fichier absent/vide/illisible ou dict inattendu →
+   avertissement imprimé, app SAUTÉE (jamais de crash, jamais de null :
+   tout champ absent → chaîne vide ; titre/description vides → fiche
+   quand même, le front gère).
+
+Dédoublonnage PAR CLÉS ZOTERO uniquement (JAMAIS par titre ni sous-chaîne —
+piège vécu, faux positifs garantis) : l'ensemble des zotero_key des fiches
+NATIVES est construit ; une fiche EXTERNE dont la zotero_key est non vide
+ET déjà portée par une native est ÉLIMINÉE (la native prime : elle porte
+les dates d'événement et le message-id source). Une fiche externe SANS
+zotero_key est conservée (pas dédoublonnable — avertissement compté). Les
+fiches natives ne sont JAMAIS éliminées.
+
+Ordre de sortie : AUCUN tri — le front trie. Les natives d'abord (compor-
+tement historique inchangé : tri déterministe par id), puis les externes
+dans l'ordre des apps du tableau ci-dessus, dans l'ordre du fichier de
+chaque app. UTF-8, ensure_ascii=False, indentation 2.
 
 items/top de la collection ne remonte PAS les sous-collections — sans objet
 ici : les items actualités sont tous directement dans la collection (prouvé
 K1/K3, aucune sous-collection).
 
-Ordre : aucun (le front trie). UTF-8.
-
 Usage :
   python3 scripts/fetch_actualites.py            # écrit actualites/data/actualites.json
   python3 scripts/fetch_actualites.py --compare-csv <chemin>
-      # en plus : compare champ par champ avec le CSV historique et imprime
-      # le relevé (écart = ligne par ligne, champ par champ)
+      # en plus : compare les FICHES NATIVES champ par champ avec le CSV
+      # historique et imprime le relevé (écart = ligne par ligne, champ
+      # par champ)
 
 Clé : lecture seule (coffre ~/sys_admin/secrets/client/zotero.key, sinon config de la
-vitrine). Clé d'écriture jamais nécessaire ici. stdlib uniquement.
+vitrine). Clé d'écriture jamais nécessaire ici — fetch en LECTURE SEULE,
+aucune écriture Zotero (pas de POST/PATCH). stdlib uniquement.
 """
 
 import csv
@@ -50,6 +98,38 @@ CSV_FIELDS = [
     "id", "type", "titre", "description",
     "date_debut", "date_fin", "lieu", "lien",
     "date_ajout", "source_message_id",
+]
+
+# ------------------------------------------------------------- agrégation
+
+# Mapping FIGÉ par app (contrat lot 2 — ne pas inventer d'autre mapping) :
+# (source_app, chemin du JSON depuis la racine du repo, type fermé,
+#  clé titre, clé description, clé lieu (None → ""), clé lien, clé date_ajout)
+EXTERNAL_APPS = [
+    ("mediatheque", "mediatheque/data/collection.json",
+     "media_publie", "title", "abstract", None, "url", "dateAdded"),
+    ("contacts", "contacts/data/contacts.json",
+     "contact", "nom", "description", "lieu", "lien", "date_ajout"),
+    ("projets", "projets/data/projets.json",
+     "projet", "titre", "description", "lieu", "lien", "date_ajout"),
+    ("organisations", "organisations/data/organisations.json",
+     "organisation", "nom", "description", "lieu", "lien", "date_ajout"),
+    ("outiltheque", "outiltheque/data/outils.json",
+     "outil_publie", "nom", "description", "lieu", "lien", "date_ajout"),
+    ("lieux", "lieux/data/lieux.json",
+     "lieu", "nom", "description", "adresse", "lien", "date_ajout"),
+    ("questions", "questions/data/questions.json",
+     "question", "titre", "description", None, "lien", "date_ajout"),
+    ("idees", "idees/data/idees.json",
+     "idee", "titre", "description", None, "lien", "date_ajout"),
+]
+
+# Champs du contrat fiche externe (ordre de sérialisation, calque natif).
+EXTERNAL_FIELDS = [
+    "id", "type", "titre", "description",
+    "date_debut", "date_fin", "lieu", "lien",
+    "date_ajout", "source_message_id",
+    "zotero_key", "date_modif", "source_app",
 ]
 
 
@@ -83,7 +163,8 @@ def parse_date(date_field):
 
 
 def item_to_record(item):
-    """item Zotero -> dict aux clés du CSV historique."""
+    """item Zotero -> dict aux clés du CSV historique + 3 champs additifs
+    (zotero_key, date_modif, source_app)."""
     data = item.get("data") or {}
     extra = parse_extra(data.get("extra"))
     debut, fin = parse_date(data.get("date"))
@@ -98,6 +179,9 @@ def item_to_record(item):
         "lien": (data.get("url") or "").strip(),
         "date_ajout": (data.get("dateAdded") or "")[:10],
         "source_message_id": extra.get("Source message id", "").strip(),
+        "zotero_key": (item.get("key") or "").strip(),
+        "date_modif": (data.get("dateModified") or "").split("T")[0].strip(),
+        "source_app": "",
     }
 
 
@@ -112,12 +196,123 @@ def find_actualites_key(client):
     return key
 
 
+# ---------------------------------------------------------------- agrégation
+
+def _clean(value):
+    """Nettoyage contrat externe : jamais null — tout champ absent ou None
+    devient chaîne vide."""
+    if value is None:
+        return ""
+    return str(value).strip()
+
+
+def load_app_items(source_app, rel_path):
+    """Charge le JSON d'une app agrégée. Retourne la liste des fiches, ou
+    None si l'app doit être SAUTÉE (fichier absent/vide/illisible, dict
+    inattendu) — tolérant : avertissement imprimé, jamais de crash."""
+    path = REPO / rel_path
+    if not path.exists():
+        print(f"[ATTENTION] {source_app} : {rel_path} introuvable — app sautée")
+        return None
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as e:
+        print(f"[ATTENTION] {source_app} : {rel_path} illisible ({e}) — app sautée")
+        return None
+    if isinstance(raw, dict):
+        items = raw.get("items")
+        if not isinstance(items, list):
+            print(f"[ATTENTION] {source_app} : {rel_path} est un dict inattendu "
+                  f"(pas de liste « items ») — app sautée")
+            return None
+        return items
+    if isinstance(raw, list):
+        return raw
+    print(f"[ATTENTION] {source_app} : {rel_path} : type inattendu "
+          f"({type(raw).__name__}) — app sautée")
+    return None
+
+
+def external_record(spec, src):
+    """Fiche d'une app externe -> contrat actualités + extensions
+    (mapping FIGÉ, voir EXTERNAL_APPS)."""
+    source_app, _rel, type_value, tkey, dkey, pkey, lkey, akey = spec
+    if source_app == "mediatheque":
+        rec_id = _clean(src.get("key"))            # id = clé Zotero (médiathèque)
+        zotero_key = _clean(src.get("zotero_key")) or _clean(src.get("key"))
+    else:
+        rec_id = _clean(src.get("id"))
+        zotero_key = _clean(src.get("zotero_key"))
+    rec = {
+        "id": rec_id,
+        "type": type_value,
+        "titre": _clean(src.get(tkey)),
+        "description": _clean(src.get(dkey)),
+        "date_debut": "",                          # règle CEO : tri par date d'ajout
+        "date_fin": "",                            # idem — même pour les projets
+        "lieu": _clean(src.get(pkey)) if pkey else "",
+        "lien": _clean(src.get(lkey)),
+        "date_ajout": _clean(src.get(akey)),
+        "source_message_id": "",
+        "zotero_key": zotero_key,
+        "date_modif": _clean(src.get("date_modif")),
+        "source_app": source_app,
+    }
+    return {k: rec[k] for k in EXTERNAL_FIELDS}
+
+
+def aggregate_externals(records):
+    """Agrège les 8 apps du repo -> (fiches externes, détail du run).
+
+    Détoublonnage PAR CLÉS Zotero : une externe dont la zotero_key est déjà
+    portée par une NATIVE est éliminée (la native prime). Retourne
+    (externals, per_app, duplicates, no_key, skipped).
+    """
+    native_keys = {r["zotero_key"] for r in records if r["zotero_key"]}
+    native_by_key = {r["zotero_key"]: r for r in records if r["zotero_key"]}
+
+    externals = []
+    per_app = []        # [(source_app, fiches conservées)] des apps traitées
+    duplicates = []     # [(source_app, id externe, zotero_key, id natif)]
+    no_key = {}         # source_app -> nb de fiches sans zotero_key
+    skipped = []        # apps sautées (fichier absent/illisible)
+
+    for spec in EXTERNAL_APPS:
+        source_app, rel_path = spec[0], spec[1]
+        src_items = load_app_items(source_app, rel_path)
+        if src_items is None:
+            skipped.append(source_app)
+            continue
+        kept = 0
+        for src in src_items:
+            if not isinstance(src, dict):
+                print(f"[ATTENTION] {source_app} : fiche non-dict ignorée : "
+                      f"{type(src).__name__}")
+                continue
+            rec = external_record(spec, src)
+            zk = rec["zotero_key"]
+            if zk and zk in native_keys:
+                duplicates.append(
+                    (source_app, rec["id"], zk, native_by_key[zk]["id"])
+                )
+                continue
+            if not zk:
+                no_key[source_app] = no_key.get(source_app, 0) + 1
+            externals.append(rec)
+            kept += 1
+        per_app.append((source_app, kept))
+
+    return externals, per_app, duplicates, no_key, skipped
+
+
 # ---------------------------------------------------------------- comparaison CSV
 
 def compare_with_csv(records, csv_path):
     """Compare les records JSON avec le CSV historique champ par champ.
 
-    Retourne la liste des écarts [(id, champ, valeur_json, valeur_csv)].
+    (Comparaison limitée aux FICHES NATIVES : le CSV historique précède
+    l'agrégation.) Retourne la liste des écarts [(id, champ, valeur_json,
+    valeur_csv)].
     """
     with open(csv_path, newline="", encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
@@ -176,30 +371,55 @@ def main():
             )
         records.append(rec)
 
-    # Ordre : tri déterministe par id (le front trie de toute façon ; un ordre
+    # Ordre natif : tri déterministe par id (le front trie de toute façon ; un ordre
     # stable rend la sortie reproductible et les diffs lisibles).
     records.sort(key=lambda r: r["id"])
 
+    # ---------------------------------------------------------- agrégation
+    # Ordre global : AUCUN tri — le front trie. Natives d'abord (ordre
+    # inchangé ci-dessus), puis externes dans l'ordre des apps du tableau,
+    # dans l'ordre du fichier de chaque app.
+    externals, per_app, duplicates, no_key, skipped = aggregate_externals(records)
+    all_records = records + externals
+
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(
-        json.dumps(records, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        json.dumps(all_records, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
 
     # relevé
     print(f"[OK] collection « {ACTUALITES_NAME} » ({ckey}) : {len(items)} items top")
     print(f"[OK] écrit {OUT_PATH} ({OUT_PATH.stat().st_size} octets, UTF-8)")
     types = {}
-    for r in records:
+    for r in all_records:
         types[r["type"]] = types.get(r["type"], 0) + 1
-    print(f"[OK] {len(records)} items -> types : "
+    print(f"[OK] {len(all_records)} fiches -> types : "
           + ", ".join(f"{k}={v}" for k, v in sorted(types.items())))
     for r in records:
         dates = r["date_debut"] + (f" → {r['date_fin']}" if r["date_fin"] else "")
         print(f"  {r['id']} | {r['type']} | {dates} | {r['titre'][:70]}"
               + ("…" if len(r["titre"]) > 70 else ""))
 
+    if duplicates:
+        print(f"[ATTENTION] {len(duplicates)} doublon(s) éliminé(s) — "
+              f"clé Zotero déjà portée par une native :")
+        for source_app, ext_id, zk, nat_id in duplicates:
+            print(f"  {source_app}/{ext_id} : clé {zk} déjà portée par la native {nat_id}")
+    if no_key:
+        detail = ", ".join(f"{k}={v}" for k, v in no_key.items())
+        print(f"[ATTENTION] {sum(no_key.values())} fiche(s) externe(s) sans "
+              f"zotero_key (non dédoublonnables) : {detail}")
+    if skipped:
+        print(f"[ATTENTION] apps sautées (fichier absent/illisible) : "
+              + ", ".join(skipped))
+
+    parts = [f"{len(records)} natives"] + [f"{kept} {label}" for label, kept in per_app]
+    dup_txt = f"{len(duplicates)} doublon" + ("s" if len(duplicates) != 1 else "")
+    print(f"Actualités : {' + '.join(parts)} = {len(all_records)} fiches "
+          f"({dup_txt} éliminé" + ("s" if len(duplicates) != 1 else "") + ")")
+
     if compare_csv:
-        print(f"\n=== COMPARAISON avec {compare_csv} (champ par champ) ===")
+        print(f"\n=== COMPARAISON avec {compare_csv} (champ par champ, natives) ===")
         diffs = compare_with_csv(records, compare_csv)
         if not diffs:
             print(f"[OK] AUCUN ÉCART : les {len(records)} items JSON sont "

@@ -83,8 +83,11 @@
               ></div>
             </div>
           </div>
-          <div id="month-pills" class="filter-pills" aria-label="Mois sélectionnés"></div>
-          <div id="type-pills" class="filter-pills" aria-label="Types sélectionnés"></div>
+          <!-- Groupe pagination + bouton AVANT les pastilles : il reste sur
+               la LIGNE DES FILTRES (bouton aligné à droite par le
+               margin-left:auto) même quand des pastilles Mois/Type sont
+               sélectionnées — elles prennent leurs lignes propres EN
+               DESSOUS (flex-basis:100%). CEO 12/10/26 soir. -->
           <div class="header-controls">
             <nav id="pagination-top" class="pagination pagination-top" aria-label="Pagination haut"></nav>
             <!-- Bouton contribution EN HAUT À DROITE (CEO 12/10/26 soir,
@@ -95,6 +98,8 @@
               Proposer une actualité
             </button>
           </div>
+          <div id="month-pills" class="filter-pills" aria-label="Mois sélectionnés"></div>
+          <div id="type-pills" class="filter-pills" aria-label="Types sélectionnés"></div>
         </div>
       </div>
       <div id="grid" class="grid">

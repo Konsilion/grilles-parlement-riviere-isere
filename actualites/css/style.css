@@ -31,12 +31,12 @@
   font-size: 0.9rem;
 }
 
-/* Barre unique (le plus d'in-line possible) : filtres à gauche,
-   puis pastilles des mois juste après, pagination + taille de page
-   tout à droite via margin-left:auto (pas de space-between : il
-   pousserait les pastilles vers la droite quand la pagination
-   passe à la ligne — CEO 11/10/26) ; en écran étroit chaque groupe
-   repasse à la ligne, aligné à GAUCHE. */
+/* Barre unique : filtres à gauche, pagination + bouton « Proposer »
+   tout à droite via margin-left:auto (le bouton reste sur LA LIGNE
+   DES FILTRES même quand des pastilles sont sélectionnées — CEO
+   12/10/26 soir) ; les pastilles Mois/Type prennent leurs lignes
+   propres en dessous (flex-basis:100%). En écran étroit chaque
+   groupe repasse à la ligne, aligné à GAUCHE. */
 .toolbar {
   display: flex;
   flex-wrap: wrap;

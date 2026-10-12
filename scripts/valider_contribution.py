@@ -20,10 +20,12 @@ d'issue) :
 
     mediatheque  titre, auteur·e·s, type (liste fermée), année, lien,
                  résumé → collection « Médiathèque » (MCKNJI9M) ;
-    actualites   titre, type fermé (evenement_a_venir|ressource_publiee|
-                 evenement_passe|information_parlement), date_debut,
-                 date_fin, lieu, lien, description → « Actualités »
-                 (U4HFDR68) — contrat valider.py/fetch_actualites.py ;
+    actualites   titre, type fermé (evenement|media_publie|outil_publie|
+                 information — les 4 anciens types restent acceptés
+                 comme alias legacy, normalisés avant écriture),
+                 date_debut, date_fin, lieu, lien, description →
+                 « Actualités » (U4HFDR68) — contrat valider.py/
+                 fetch_actualites.py ;
     contacts     nom, organisation, lieu, email, telephone, role,
                  description, url → « Contacts » (JI7JP8AZ) — mapping
                  C2 (extra Email:/Telephone:/Role:, citationKey C000N) ;
@@ -168,13 +170,34 @@ TYPE_TO_ITEMTYPE = {
 }
 
 # Types fermés de la modale Actualités (contrat fetch_actualites.py /
-# valider.py — extra « Type: »).
+# valider.py — extra « Type: », CEO 12/10/26).
 ACTUALITES_TYPES = {
-    "evenement_a_venir": "presentation",
-    "evenement_passe": "presentation",
-    "ressource_publiee": "report",
-    "information_parlement": "document",
+    "evenement": "presentation",
+    "media_publie": "report",
+    "outil_publie": "document",
+    "information": "document",
 }
+
+# Alias legacy des actualités : anciens types acceptés en entrée
+# (issues GitHub déjà ouvertes) et NORMALISÉS vers le nouveau type
+# avant toute écriture — l'item Zotero porte toujours le type nouveau.
+ACTUALITES_TYPE_ALIASES = {
+    "evenement_a_venir": "evenement",
+    "evenement_passe": "evenement",
+    "ressource_publiee": "media_publie",
+    "information_parlement": "information",
+}
+
+
+def normalize_actualites_type(typ):
+    """Type actualités brut → type du contrat (None si inconnu).
+
+    Les 4 anciens types restent acceptés et sont renvoyés normalisés ;
+    un type inconnu des deux mondes (nouveau + alias) retourne None.
+    """
+    if typ in ACTUALITES_TYPES:
+        return typ
+    return ACTUALITES_TYPE_ALIASES.get(typ)
 
 # Statuts fermés de la modale Projets (mapping P3 — extra « Statut: »).
 PROJETS_STATUTS = {"En cours", "À venir", "Terminé"}
@@ -254,13 +277,16 @@ def build_item_mediatheque(prop, collection_key, items):
 def build_item_actualites(prop, collection_key, items):
     """proposition actualités → item Zotero (calque valider.py, mapping K3).
 
-    extra → « Type: <type> » + « Source: contribution » ; date → début seul
-    ou « début/fin » (intervalle natif, OPTION B) ; citationKey A000N.
+    Le type est NORMALISÉ (alias legacy acceptés) : c'est le type
+    normalisé qui part dans « Type: » et qui choisit l'itemType.
+    extra → « Type: <type normalisé> » + « Source: contribution » ;
+    date → début seul ou « début/fin » (intervalle natif, OPTION B) ;
+    citationKey A000N.
     """
-    typ = prop["type"]
-    itype = ACTUALITES_TYPES.get(typ or "")
+    typ = normalize_actualites_type(prop["type"] or "")
+    itype = ACTUALITES_TYPES.get(typ) if typ else None
     if not itype:
-        raise ZoteroError(f"type inconnu « {typ} » (liste fermée de la modale actualités)")
+        raise ZoteroError(f"type inconnu « {prop['type']} » (liste fermée de la modale actualités)")
     d1, d2 = prop["date_debut"], prop["date_fin"]
     if not d1:
         raise ZoteroError("date_debut vide")
@@ -723,8 +749,11 @@ def check_mediatheque(prop):
 
 
 def check_actualites(prop):
-    """Type fermé + dates AAAA-MM-JJ + fin ≥ début. Retourne motif ou None."""
-    if prop["type"] not in ACTUALITES_TYPES:
+    """Type fermé (alias legacy acceptés) + dates AAAA-MM-JJ + fin ≥ début.
+
+    Retourne motif de refus ou None.
+    """
+    if not normalize_actualites_type(prop["type"] or ""):
         return f"type inconnu « {prop['type']} »"
     if not DATE_RE.match(prop["date_debut"] or ""):
         return f"date_debut invalide « {prop['date_debut']} »"

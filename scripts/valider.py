@@ -17,13 +17,22 @@ Comportement :
   source_message_id),
 - pour chaque numéro validé : détermine le prochain id A000N (scan des
   citationKeys de la collection Actualités, max + 1), crée l'item Zotero
-  selon le MÊME mapping que la migration K3 :
-    type → itemType   evenement_a_venir|evenement_passe -> presentation
-                        ressource_publiee               -> report
-                        information_parlement           -> document
+  selon le contrat des types (CEO 12/10/26) :
+    type → itemType   evenement     -> presentation
+                        media_publie -> report
+                        outil_publie  -> document
+                        information   -> document
+    Alias legacy ACCEPTÉS en entrée et NORMALISÉS avant écriture
+    (l'item Zotero porte TOUJOURS le type nouveau dans « Type: ») :
+        evenement_a_venir, evenement_passe -> evenement
+        ressource_publiee                  -> media_publie
+        information_parlement              -> information
+    (« evenement_passe » n'existe plus : c'est les dates qui font foi
+    pour le caractère passé.)
     date  → « AAAA-MM-JJ » seul, sinon « AAAA-MM-JJ/AAAA-MM-JJ »
             (intervalle natif Zotero, OPTION B du CEO)
-    extra → « Type: <type> » + « Source message id: <id> » (si non vide)
+    extra → « Type: <type normalisé> » + « Source message id: <id> »
+            (si non vide)
     dateAdded/dateModified → date du jour T00:00:00Z
     citationKey = id, collections=[Actualités], tags=[]
 - refuse les doublons : source_message_id, lien ou titre déjà existant dans
@@ -55,11 +64,33 @@ ACTUALITES_NAME = "Actualités"
 EXPECTED_COLLECTION_KEY = "U4HFDR68"
 
 TYPE_TO_ITEMTYPE = {
-    "evenement_a_venir": "presentation",
-    "evenement_passe": "presentation",
-    "ressource_publiee": "report",
-    "information_parlement": "document",
+    "evenement": "presentation",
+    "media_publie": "report",
+    "outil_publie": "document",
+    "information": "document",
 }
+
+# Alias legacy : anciens types des actualités, ACCEPTÉS en entrée
+# (propositions en vol, issues GitHub déjà ouvertes) et NORMALISÉS vers
+# le nouveau type AVANT toute écriture. « evenement_passe » n'existe
+# plus — c'est les dates qui font foi.
+TYPE_ALIASES = {
+    "evenement_a_venir": "evenement",
+    "evenement_passe": "evenement",
+    "ressource_publiee": "media_publie",
+    "information_parlement": "information",
+}
+
+
+def normalize_type(typ):
+    """Type brut d'une proposition → type du contrat (ou None si inconnu).
+
+    Les 4 anciens types restent acceptés et sont renvoyés normalisés ;
+    un type inconnu des deux mondes (nouveau + alias) retourne None.
+    """
+    if typ in TYPE_TO_ITEMTYPE:
+        return typ
+    return TYPE_ALIASES.get(typ)
 
 
 # ---------------------------------------------------------------- pending
@@ -137,11 +168,15 @@ def build_extra(typ, mid):
 
 
 def build_item(prop, new_id, collection_key):
-    """proposition pending -> item Zotero (mapping K3, dateAdded = jour)."""
-    typ = (prop.get("type") or "").strip()
-    itype = TYPE_TO_ITEMTYPE.get(typ)
+    """proposition pending -> item Zotero (mapping K3, dateAdded = jour).
+
+    Le type est NORMALISÉ (alias legacy acceptés) : c'est le type
+    normalisé qui part dans « Type: » et qui choisit l'itemType.
+    """
+    typ = normalize_type((prop.get("type") or "").strip())
+    itype = TYPE_TO_ITEMTYPE.get(typ) if typ else None
     if not itype:
-        raise ZoteroError(f"proposition : type inconnu « {typ} »")
+        raise ZoteroError(f"proposition : type inconnu « {prop.get('type')} »")
     d1 = (prop.get("date_debut") or "").strip()
     d2 = (prop.get("date_fin") or "").strip()
     if not d1:
@@ -239,9 +274,12 @@ def main():
         mid = normalize_mid(p.get("source_message_id", ""))
         lien = (p.get("lien") or "").strip()
         titre = (p.get("titre") or "").strip()
-        typ = (p.get("type") or "").strip()
-        if typ not in TYPE_TO_ITEMTYPE:
-            rejected.append((n, f"type inconnu « {typ} »"))
+        # Contrôle du type : alias legacy acceptés (normalisés avant
+        # écriture dans build_item) ; un type inconnu des deux mondes
+        # reste refusé.
+        typ = normalize_type((p.get("type") or "").strip())
+        if not typ:
+            rejected.append((n, f"type inconnu « {p.get('type')} »"))
             continue
         if mid and mid in mids:
             rejected.append((n, "message_id déjà dans la collection"))

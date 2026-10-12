@@ -15,11 +15,20 @@ from pathlib import Path
 JSON_PATH = Path(__file__).resolve().parent.parent / "actualites" / "data" / "actualites.json"
 
 TYPE_LABELS = {
-    "evenement_a_venir": "Événement à venir",
-    "ressource_publiee": "Ressource publiée",
-    "evenement_passe": "Événement passé",
-    "information_parlement": "Information du parlement",
+    "evenement": "Événement",
+    "media_publie": "Média publié",
+    "outil_publie": "Outil publié",
+    "information": "Information",
 }
+
+# Alias legacy : anciens types des actualités, affichés avec le libellé
+# du type normalisé (les items déjà publiés portent le type nouveau).
+TYPE_LABELS.update({
+    "evenement_a_venir": "Événement",
+    "evenement_passe": "Événement",
+    "ressource_publiee": "Média publié",
+    "information_parlement": "Information",
+})
 
 
 def main():

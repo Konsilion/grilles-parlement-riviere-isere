@@ -231,18 +231,13 @@
 
     els.grid.innerHTML = pageRows.map((it) => renderCard(it)).join("");
 
-    els.grid.querySelectorAll(".card").forEach((card) => {
-      card.addEventListener("click", () => {
-        const key = card.dataset.key;
-        const item = state.items.find((i) => i.key === key);
-        if (item) openModal(item, card);
-      });
-      card.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          card.click();
-        }
-      });
+    // Clic n'importe où sur la carte → pop-up (règle CEO 13/10/26) :
+    // mécanique mutualisée dans dom.js. La carte passe en triggerEl —
+    // en mode intégré (?mode=integre), le pop-up s'ancre sur elle.
+    window.GrilleDom.attachCardClick(els.grid, {
+      cardSelector: ".card",
+      findItem: (card) => state.items.find((i) => i.key === card.dataset.key) || null,
+      open: (item, card) => openModal(item, card),
     });
     notifyHeight();
   }

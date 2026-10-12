@@ -26,22 +26,27 @@ const { makeDropdown } = window.GrilleDropdown;
    Lot 3 (agrégation) : 6 types pour les fiches des autres apps —
    contact, projet, organisation, lieu, question, idee (médiathèque
    et outilthèque agrégées arrivent en media_publie / outil_publie).
-   CEO 12/10/26 soir : 2 types NATIFS (evenement, information — pas
-   de linkLabel → « En savoir plus ») ; 8 types HÉRITÉS, chacun
-   portant son libellé de lien « Voir le X » mutualisé ici même via
-   linkLabel (fin de l'ancienne table séparée de libellés). */
+   CEO 12/10/26 soir : 2 types NATIFS (evenement, information) ;
+   8 types HÉRITÉS.
+   CEO 13/10/26 : le lien-bouton « Voir le X » est RETIRÉ des
+   cartes (règle « clic n'importe où → pop-up ») — linkLabel
+   disparaît : le registre ne porte plus que label + slug (badge,
+   recherche, dropdown). */
 const TYPES = {
   evenement: { label: "Événement", slug: "evenement" },
-  media_publie: { label: "Média publié", slug: "media-publie", linkLabel: "Voir le média" },
-  outil_publie: { label: "Outil publié", slug: "outil-publie", linkLabel: "Voir l’outil" },
+  media_publie: { label: "Média publié", slug: "media-publie" },
+  outil_publie: { label: "Outil publié", slug: "outil-publie" },
   information: { label: "Information", slug: "information" },
-  contact: { label: "Contact", slug: "contact", linkLabel: "Voir le contact" },
-  projet: { label: "Projet", slug: "projet", linkLabel: "Voir le projet" },
-  organisation: { label: "Organisation", slug: "organisation", linkLabel: "Voir l’organisation" },
-  lieu: { label: "Lieu", slug: "lieu", linkLabel: "Voir le lieu" },
-  question: { label: "Question", slug: "question", linkLabel: "Voir la question" },
-  idee: { label: "Idée", slug: "idee", linkLabel: "Voir l’idée" },
+  contact: { label: "Contact", slug: "contact" },
+  projet: { label: "Projet", slug: "projet" },
+  organisation: { label: "Organisation", slug: "organisation" },
+  lieu: { label: "Lieu", slug: "lieu" },
+  question: { label: "Question", slug: "question" },
+  idee: { label: "Idée", slug: "idee" },
 };
+// Exposé pour la définition GrilleDetail « actualites »
+// (common/js/details/actualites.js : badge type du pop-up natif).
+window.ACTUALITES_TYPES = TYPES;
 
 const MONTHS_FR = [
   "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
@@ -104,30 +109,39 @@ function findSourceItem(items, zoteroKey) {
 
 // Repli = l'ancien comportement : ouvrir l'URL externe dans un nouvel
 // onglet. Jamais un silence — quelque chose doit toujours s'ouvrir.
-function openExternally(item) {
+// Une fiche SANS lien http/s (ex. question agrégée sans URL) ne peut
+// pas s'ouvrir en externe : on montre au moins la fiche elle-même
+// (pop-up de la définition « actualites ») plutôt qu'un onglet vide.
+function openExternally(item, triggerEl) {
+  if (!item.lien || !/^https?:\/\//i.test(item.lien)) {
+    if (window.GrilleDetail) window.GrilleDetail.open("actualites", item, { triggerEl });
+    return;
+  }
   window.open(item.lien, "_blank", "noopener");
 }
 
-// Clic sur le lien d'une fiche agrégée : charge le JSON de l'app
-// cible, retrouve la fiche source par zotero_key, ouvre son pop-up
-// de détail DANS cette page. Toute défaillance (fetch, fiche
+// Clic sur une fiche agrégée : charge le JSON de l'app cible,
+// retrouve la fiche source par zotero_key, ouvre son pop-up de
+// détail DANS cette page. Toute défaillance (fetch, fiche
 // introuvable, clé vide) retombe sur l'ouverture externe du lien.
-function openSourceAppModal(item) {
+// triggerEl (la carte cliquée) sert d'ancrage au pop-up en mode
+// intégré (?mode=integre) — calque des autres apps.
+function openSourceAppModal(item, triggerEl) {
   const target = SOURCE_APPS[item.type];
   if (!target || !item.source_app || !window.GrilleDetail) {
-    openExternally(item);
+    openExternally(item, triggerEl);
     return;
   }
   fetchSourceAppData(target)
     .then((items) => {
       const fiche = findSourceItem(items, item.zotero_key);
       if (!fiche) {
-        openExternally(item);
+        openExternally(item, triggerEl);
         return;
       }
-      return window.GrilleDetail.openFrom(target.app, target.script, fiche, {});
+      return window.GrilleDetail.openFrom(target.app, target.script, fiche, { triggerEl });
     })
-    .catch(() => openExternally(item));
+    .catch(() => openExternally(item, triggerEl));
 }
 
 /* ---------- État ---------- */
@@ -343,6 +357,15 @@ function renderCard(item) {
   const type = TYPES[item.type] || { label: item.type || "Actualité", slug: "autre" };
   const card = document.createElement("article");
   card.className = "card";
+  // Identifiant de la fiche (retrouvée au clic — dom.js
+  // attachCardClick lit data-id, même convention que les 8 apps).
+  card.dataset.id = item.id;
+  // Carte interactive (règle CEO 13/10/26) : un clic N'IMPORTE OÙ
+  // ouvre le pop-up de détail — même logique que les 8 autres apps,
+  // plus de bouton « Voir le X » / « En savoir plus » sous la carte.
+  card.tabIndex = 0;
+  card.setAttribute("role", "button");
+  card.setAttribute("aria-label", "Voir le détail de " + (item.titre || "cette actualité"));
 
   const badge = document.createElement("span");
   badge.className = `card-type type-${type.slug}`;
@@ -382,38 +405,13 @@ function renderCard(item) {
   meta.textContent = segs.join(" · ");
   if (segs.length) card.appendChild(meta);
 
-  if (item.lien && /^https?:\/\//i.test(item.lien)) {
-    const linkWrap = document.createElement("p");
-    linkWrap.className = "card-link";
-    const a = document.createElement("a");
-    a.href = item.lien;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    // Libellé du lien selon le type (CEO 12/10/26 soir) : mutualisé
-    // dans le registre TYPES — 8 types hérités portent leur
-    // linkLabel « Voir le X », les types natifs (evenement,
-    // information) retombent sur « En savoir plus ».
-    // Natives à type hérité (source_app vide, ex. expo du musée) :
-    // PAS de fiche dans l'app cible → l'ancien libellé « Voir le X »
-    // promettait un pop-up inexistant ; « En savoir plus » (lien
-    // externe, comportement inchangé) est honnête.
-    a.textContent = item.source_app
-      ? (TYPES[item.type]?.linkLabel || "En savoir plus")
-      : "En savoir plus";
-    // Lot E : pour une fiche agrégée (source_app non vide) dont le
-    // type a une app cible, le clic ouvre le POP-UP de détail de
-    // l'app cible dans cette page (GrilleDetail.openFrom) au lieu de
-    // naviguer. L'href reste pour le clic-milieu / menu contextuel ;
-    // preventDefault n'agit que sur le clic gauche ordinaire.
-    if (item.source_app && SOURCE_APPS[item.type]) {
-      a.addEventListener("click", (e) => {
-        e.preventDefault();
-        openSourceAppModal(item);
-      });
-    }
-    linkWrap.appendChild(a);
-    card.appendChild(linkWrap);
-  }
+  // Règle CEO 13/10/26 : plus de lien-bouton « Voir le X » / « En
+  // savoir plus » dans la carte — le clic N'IMPORTE OÙ sur la carte
+  // ouvre le pop-up (natif → définition « actualites » ; agrégé →
+  // pop-up de l'app cible via openSourceAppModal, qui conserve son
+  // repli window.open si la fiche source est introuvable). Le lien
+  // externe reste accessible DANS le pop-up (section « En savoir
+  // plus » des natives, champ Lien des définitions cibles).
 
   // Pastille rouge « Passé(e) » en bas à droite (période terminée) — CEO 12/10/26
   if (isPastItem(item)) {
@@ -717,6 +715,37 @@ function renderGrid() {
   for (const item of pageRows) {
     els.grid.appendChild(renderCard(item));
   }
+
+  // Clic n'importe où sur la carte → pop-up (règle CEO 13/10/26) :
+  // mécanique mutualisée dans dom.js. Le comportement est UNIFIÉ
+  // avec les 8 autres apps :
+  // - fiche AGRÉGÉE (source_app non vide) → pop-up de l'app CIBLE
+  //   (openSourceAppModal, socle GrilleDetail.openFrom — repli
+  //   window.open si la fiche source est introuvable) ;
+  // - fiche NATIVE (evenement/information) → pop-up de la
+  //   définition « actualites » (common/js/details/actualites.js).
+  window.GrilleDom.attachCardClick(els.grid, {
+    cardSelector: ".card",
+    findItem: (card) => state.items.find((i) => i.id === card.dataset.id) || null,
+    open: (item, card) => {
+      if (item.source_app && SOURCE_APPS[item.type]) {
+        // Fiche agrégée : pop-up de l'app cible (repli externe si
+        // la fiche source est introuvable).
+        openSourceAppModal(item, card);
+      } else if (SOURCE_APPS[item.type] && item.lien) {
+        // NATIVE à type hérité (ex. media_publie sans source_app —
+        // pendante référentielle, le garde-fou fetch la détecte) :
+        // pas de fiche dans l'app cible, on ne promet PAS son
+        // pop-up — le lien externe reste le comportement honnête.
+        openExternally(item, card);
+      } else {
+        // Fiche native (evenement/information) : pop-up de la
+        // définition « actualites ». Une native sans lien http/s
+        // et sans app cible y arrive aussi via openExternally.
+        window.GrilleDetail.open("actualites", item, { triggerEl: card });
+      }
+    },
+  });
   updateCount(items.length);
 }
 

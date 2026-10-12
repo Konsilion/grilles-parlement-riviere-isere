@@ -219,10 +219,8 @@ select:focus {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
-/* Carte cliquable (ouvre la modale) */
-.card {
-  cursor: pointer;
-}
+/* Carte cliquable : le curseur main vient du socle commun base.css
+   (règle CEO 13/10/26, les 9 apps) — plus de doublon local. */
 
 .card-authors {
   margin: 0;

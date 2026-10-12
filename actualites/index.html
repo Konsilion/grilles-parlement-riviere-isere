@@ -326,12 +326,13 @@
   <script src="../common/js/dropdown.js"></script>
   <script src="../common/js/contribution.js"></script>
   <script src="../common/js/contribution-forms.js"></script>
-  <!-- Lot E : socle des modales détail (GrilleDetail) — AVANT app.js :
-       les liens « Voir le X » des fiches agrégées ouvrent le pop-up
-       de détail de l'app cible via GrilleDetail.openFrom. Les
-       définitions (common/js/details/<app>.js) ne sont PAS chargées
-       ici : openFrom les charge à la demande. -->
+  <!-- Socle des modales détail (GrilleDetail) — AVANT les définitions
+       puis app.js. La définition « actualites » (pop-up des fiches
+       natives, clic n'importe où sur la carte — règle CEO 13/10/26)
+       est chargée comme toute app ; celles des 8 app cibles restent
+       chargées à la demande par GrilleDetail.openFrom. -->
   <script src="../common/js/detail.js"></script>
+  <script src="../common/js/details/actualites.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

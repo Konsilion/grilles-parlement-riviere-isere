@@ -182,17 +182,13 @@ function renderGrid() {
 
   els.grid.innerHTML = pageRows.map(renderCard).join("");
 
-  els.grid.querySelectorAll(".contact-card").forEach((card) => {
-    card.addEventListener("click", () => {
-      const item = state.items.find((i) => i.id === card.dataset.id);
-      if (item) openModal(item);
-    });
-    card.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        card.click();
-      }
-    });
+  // Clic n'importe où sur la carte → pop-up (règle CEO 13/10/26) :
+  // mécanique mutualisée dans dom.js. La carte passe en triggerEl —
+  // en mode intégré (?mode=integre), le pop-up s'ancre sur elle.
+  window.GrilleDom.attachCardClick(els.grid, {
+    cardSelector: ".contact-card",
+    findItem: (card) => state.items.find((i) => i.id === card.dataset.id) || null,
+    open: (item, card) => openModal(item, card),
   });
   updateCount(items.length);
 }
@@ -209,8 +205,8 @@ function updateCount(n) {
 const GD = window.GrilleDetail;
 
 /* ---------- Modale détail : consommation du socle GrilleDetail ---------- */
-function openModal(item) {
-  GD.open("contacts", item);
+function openModal(item, triggerEl) {
+  GD.open("contacts", item, { triggerEl });
 }
 
 /* ---------- Menu Catégories (dropdown commun) ---------- */

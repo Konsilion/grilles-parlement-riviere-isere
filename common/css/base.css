@@ -310,6 +310,11 @@ html, body {
   gap: 0.6rem;
   transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
   box-shadow: var(--shadow-sm);
+  /* Règle CEO 13/10/26 : dans TOUTES les grilles, un clic n'importe
+     où sur la carte ouvre son pop-up de détail — curseur main
+     partout, mutualisé ici (les cartes de la modale contribution
+     n'utilisent pas .card : .c-type-choice, sans impact). */
+  cursor: pointer;
 }
 .card:hover {
   transform: translateY(-2px);

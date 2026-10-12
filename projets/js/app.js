@@ -226,17 +226,13 @@ function renderGrid() {
 
   els.grid.innerHTML = pageRows.map(renderCard).join("");
 
-  els.grid.querySelectorAll(".projet-card").forEach((card) => {
-    card.addEventListener("click", () => {
-      const item = state.items.find((i) => i.id === card.dataset.id);
-      if (item) openModal(item);
-    });
-    card.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        card.click();
-      }
-    });
+  // Clic n'importe où sur la carte → pop-up (règle CEO 13/10/26) :
+  // mécanique mutualisée dans dom.js. La carte passe en triggerEl —
+  // en mode intégré (?mode=integre), le pop-up s'ancre sur elle.
+  window.GrilleDom.attachCardClick(els.grid, {
+    cardSelector: ".projet-card",
+    findItem: (card) => state.items.find((i) => i.id === card.dataset.id) || null,
+    open: (item, card) => openModal(item, card),
   });
   updateCount(items.length);
 }
@@ -250,8 +246,8 @@ function updateCount(n) {
    (définition « projets », common/js/details/projets.js — le
    conteneur, la fermeture ×/voile/Échap et le scroll-lock sont
    portés par l'engine common/js/detail.js) ---------- */
-function openModal(item) {
-  GD.open("projets", item);
+function openModal(item, triggerEl) {
+  GD.open("projets", item, { triggerEl });
 }
 
 /* ---------- Menus Statut + Catégories (dropdowns communs) ---------- */

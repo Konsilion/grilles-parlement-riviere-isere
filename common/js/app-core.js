@@ -9,8 +9,9 @@
    apps existantes ne sont PAS migrées (elles continuent de
    fonctionner telles quelles).
 
-   Dépendance (chargée AVANT ce fichier) :
+   Dépendances (chargées AVANT ce fichier) :
    - window.GrillePagination (common/js/pagination.js)
+   - window.GrilleDom (common/js/dom.js — clic carte → pop-up)
 
    API publique (FROZEN — les apps de la vague 1 programment
    contre ces noms) :
@@ -36,8 +37,9 @@
        paginationNavs, re-rendu + scroll top smooth au
        changement de page), rend les cartes .${cardClass} via
        innerHTML, attache clic + Enter/Espace sur chaque carte
-       (délègue à onCardClick(item), item retrouvé par data-id
-       dans state.items), état vide (classe .empty : texte
+       (délègue à onCardClick(item, card) — card = élément déclencheur,
+       utile pour l'ancrage du pop-up en mode intégré), item retrouvé
+       par data-id dans state.items), état vide (classe .empty : texte
        emptyFilteredMsg si hasActiveFilters() sinon emptyMsg),
        compteur via updateCount. getVisibleItems() rend la
        liste DÉJÀ filtrée et triée par l'app.
@@ -169,17 +171,14 @@ window.GrilleApp = (() => {
 
       grid.innerHTML = pageRows.map(cfg.renderCard).join("");
 
-      grid.querySelectorAll(`.${cfg.cardClass}`).forEach((card) => {
-        card.addEventListener("click", () => {
-          const item = cfg.state.items.find((i) => i.id === card.dataset.id);
-          if (item && cfg.onCardClick) cfg.onCardClick(item);
-        });
-        card.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            card.click();
-          }
-        });
+      // Clic n'importe où sur la carte → pop-up (règle CEO 13/10/26) :
+      // mécanique mutualisée dans dom.js (chargé avant app-core).
+      window.GrilleDom.attachCardClick(grid, {
+        cardSelector: `.${cfg.cardClass}`,
+        findItem: (card) => cfg.state.items.find((i) => i.id === card.dataset.id) || null,
+        open: (item, card) => {
+          if (cfg.onCardClick) cfg.onCardClick(item, card);
+        },
       });
       updateCount(cfg.count, items.length, cfg.noun, cfg.nounPlural);
     }

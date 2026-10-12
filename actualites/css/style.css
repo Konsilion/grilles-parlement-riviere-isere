@@ -150,24 +150,9 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.card-link {
-  margin-top: auto;
-  padding-top: 0.5rem;
-  font-size: 0.85rem;
-}
-.card-link a {
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 600;
-}
-.card-link a:hover {
-  text-decoration: underline;
-  color: var(--accent-hover);
-}
-.card-link a:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
+/* Règle CEO 13/10/26 : plus de lien-bouton sous les cartes — le clic
+   n'importe où sur la carte ouvre le pop-up (dom.js
+   attachCardClick). Les règles .card-link* ont été retirées. */
 
 /* ============== Bouton contribution (haut à droite) ==============
    Calque médiathèque : .btn/.btn-primary viennent du socle
@@ -407,12 +392,9 @@ body.modal-open { overflow: hidden; }
   background: #fdecea;
   color: #b3261e;
 }
-/* Quand la carte porte un lien, c'est LUI qui colle au bas
-   (margin-top:auto du .card-link) : la pastille se glisse sous
-   le lien, coin bas-droite, sans lui voler son ancrage. */
-.card-link + .card-passe {
-  margin-top: 0.25rem;
-}
+/* Règle CEO 13/10/26 : le lien .card-link n'existe plus — la
+   pastille « Passé(e) » reste le dernier enfant de la carte et
+   garde son ancrage bas par margin-top:auto. */
 
 /* ============== Modale contribution : choix du type (CEO 12/10/26) ==============
    Étape 1 de la proposition d'actualité : 4 cartes cliquables

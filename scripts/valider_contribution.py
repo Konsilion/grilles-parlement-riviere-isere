@@ -21,11 +21,14 @@ d'issue) :
     mediatheque  titre, auteur·e·s, type (liste fermée), année, lien,
                  résumé → collection « Médiathèque » (MCKNJI9M) ;
     actualites   titre, type fermé (evenement|media_publie|outil_publie|
-                 information — les 4 anciens types restent acceptés
-                 comme alias legacy, normalisés avant écriture),
+                 information|contact|projet|organisation|lieu|question|
+                 idee — lot 5 : 10 types ; les 4 anciens types restent
+                 acceptés comme alias legacy, normalisés avant écriture),
                  date_debut, date_fin, lieu, lien, description →
                  « Actualités » (U4HFDR68) — contrat valider.py/
-                 fetch_actualites.py ;
+                 fetch_actualites.py ; les 6 formes des autres apps sont
+                 BI-COLLECTION (Actualités + collection de l'app source,
+                 calque des constructeurs APPS, citationKey A000N) ;
     contacts     nom, organisation, lieu, email, telephone, role,
                  description, url → « Contacts » (JI7JP8AZ) — mapping
                  C2 (extra Email:/Telephone:/Role:, citationKey C000N) ;
@@ -151,7 +154,16 @@ EXPECTED_MEDIATHEQUE_KEY = "MCKNJI9M"
 # Collections cibles de la bi-collection actualités (contrat 3 formes,
 # CEO 12/10/26) : un item média/outil créé via la grille Actualités est
 # membre des DEUX collections — même fiche servie par les deux grilles.
+# Lot 5 (10 types) : idem pour les 6 nouvelles formes, calque du
+# précédent media_publie/outil_publie — l'item Actualités de type T est
+# aussi membre de la collection de T.
 OUTILTHEQUE_KEY = "3Z7QJHRU"
+CONTACTS_COLLECTION_KEY = "JI7JP8AZ"
+PROJETS_COLLECTION_KEY = "RPZFWI9M"
+ORGANISATIONS_COLLECTION_KEY = "9DZCCXQE"
+LIEUX_COLLECTION_KEY = "UMMXNXDJ"
+QUESTIONS_COLLECTION_KEY = "6IEE7MF2"
+IDEES_COLLECTION_KEY = "99X4HHIB"
 
 # Types proposés par la modale médiathèque (liste fermée — cf.
 # mediatheque/index.html <select>) et leur itemType Zotero (inverse
@@ -174,12 +186,21 @@ TYPE_TO_ITEMTYPE = {
 }
 
 # Types fermés de la modale Actualités (contrat fetch_actualites.py /
-# valider.py — extra « Type: », CEO 12/10/26).
+# valider.py — extra « Type: », CEO 12/10/26). Lot 5 : la modale propose
+# désormais 10 types — les 4 historiques + les 6 formes des autres apps
+# (contact, projet, organisation, lieu, question, idee), toutes
+# itemType « document » (calque des constructeurs des apps sources).
 ACTUALITES_TYPES = {
     "evenement": "presentation",
     "media_publie": "report",
     "outil_publie": "document",
     "information": "document",
+    "contact": "document",
+    "projet": "document",
+    "organisation": "document",
+    "lieu": "document",
+    "question": "document",
+    "idee": "document",
 }
 
 # Alias legacy des actualités : anciens types acceptés en entrée
@@ -297,6 +318,15 @@ def build_item_actualites(prop, collection_key, items):
     - outil_publie : forme OUTILTHÈQUE (nom, categorie, lieu,
       description, url) — itemType document, extra Categorie:, membre
       des DEUX collections (Actualités + Outilthèque).
+
+    Lot 5 — 6 nouvelles formes (CEO 12/10/26, calque EXACT du
+    précédent media_publie/outil_publie) : contact, projet,
+    organisation, lieu, question, idee. Chaque forme est le CALQUE du
+    constructeur de son app source (mêmes champs, mêmes libellés extra
+    anglais) avec DEUX différences : les collections (Actualités +
+    collection de T) et la 1re ligne d'extra « Type: T » (lue par le
+    fetch actualités comme type fermé). citationKey A000N : l'item
+    vit dans la collection Actualités, c'est elle qui attribue la clé.
     """
     typ = normalize_actualites_type(prop["type"] or "")
     if not typ:
@@ -343,6 +373,137 @@ def build_item_actualites(prop, collection_key, items):
             "url": prop.get("url") or "",
             "extra": "\n".join(extra_lines),
             "collections": [collection_key, OUTILTHEQUE_KEY],
+            "tags": [],
+            "dateAdded": f"{today}T00:00:00Z",
+            "dateModified": f"{today}T00:00:00Z",
+        }
+
+    # --- Forme contact (calque build_item_contacts + bi-collection) ---
+    if typ == "contact":
+        extra_lines = [f"Type: {typ}"]
+        if prop.get("email"):
+            extra_lines.append(f"Email: {prop['email']}")
+        if prop.get("telephone"):
+            extra_lines.append(f"Telephone: {prop['telephone']}")
+        if prop.get("role"):
+            extra_lines.append(f"Role: {prop['role']}")
+        extra_lines.append(source_line)
+        return {
+            "itemType": "document",
+            "citationKey": next_citation_key(items, "A"),
+            "title": prop["nom"],
+            "abstractNote": prop.get("description") or "",
+            "publisher": prop.get("organisation") or "",
+            "place": prop.get("lieu") or "",
+            "url": prop.get("url") or "",
+            "extra": "\n".join(extra_lines),
+            "collections": [collection_key, CONTACTS_COLLECTION_KEY],
+            "tags": [],
+            "dateAdded": f"{today}T00:00:00Z",
+            "dateModified": f"{today}T00:00:00Z",
+        }
+
+    # --- Forme projet (calque build_item_projets + bi-collection) ---
+    if typ == "projet":
+        item = {
+            "itemType": "document",
+            "citationKey": next_citation_key(items, "A"),
+            "title": prop["titre"],
+            "abstractNote": prop.get("description") or "",
+            "publisher": prop.get("porteur") or "",
+            "place": prop.get("lieu") or "",
+            "extra": f"Type: {typ}",
+            "collections": [collection_key, PROJETS_COLLECTION_KEY],
+            "tags": [],
+            "dateAdded": f"{today}T00:00:00Z",
+            "dateModified": f"{today}T00:00:00Z",
+        }
+        d1, d2 = prop.get("date_debut"), prop.get("date_fin")
+        if d1 and d2:
+            item["date"] = f"{d1}/{d2}"
+        elif d1:
+            item["date"] = d1
+        if prop.get("url"):
+            item["url"] = prop["url"]
+        if prop.get("statut"):
+            item["extra"] = f"Type: {typ}\nStatut: {prop['statut']}\n{source_line}"
+        else:
+            item["extra"] = f"Type: {typ}\n{source_line}"
+        return item
+
+    # --- Forme organisation (calque build_item_organisations +
+    #     bi-collection) ---
+    if typ == "organisation":
+        extra_lines = [f"Type: {typ}"]
+        if prop.get("email"):
+            extra_lines.append(f"Email: {prop['email']}")
+        if prop.get("telephone"):
+            extra_lines.append(f"Telephone: {prop['telephone']}")
+        extra_lines.append(source_line)
+        return {
+            "itemType": "document",
+            "citationKey": next_citation_key(items, "A"),
+            "title": prop["nom"],
+            "abstractNote": prop.get("description") or "",
+            "place": prop.get("lieu") or "",
+            "url": prop.get("url") or "",
+            "extra": "\n".join(extra_lines),
+            "collections": [collection_key, ORGANISATIONS_COLLECTION_KEY],
+            "tags": [],
+            "dateAdded": f"{today}T00:00:00Z",
+            "dateModified": f"{today}T00:00:00Z",
+        }
+
+    # --- Forme lieu (calque build_item_lieux + bi-collection) ---
+    if typ == "lieu":
+        return {
+            "itemType": "document",
+            "citationKey": next_citation_key(items, "A"),
+            "title": prop["nom"],
+            "abstractNote": prop.get("description") or "",
+            "place": prop.get("adresse") or "",
+            "url": prop.get("url") or "",
+            "extra": f"Type: {typ}\n{source_line}",
+            "collections": [collection_key, LIEUX_COLLECTION_KEY],
+            "tags": [],
+            "dateAdded": f"{today}T00:00:00Z",
+            "dateModified": f"{today}T00:00:00Z",
+        }
+
+    # --- Forme question (calque build_item_questions + bi-collection) ---
+    if typ == "question":
+        extra_lines = [f"Type: {typ}"]
+        extra_lines.append(f"Question: {prop['question']}")
+        if prop.get("deposant"):
+            extra_lines.append(f"Deposant: {prop['deposant']}")
+        extra_lines.append(source_line)
+        return {
+            "itemType": "document",
+            "citationKey": next_citation_key(items, "A"),
+            "title": prop["titre"],
+            "abstractNote": prop.get("description") or "",
+            "url": prop.get("url") or "",
+            "extra": "\n".join(extra_lines),
+            "collections": [collection_key, QUESTIONS_COLLECTION_KEY],
+            "tags": [],
+            "dateAdded": f"{today}T00:00:00Z",
+            "dateModified": f"{today}T00:00:00Z",
+        }
+
+    # --- Forme idée (calque build_item_idees + bi-collection) ---
+    if typ == "idee":
+        extra_lines = [f"Type: {typ}"]
+        if prop.get("auteur"):
+            extra_lines.append(f"Auteur: {prop['auteur']}")
+        extra_lines.append(source_line)
+        return {
+            "itemType": "document",
+            "citationKey": next_citation_key(items, "A"),
+            "title": prop["titre"],
+            "abstractNote": prop.get("description") or "",
+            "url": prop.get("url") or "",
+            "extra": "\n".join(extra_lines),
+            "collections": [collection_key, IDEES_COLLECTION_KEY],
             "tags": [],
             "dateAdded": f"{today}T00:00:00Z",
             "dateModified": f"{today}T00:00:00Z",
@@ -587,10 +748,11 @@ def clean_actualites(data):
     def s(k):
         v = str(data.get(k) or "").strip()
         return v or None
-    # Contrat 3 formes : les champs des formes média/outil sont
-    # conservés (nettoyés) et vivront côté build ; les champs de la
-    # forme actualités restent inchangés (rétrocompatibilité issues
-    # legacy et pipeline mail valider.py).
+    # Contrat 3 formes + lot 5 (6 nouvelles formes) : les champs des
+    # formes média/outil/contact/projet/organisation/lieu/question/idee
+    # sont conservés (nettoyés, absents → None) et vivront côté build ;
+    # les champs de la forme actualités restent inchangés
+    # (rétrocompatibilité issues legacy et pipeline mail valider.py).
     return {
         "titre": s("titre"), "type": s("type"),
         "date_debut": s("date_debut"), "date_fin": s("date_fin"),
@@ -600,6 +762,17 @@ def clean_actualites(data):
         "url": s("url"), "abstract": s("abstract"),
         # forme outil (calque outilthèque)
         "nom": s("nom"), "categorie": s("categorie"),
+        # forme contact (calque contacts)
+        "organisation": s("organisation"), "email": s("email"),
+        "telephone": s("telephone"), "role": s("role"),
+        # forme projet (calque projets)
+        "porteur": s("porteur"), "statut": s("statut"),
+        # forme lieu (calque lieux)
+        "adresse": s("adresse"),
+        # forme question (calque questions)
+        "question": s("question"), "deposant": s("deposant"),
+        # forme idée (calque idées)
+        "auteur": s("auteur"),
     }
 
 
@@ -702,6 +875,12 @@ APPS = {
         "required_fn": lambda prop: (
             ("titre", "type", "doc_type", "url") if normalize_actualites_type(prop.get("type") or "") == "media_publie"
             else ("nom", "type") if normalize_actualites_type(prop.get("type") or "") == "outil_publie"
+            else ("nom", "type") if normalize_actualites_type(prop.get("type") or "") == "contact"
+            else ("titre", "type", "description") if normalize_actualites_type(prop.get("type") or "") == "projet"
+            else ("nom", "type") if normalize_actualites_type(prop.get("type") or "") == "organisation"
+            else ("nom", "type") if normalize_actualites_type(prop.get("type") or "") == "lieu"
+            else ("titre", "type", "question") if normalize_actualites_type(prop.get("type") or "") == "question"
+            else ("titre", "type") if normalize_actualites_type(prop.get("type") or "") == "idee"
             else ("titre", "type", "date_debut", "lien")
         ),
         "checks": ("check_actualites",),
@@ -716,6 +895,27 @@ APPS = {
             else [("titre", "nom"), ("type", "type"), ("catégorie", "categorie"),
                   ("lieu", "lieu"), ("lien", "url"), ("résumé", "description")]
             if normalize_actualites_type(prop.get("type") or "") == "outil_publie"
+            else [("titre", "nom"), ("type", "type"), ("organisation", "organisation"),
+                  ("lieu", "lieu"), ("e-mail", "email"), ("téléphone", "telephone"),
+                  ("rôle", "role"), ("description", "description"), ("lien", "url")]
+            if normalize_actualites_type(prop.get("type") or "") == "contact"
+            else [("titre", "titre"), ("type", "type"), ("porteur", "porteur"),
+                  ("lieu", "lieu"), ("dates", "dates"), ("statut", "statut"),
+                  ("description", "description"), ("lien", "url")]
+            if normalize_actualites_type(prop.get("type") or "") == "projet"
+            else [("titre", "nom"), ("type", "type"), ("lieu", "lieu"),
+                  ("e-mail", "email"), ("téléphone", "telephone"),
+                  ("description", "description"), ("lien", "url")]
+            if normalize_actualites_type(prop.get("type") or "") == "organisation"
+            else [("titre", "nom"), ("type", "type"), ("adresse", "adresse"),
+                  ("description", "description"), ("lien", "url")]
+            if normalize_actualites_type(prop.get("type") or "") == "lieu"
+            else [("titre", "titre"), ("type", "type"), ("question", "question"),
+                  ("deposant", "deposant"), ("description", "description"), ("lien", "url")]
+            if normalize_actualites_type(prop.get("type") or "") == "question"
+            else [("titre", "titre"), ("type", "type"), ("auteur", "auteur"),
+                  ("description", "description"), ("lien", "url")]
+            if normalize_actualites_type(prop.get("type") or "") == "idee"
             else [("titre", "titre"), ("type", "type"),
                   ("dates", "dates"), ("lieu", "lieu"), ("lien", "lien"),
                   ("résumé", "description")]
@@ -840,12 +1040,19 @@ def check_mediatheque(prop):
 
 def check_actualites(prop):
     """Type fermé (alias legacy acceptés) + garde-fous PAR FORME
-    (contrat 3 formes, CEO 12/10/26).
+    (contrat 3 formes, CEO 12/10/26 + lot 5 : 6 nouvelles formes).
 
     - evenement/information : dates AAAA-MM-JJ + fin ≥ début + lien ;
     - media_publie : doc_type fermé médiathèque + année 4 chiffres +
       url http/s ;
-    - outil_publie : nom ≥ 3 + url http/s facultative.
+    - outil_publie : nom ≥ 3 + url http/s facultative ;
+    - contact : calque check_contacts (email/téléphone/url si fournis) ;
+    - projet : calque check_projets (dates facultatives AAAA-MM-JJ,
+      fin ≥ début, statut fermé, url http/s) ;
+    - organisation : calque check_organisations (email/téléphone/url) ;
+    - lieu/question/idee : url http/s facultative (calque des checks
+      sources — aucun autre champ exigé).
+    Les 6 nouvelles formes n'exigent RIEN de plus que leur required.
     Retourne motif de refus ou None.
     """
     typ = normalize_actualites_type(prop["type"] or "")
@@ -867,6 +1074,26 @@ def check_actualites(prop):
         if prop.get("url") and not re.match(r"^https?://", prop["url"]):
             return "lien invalide (http/https attendu)"
         return None
+
+    # --- lot 5 : calques des checks des apps sources (champs tous
+    #     facultatifs — la modération reste permissive) ---
+    if typ == "contact":
+        return check_contacts(prop)
+
+    if typ == "projet":
+        return check_projets(prop)
+
+    if typ == "organisation":
+        return check_organisations(prop)
+
+    if typ == "lieu":
+        return check_lieux(prop)
+
+    if typ == "question":
+        return check_questions(prop)
+
+    if typ == "idee":
+        return check_idees(prop)
 
     # evenement / information (forme actualités, inchangée)
     if not DATE_RE.match(prop["date_debut"] or ""):

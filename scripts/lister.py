@@ -19,6 +19,14 @@ TYPE_LABELS = {
     "media_publie": "Média publié",
     "outil_publie": "Outil publié",
     "information": "Information",
+    # Lot 5 — 6 nouvelles formes (fiches des 8 autres apps affichées
+    # par la grille Actualités) : libellés des grilles sources.
+    "contact": "Contact",
+    "projet": "Projet",
+    "organisation": "Organisation",
+    "lieu": "Lieu",
+    "question": "Question",
+    "idee": "Idée",
 }
 
 # Alias legacy : anciens types des actualités, affichés avec le libellé

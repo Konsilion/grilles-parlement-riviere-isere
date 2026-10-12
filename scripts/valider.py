@@ -17,11 +17,13 @@ Comportement :
   source_message_id),
 - pour chaque numéro validé : détermine le prochain id A000N (scan des
   citationKeys de la collection Actualités, max + 1), crée l'item Zotero
-  selon le contrat des types (CEO 12/10/26) :
+  selon le contrat des types (CEO 12/10/26 + lot 5 : 10 types) :
     type → itemType   evenement     -> presentation
                         media_publie -> report
                         outil_publie  -> document
                         information   -> document
+                        contact/projet/organisation/lieu/
+                        question/idee -> document (lot 5, bi-collection)
     Alias legacy ACCEPTÉS en entrée et NORMALISÉS avant écriture
     (l'item Zotero porte TOUJOURS le type nouveau dans « Type: ») :
         evenement_a_venir, evenement_passe -> evenement
@@ -29,12 +31,19 @@ Comportement :
         information_parlement              -> information
     (« evenement_passe » n'existe plus : c'est les dates qui font foi
     pour le caractère passé.)
+    Lot 5 — les 6 nouvelles formes (contact, projet, organisation,
+    lieu, question, idee) sont BI-COLLECTION (Actualités + collection
+    de l'app source : calque du précédent media_publie → Médiathèque,
+    outil_publie → Outilthèque) et SANS date obligatoire (projet :
+    dates OPTION B si fournies ; les autres : sans date le champ
+    date reste absent — aucune invention).
     date  → « AAAA-MM-JJ » seul, sinon « AAAA-MM-JJ/AAAA-MM-JJ »
             (intervalle natif Zotero, OPTION B du CEO)
     extra → « Type: <type normalisé> » + « Source message id: <id> »
             (si non vide)
     dateAdded/dateModified → date du jour T00:00:00Z
-    citationKey = id, collections=[Actualités], tags=[]
+    citationKey = id, collections=[Actualités (+ app source lot 5)],
+    tags=[]
 - refuse les doublons : source_message_id, lien ou titre déjà existant dans
   la collection (scan des items),
 - retire les propositions validées du pending (même mécanique que l'ancienne
@@ -68,13 +77,49 @@ EXPECTED_COLLECTION_KEY = "U4HFDR68"
 # l'Outilthèque — la même fiche est servie par les deux grilles.
 MEDIATHEQUE_COLLECTION_KEY = "MCKNJI9M"
 OUTILTHEQUE_COLLECTION_KEY = "3Z7QJHRU"
+# Lot 5 — collections bi-cibles des 6 nouvelles formes (CEO 12/10/26) :
+# un item actualités de type T est aussi membre de la collection de T —
+# même fiche servie par les deux grilles (calque media_publie/outil_publie).
+CONTACTS_COLLECTION_KEY = "JI7JP8AZ"
+PROJETS_COLLECTION_KEY = "RPZFWI9M"
+ORGANISATIONS_COLLECTION_KEY = "9DZCCXQE"
+LIEUX_COLLECTION_KEY = "UMMXNXDJ"
+QUESTIONS_COLLECTION_KEY = "6IEE7MF2"
+IDEES_COLLECTION_KEY = "99X4HHIB"
 
 TYPE_TO_ITEMTYPE = {
     "evenement": "presentation",
     "media_publie": "report",
     "outil_publie": "document",
     "information": "document",
+    # Lot 5 — 6 nouvelles formes (calque des constructeurs des apps
+    # sources, itemType document)
+    "contact": "document",
+    "projet": "document",
+    "organisation": "document",
+    "lieu": "document",
+    "question": "document",
+    "idee": "document",
 }
+
+# Seconde collection par type (bi-collection) — absent = Actualités seule.
+# Lot 5 : les 6 nouvelles formes sont bi-collection, calque du
+# précédent media_publie → Médiathèque / outil_publie → Outilthèque.
+BICOLLECTION_KEYS = {
+    "media_publie": MEDIATHEQUE_COLLECTION_KEY,
+    "outil_publie": OUTILTHEQUE_COLLECTION_KEY,
+    "contact": CONTACTS_COLLECTION_KEY,
+    "projet": PROJETS_COLLECTION_KEY,
+    "organisation": ORGANISATIONS_COLLECTION_KEY,
+    "lieu": LIEUX_COLLECTION_KEY,
+    "question": QUESTIONS_COLLECTION_KEY,
+    "idee": IDEES_COLLECTION_KEY,
+}
+
+# Types du lot 5 : formes des autres apps, SANS contrainte de date
+# (le pipeline mail ne les remplit pas forcément ; projet porte ses
+# dates en OPTION B si fournies, calque check_projets).
+LOT5_TYPES = {"contact", "projet", "organisation", "lieu", "question", "idee"}
 
 # Alias legacy : anciens types des actualités, ACCEPTÉS en entrée
 # (propositions en vol, issues GitHub déjà ouvertes) et NORMALISÉS vers
@@ -186,6 +231,15 @@ def build_item(prop, new_id, collection_key):
     champs). Le pipeline mail ne collecte pas les champs propres aux
     formulaires médiathèque/outilthèque (auteur·e·s, catégorie) : rien
     n'est inventé, l'item garde les champs actualités du mail.
+
+    Lot 5 — 6 nouvelles formes (contact, projet, organisation, lieu,
+    question, idee), calque EXACT du précédent : membre des DEUX
+    collections (Actualités + collection de T via BICOLLECTION_KEYS).
+    AUCUNE contrainte de date pour ces formes (le pipeline mail ne les
+    remplit pas) SAUF projet : dates OPTION B « d1/d2 » si fournies,
+    d1 seul sinon (calque build_item_projets — sans date, le front
+    affiche « En construction »). citationKey A000N : l'item vit dans
+    la collection Actualités, c'est elle qui attribue la clé.
     """
     typ = normalize_type((prop.get("type") or "").strip())
     itype = TYPE_TO_ITEMTYPE.get(typ) if typ else None
@@ -193,15 +247,60 @@ def build_item(prop, new_id, collection_key):
         raise ZoteroError(f"proposition : type inconnu « {prop.get('type')} »")
     d1 = (prop.get("date_debut") or "").strip()
     d2 = (prop.get("date_fin") or "").strip()
+    added = f"{datetime.date.today().isoformat()}T00:00:00Z"
+    collections = [collection_key]
+    second = BICOLLECTION_KEYS.get(typ or "")
+    if second:
+        collections.append(second)
+
+    # --- lot 5 : forme projet (dates OPTION B FACULTATIVES, calque
+    #     build_item_projets — sans aucune date : pas de champ date) ---
+    if typ == "projet":
+        item = {
+            "itemType": itype,
+            "citationKey": new_id,
+            "title": (prop.get("titre") or "").strip(),
+            "abstractNote": (prop.get("resume") or "").strip(),
+            "place": (prop.get("lieu") or "").strip(),
+            "url": (prop.get("lien") or "").strip(),
+            "extra": build_extra(typ, normalize_mid(prop.get("source_message_id", ""))),
+            "collections": collections,
+            "tags": [],
+            "dateAdded": added,
+            "dateModified": added,
+        }
+        if d1 and d2:
+            item["date"] = f"{d1}/{d2}"
+        elif d1:
+            item["date"] = d1
+        return item
+
+    # --- lot 5 : formes sans date (contact, organisation, lieu,
+    #     question, idee) : AUCUNE contrainte de date — l'item est
+    #     posé sans champ date si le mail n'en fournit pas ---
+    if typ in LOT5_TYPES:
+        item = {
+            "itemType": itype,
+            "citationKey": new_id,
+            "title": (prop.get("titre") or "").strip(),
+            "abstractNote": (prop.get("resume") or "").strip(),
+            "place": (prop.get("lieu") or "").strip(),
+            "url": (prop.get("lien") or "").strip(),
+            "extra": build_extra(typ, normalize_mid(prop.get("source_message_id", ""))),
+            "collections": collections,
+            "tags": [],
+            "dateAdded": added,
+            "dateModified": added,
+        }
+        if d1:
+            item["date"] = d1 if not d2 else f"{d1}/{d2}"
+        return item
+
+    # --- 4 formes historiques : date_debut OBLIGATOIRE (comportement
+    #     inchangé, rétrocompatible) ---
     if not d1:
         raise ZoteroError(f"proposition : date_debut vide")
     date = d1 if not d2 else f"{d1}/{d2}"
-    added = f"{datetime.date.today().isoformat()}T00:00:00Z"
-    collections = [collection_key]
-    if typ == "media_publie":
-        collections.append(MEDIATHEQUE_COLLECTION_KEY)
-    elif typ == "outil_publie":
-        collections.append(OUTILTHEQUE_COLLECTION_KEY)
     return {
         "itemType": itype,
         "citationKey": new_id,

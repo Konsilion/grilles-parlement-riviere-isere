@@ -1,12 +1,19 @@
 """
-Récupère les items d'un groupe Zotero via l'API et écrit mediatheque/data/collection.json.
+Fetch médiathèque en PÉRIMÈTRE EXPLICITE : balaye l'arbre de la collection
+« Médiathèque » (MCKNJI9M) et écrit mediatheque/data/collection.json.
 
-Si ZOTERO_COLLECTION_ID est renseigné : récupère les items de cette collection.
-Si ZOTERO_COLLECTION_ID est vide      : récupère tous les items top-level du groupe.
-Si ZOTERO_EXCLUDE_COLLECTIONS est renseigné (liste de clés) : exclut les items
-de ces collections (filtre anti-fuite — les items « Actualités » et « Contacts »
-vivent dans leurs collections dédiées, servies par leurs propres fetchs, pas ici).
-L'ancienne forme scalaire ZOTERO_EXCLUDE_COLLECTION reste acceptée (transition).
+Fonctionnement (garde-fou anti-fuite, 12/10/26) :
+- liste les collections du groupe (/collections, clé→nom + parentCollection)
+  puis construit par DFS l'arbre complet sous Médiathèque (racine + toutes
+  ses sous-collections, à toute profondeur) ;
+- récupère les items/top de CHAQUE collection de l'arbre et fait l'union
+  dédupliquée par clé d'item ;
+- PIÈGE API : /collections/MCKNJI9M/items/top NE REMONTE PAS les
+  sous-collections — le balayage collection par collection est obligatoire ;
+- une collection ou un item HORS de l'arbre Médiathèque ne peut pas fuiter
+  dans le JSON, quel que soit son nom ou sa date de création (les arbres
+  Actualités U4HFDR68, Contacts JI7JP8AZ et Projets RPZFWI9M vivent hors
+  arbre et sont servis par leurs propres fetchs).
 
 Usage:
     python scripts/fetch_zotero.py
@@ -27,25 +34,14 @@ except ImportError:
     sys.exit(
         "Fichier config.py introuvable.\n"
         "→ cp scripts/config.example.py scripts/config.py\n"
-        "→ puis renseigne ZOTERO_GROUP_ID, ZOTERO_API_KEY, ZOTERO_COLLECTION_ID\n"
-        "→ (optionnel) ZOTERO_EXCLUDE_COLLECTIONS : clés des collections à exclure"
+        "→ puis renseigne ZOTERO_GROUP_ID, ZOTERO_API_KEY"
     )
 
 ZOTERO_GROUP_ID = config.ZOTERO_GROUP_ID
 ZOTERO_API_KEY = config.ZOTERO_API_KEY
-ZOTERO_COLLECTION_ID = config.ZOTERO_COLLECTION_ID
 
-# Filtre anti-fuite : collections exclues du fetch médiathèque.
-# Forme de référence : ZOTERO_EXCLUDE_COLLECTIONS (liste).
-# Ancienne forme acceptée pendant la transition : scalaire ZOTERO_EXCLUDE_COLLECTION.
-ZOTERO_EXCLUDE_COLLECTIONS = getattr(config, "ZOTERO_EXCLUDE_COLLECTIONS", None)
-if ZOTERO_EXCLUDE_COLLECTIONS is None:
-    ZOTERO_EXCLUDE_COLLECTIONS = getattr(config, "ZOTERO_EXCLUDE_COLLECTION", "") or []
-if isinstance(ZOTERO_EXCLUDE_COLLECTIONS, str):
-    ZOTERO_EXCLUDE_COLLECTIONS = (
-        [ZOTERO_EXCLUDE_COLLECTIONS] if ZOTERO_EXCLUDE_COLLECTIONS else []
-    )
-ZOTERO_EXCLUDE_COLLECTIONS = [c for c in ZOTERO_EXCLUDE_COLLECTIONS if c]
+# Racine de l'arbre médiathèque : PÉRIMÈTRE EXPLICITE du fetch.
+MEDIATHEQUE_COLLECTION_ID = "MCKNJI9M"
 
 # Valider que la config est remplie
 missing = [
@@ -60,35 +56,66 @@ if missing:
 API_BASE = "https://api.zotero.org"
 
 
-def fetch_items(group_id, collection_id, api_key):
-    """Récupère tous les items top-level d'un groupe (ou d'une collection du groupe)."""
-    items = []
+def fetch_json(url, api_key, params=None):
+    """GET paginé sur l' API Zotero, retourne la liste complète des pages."""
+    headers = {"Zotero-API-Key": api_key, "Zotero-API-Version": "3"}
+    out = []
     start = 0
     limit = 100
-    headers = {"Zotero-API-Key": api_key, "Zotero-API-Version": "3"}
-
-    if collection_id:
-        base_url = f"{API_BASE}/groups/{group_id}/collections/{collection_id}/items/top"
-        label = f"collection {collection_id}"
-    else:
-        base_url = f"{API_BASE}/groups/{group_id}/items/top"
-        label = "toutes les collections (racine du groupe)"
-
-    print(f"  Endpoint: {label}")
-
+    params = dict(params or {})
     while True:
-        url = f"{base_url}?format=json&start={start}&limit={limit}"
-        resp = requests.get(url, headers=headers, timeout=30)
+        params.update({"format": "json", "start": start, "limit": limit})
+        resp = requests.get(url, headers=headers, params=params, timeout=30)
         resp.raise_for_status()
         batch = resp.json()
         if not batch:
             break
-        items.extend(batch)
+        out.extend(batch)
         if len(batch) < limit:
             break
         start += limit
+    return out
 
-    return items
+
+def fetch_tree_collection_keys(group_id, root_key, api_key):
+    """Périmètre explicite : DFS sous la collection racine → liste des clés
+    de collections (racine incluse, toute profondeur).
+
+    Basé sur parentCollection de /groups/<gid>/collections — l'arbre complet
+    est recalculé à chaque tir, aucune sous-collection nouvelle ne peut être
+    manquée (ni fuiter).
+    """
+    collections = fetch_json(
+        f"{API_BASE}/groups/{group_id}/collections", api_key
+    )
+    children_of = {}
+    for c in collections:
+        parent = c["data"].get("parentCollection") or None
+        children_of.setdefault(parent, []).append(c["key"])
+    tree, queue = [root_key], list(children_of.get(root_key, []))
+    while queue:
+        k = queue.pop(0)
+        if k not in tree:
+            tree.append(k)
+            queue.extend(children_of.get(k, []))
+    return tree
+
+
+def fetch_items(group_id, api_key):
+    """Union dédupliquée par clé d'item des items/top de CHAQUE collection
+    de l'arbre Médiathèque (périmètre explicite)."""
+    keys = fetch_tree_collection_keys(group_id, MEDIATHEQUE_COLLECTION_ID, api_key)
+    print(f"  Arbre « Médiathèque » {MEDIATHEQUE_COLLECTION_ID} : {len(keys)} collections")
+    union = {}
+    for ck in keys:
+        items = fetch_json(
+            f"{API_BASE}/groups/{group_id}/collections/{ck}/items/top", api_key
+        )
+        for it in items:
+            union.setdefault(it["key"], it)
+        print(f"    {ck}: {len(items)} items top")
+    print(f"  Union dédupliquée : {len(union)} items")
+    return list(union.values())
 
 
 def fetch_collections(group_id, api_key):
@@ -201,22 +228,13 @@ def main():
     print(f"→ Récupération depuis le groupe {ZOTERO_GROUP_ID}…")
     collection_map = fetch_collections(ZOTERO_GROUP_ID, ZOTERO_API_KEY)
     print(f"  {len(collection_map)} collections récupérées")
-    raw_items = fetch_items(ZOTERO_GROUP_ID, ZOTERO_COLLECTION_ID, ZOTERO_API_KEY)
+    raw_items = fetch_items(ZOTERO_GROUP_ID, ZOTERO_API_KEY)
     print(f"  {len(raw_items)} items bruts récupérés")
 
-    # Filtre anti-fuite : exclure les items des collections configurées
-    # (ex. Actualités, Contacts) — le scoping par collection dans l'API ne
-    # remonte pas les sous-collections, on filtre donc côté script après le
-    # fetch complet.
-    if ZOTERO_EXCLUDE_COLLECTIONS:
-        exclude = set(ZOTERO_EXCLUDE_COLLECTIONS)
-        raw_items = [
-            r for r in raw_items
-            if not exclude & set(r.get("data", {}).get("collections", []))
-        ]
-        print(f"  {len(raw_items)} items après exclusion des collections "
-              f"{', '.join(sorted(exclude))}")
-
+    # Ordre du dérivé : dateModified décroissante — celle de l'ancien balayage
+    # groupe (le front ne trie pas les items, il affiche le JSON tel quel ;
+    # l'ordre affiché de la grille est ainsi préservé).
+    raw_items.sort(key=lambda r: r.get("data", {}).get("dateModified") or "", reverse=True)
     formatted = [
         it for it in (format_item(r, collection_map) for r in raw_items) if it is not None
     ]
@@ -229,7 +247,7 @@ def main():
 
     payload = {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
-        "collection_id": ZOTERO_COLLECTION_ID or "all",
+        "collection_id": MEDIATHEQUE_COLLECTION_ID,
         "count": len(formatted),
         "items": formatted,
     }

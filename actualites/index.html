@@ -19,9 +19,17 @@
              OBLIGATOIRE (le socle commun y attache l'ouverture). -->
         <div class="header-top">
           <span id="result-count" class="result-count">— actualités</span>
-          <button type="button" id="propose-btn" class="btn btn-primary propose-btn">
-            Proposer une actualité
-          </button>
+          <!-- Navigation des pages À GAUCHE du bouton « Proposer »
+               (CEO 12/10/26 soir) : groupe .header-controls poussé à
+               droite par l'espace restant de .header-top. L'id
+               propose-btn reste OBLIGATOIRE (le socle commun y
+               attache l'ouverture). -->
+          <div class="header-controls">
+            <nav id="pagination-top" class="pagination pagination-top" aria-label="Pagination haut"></nav>
+            <button type="button" id="propose-btn" class="btn btn-primary propose-btn">
+              Proposer une actualité
+            </button>
+          </div>
         </div>
         <div class="toolbar">
           <div class="filters">
@@ -91,12 +99,9 @@
               ></div>
             </div>
           </div>
-          <!-- Groupe pagination haut : sur la ligne des filtres, à droite
-               (le bouton « Proposer » vit désormais sur la ligne du
-               compteur, tout en haut — CEO 12/10/26 soir). -->
-          <div class="header-controls">
-            <nav id="pagination-top" class="pagination pagination-top" aria-label="Pagination haut"></nav>
-          </div>
+          <!-- Pastilles des filtres cochés : une ligne chacune, dans
+               l'ordre des filtres (Année, Mois, Type) — CEO 12/10/26. -->
+          <div id="year-pills" class="filter-pills" aria-label="Années sélectionnées"></div>
           <div id="month-pills" class="filter-pills" aria-label="Mois sélectionnés"></div>
           <div id="type-pills" class="filter-pills" aria-label="Types sélectionnés"></div>
         </div>

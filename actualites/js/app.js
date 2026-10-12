@@ -86,6 +86,7 @@ function grabEls() {
   els.yearToggle = document.getElementById("year-toggle");
   els.yearPill = document.getElementById("year-pill");
   els.yearMenu = document.getElementById("year-menu");
+  els.yearPills = document.getElementById("year-pills");
   els.monthDropdown = document.getElementById("month-dropdown");
   els.monthToggle = document.getElementById("month-toggle");
   els.monthPill = document.getElementById("month-pill");
@@ -385,6 +386,50 @@ function isPastItem(item) {
   return end < today;
 }
 
+/* ---------- Pastilles des années sélectionnées (CEO 12/10/26 soir) ----------
+   Calque strict de renderMonthPills : une pastille par année cochée,
+   croix × pour la retirer, synchronisée à CHAQUE renderGrid. L'ordre
+   suit celui du menu (desc, cf. buildFilterMenus). */
+function renderYearPills() {
+  if (!els.yearPills) return;
+  els.yearPills.innerHTML = "";
+
+  // Ligne entière + libellé « Année : » uniquement si sélection
+  // (CEO 12/10/26 soir) : vide, le conteneur est masqué par le
+  // socle commun (.filter-pills:empty → display:none).
+  const years = [...state.selectedYears].sort((a, b) => b.localeCompare(a));
+  if (!years.length) return;
+
+  const caption = document.createElement("span");
+  caption.className = "pills-label";
+  caption.textContent = "Année :";
+  els.yearPills.appendChild(caption);
+
+  for (const y of years) {
+    const pill = document.createElement("span");
+    pill.className = "filter-pill";
+
+    const label = document.createElement("span");
+    label.textContent = y;
+    pill.appendChild(label);
+
+    const x = document.createElement("button");
+    x.type = "button";
+    x.className = "filter-pill-x";
+    x.setAttribute("aria-label", "Retirer le filtre " + y);
+    x.textContent = "×";
+    x.addEventListener("click", () => {
+      state.selectedYears.delete(y);
+      state.currentPage = 0; // tout changement de filtre ramène à la page 1
+      yearDD.syncUI();
+      renderGrid();
+    });
+    pill.appendChild(x);
+
+    els.yearPills.appendChild(pill);
+  }
+}
+
 /* ---------- Pastilles des mois sélectionnés (CEO 11/10/26) ----------
    Une pastille par mois coché, à droite du filtre Mois ; la croix
    retire le mois (menu, pill du filtre et grille resynchronisés).
@@ -479,6 +524,7 @@ function renderTypePills() {
 function renderGrid() {
   if (!els.grid) return;
   els.grid.innerHTML = "";
+  renderYearPills();
   renderMonthPills();
   renderTypePills();
 

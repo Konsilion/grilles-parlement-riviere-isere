@@ -23,8 +23,11 @@
   margin-bottom: 1rem;
 }
 /* Ligne tout en haut (CEO 12/10/26 soir) : compteur d'actualités à
-   gauche, bouton « Proposer une actualité » à droite. La toolbar
-   (filtres, pagination, pastilles) vit en dessous. */
+   gauche, pagination haut + bouton « Proposer » à droite (groupe
+   .header-controls poussé par l'espace restant du space-between).
+   Espacement sous cette ligne = 1rem, le même que l'espace entre
+   les filtres et la grille. La toolbar (filtres, pastilles) vit
+   en dessous. */
 .header-top {
   display: flex;
   flex-wrap: wrap;
@@ -32,6 +35,7 @@
   justify-content: space-between;
   gap: 0.5rem;
   width: 100%;
+  margin-bottom: 1rem;
 }
 .result-count {
   color: var(--text-muted);
@@ -61,12 +65,13 @@
 }
 
 /* ============== Pastilles de filtre : une ligne chacune ==============
-   CEO 12/10/26 soir : les pastilles des filtres Mois et Type ne
-   partagent PLUS la ligne des filtres — chacune a SA ligne propre
+   CEO 12/10/26 soir : les pastilles des filtres Année, Mois et Type
+   ne partagent PLUS la ligne des filtres — chacune a SA ligne propre
    sous la barre recherche/dropdowns. flex-basis:100% force le
    retour à la ligne dans la toolbar flex-wrap ; masquées vides par
    le socle commun (.filter-pills:empty → display:none), donc la
    ligne n'existe QUE quand des pastilles sont sélectionnées. */
+#year-pills,
 #month-pills,
 #type-pills {
   flex-basis: 100%;

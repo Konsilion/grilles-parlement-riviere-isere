@@ -8,6 +8,11 @@
        dropdowns, pastilles) — chargé AVANT les styles propres. -->
   <link rel="stylesheet" href="../common/css/base.css" />
   <link rel="stylesheet" href="../common/css/contribution.css" />
+  <!-- Lot E : styles STRUCTURELS du pop-up de détail mutualisé (socle
+       GrilleDetail, common/js/detail.js) — nécessaire dès qu'un lien
+       « Voir le X » ouvre le pop-up d'une app cible dans CETTE page.
+       Après contribution.css (même bloc de styles modales). -->
+  <link rel="stylesheet" href="../common/css/modal.css" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -321,6 +326,12 @@
   <script src="../common/js/dropdown.js"></script>
   <script src="../common/js/contribution.js"></script>
   <script src="../common/js/contribution-forms.js"></script>
+  <!-- Lot E : socle des modales détail (GrilleDetail) — AVANT app.js :
+       les liens « Voir le X » des fiches agrégées ouvrent le pop-up
+       de détail de l'app cible via GrilleDetail.openFrom. Les
+       définitions (common/js/details/<app>.js) ne sont PAS chargées
+       ici : openFrom les charge à la demande. -->
+  <script src="../common/js/detail.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

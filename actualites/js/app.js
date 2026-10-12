@@ -22,12 +22,21 @@ const { makeDropdown } = window.GrilleDropdown;
    et evenement_passe fusionnent en evenement ; ressource_publiee
    devient media_publie (renvoi vers la Médiathèque) ;
    information_parlement devient information ; NOUVEAU outil_publie
-   (même logique, vers l'Outilthèque). */
+   (même logique, vers l'Outilthèque).
+   Lot 3 (agrégation) : 6 types pour les fiches des autres apps —
+   contact, projet, organisation, lieu, question, idee (médiathèque
+   et outilthèque agrégées arrivent en media_publie / outil_publie). */
 const TYPES = {
   evenement: { label: "Événement", slug: "evenement" },
   media_publie: { label: "Média publié", slug: "media-publie" },
   outil_publie: { label: "Outil publié", slug: "outil-publie" },
   information: { label: "Information", slug: "information" },
+  contact: { label: "Contact", slug: "contact" },
+  projet: { label: "Projet", slug: "projet" },
+  organisation: { label: "Organisation", slug: "organisation" },
+  lieu: { label: "Lieu", slug: "lieu" },
+  question: { label: "Question", slug: "question" },
+  idee: { label: "Idée", slug: "idee" },
 };
 
 /* Libellé du lien des cartes selon le type (CEO 12/10/26) :
@@ -103,12 +112,14 @@ function grabEls() {
   els.typePills = document.getElementById("type-pills");
 }
 
-/* ---------- Normalisation des items JSON ----------
-   Contrat K4 : liste d'objets aux champs identiques au CSV
+/* ---------- Normalisation des items JSON ---------- */
+/* Contrat K4 : liste d'objets aux champs identiques au CSV
    (id, type, titre, description, date_debut, date_fin, lieu,
-   lien, date_ajout, source_message_id). Les valeurs absentes
-   peuvent être null (Zotero) → chaîne vide partout, comme
-   l'ancien parse CSV. */
+   lien, date_ajout, source_message_id) + 3 champs additifs du lot 3
+   (agrégation) : zotero_key, date_modif, source_app — une fiche
+   native les a vides, une fiche externe porte l'app d'origine.
+   Les valeurs absentes peuvent être null (Zotero) → chaîne vide
+   partout, comme l'ancien parse CSV. */
 function normalizeItems(raw) {
   return raw.map((o) => ({
     id: String(o?.id ?? ""),
@@ -121,6 +132,9 @@ function normalizeItems(raw) {
     lien: String(o?.lien ?? "").trim(),
     date_ajout: String(o?.date_ajout ?? "").trim(),
     source_message_id: String(o?.source_message_id ?? ""),
+    zotero_key: String(o?.zotero_key ?? ""),
+    date_modif: String(o?.date_modif ?? "").trim(),
+    source_app: String(o?.source_app ?? "").trim(),
   }));
 }
 
@@ -169,6 +183,16 @@ function sortItems(items) {
 
   const idAsc = (a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 
+  // Horizon = date d'ajout OU de modification, la plus récente des
+  // deux (règle CEO pour les fiches des autres apps : la nouveauté
+  // d'abord). null si aucune des deux dates n'est présente.
+  function itemHorizon(it) {
+    const dm = parseISO(it.date_modif || "");
+    const da = parseISO(it.date_ajout || "");
+    if (dm && da) return dm > da ? dm : da;
+    return dm || da;
+  }
+
   return items.slice().sort((a, b) => {
     const ca = compartment(a);
     const cb = compartment(b);
@@ -197,6 +221,11 @@ function sortItems(items) {
 
     // EN COURS : fin effective croissante, items sans fin EN DERNIER,
     // puis date_debut croissante, puis id croissant.
+    // Lot 3 (agrégation) : le tie-break FINAL devient horizon
+    // décroissant puis id décroissant — c'est lui qui départage les
+    // fiches sans date_debut ni fin (toutes les externes + les
+    // natives « information » sans dates) : la nouveauté d'abord
+    // (règle CEO). Les compartiments À VENIR et PASSÉ ne changent pas.
     const fa = fi(a);
     const fb = fi(b);
     if (!!fa !== !!fb) return fa ? -1 : 1;
@@ -205,7 +234,11 @@ function sortItems(items) {
     const db = de(b);
     if (da && db && da !== db) return da - db;
     if (!!da !== !!db) return da ? -1 : 1;
-    return idAsc(a, b);
+    const ha = itemHorizon(a);
+    const hb = itemHorizon(b);
+    if (!!ha !== !!hb) return ha ? -1 : 1;
+    if (ha && hb && ha !== hb) return hb - ha;
+    return b.id < a.id ? -1 : b.id > a.id ? 1 : 0;
   });
 }
 
@@ -250,6 +283,20 @@ function renderCard(item) {
   const meta = document.createElement("p");
   meta.className = "card-meta";
   const segs = [];
+  // Fiches des autres apps (lot 3) : premier segment de la ligne meta,
+  // « Ajouté le … » — ou « Mis à jour le … » si la date_modif est PLUS
+  // RÉCENTE que la date d'ajout (la plus fraîche des deux gagne).
+  // NON-RÉGRESSION : une fiche native (source_app vide) n'affiche
+  // JAMAIS ce segment — cartes natives au pixel près identiques.
+  if (item.source_app) {
+    const da = (item.date_ajout || "").trim();
+    const dm = (item.date_modif || "").trim();
+    if (dm && (!da || dm > da)) {
+      segs.push(`Mis à jour le ${formatDate(dm)}`);
+    } else if (da) {
+      segs.push(`Ajouté le ${formatDate(da)}`);
+    } // aucune date → pas de segment (fallback silencieux)
+  }
   const d = formatDates(item);
   if (d) segs.push(d);
   if (item.lieu) segs.push(item.lieu);

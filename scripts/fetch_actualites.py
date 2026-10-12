@@ -162,6 +162,49 @@ def parse_date(date_field):
     return s, ""
 
 
+# --------------------------------------------- intégrité référentielle natives
+
+# Contrat de type (CEO 12/10/26 « un seul et même enregistrement ») : une
+# native media_publie/outil_publie/contact/projet/organisation/lieu/
+# question/idee EST un item bi-collection (Actualités + collection de
+# l'app source). Ces 8 types sont des RÉFÉRENCES vers une fiche de l'app
+# cible — une native qui n'est pas bi-collection est une RÉFÉRENCE
+# PENDANTE (une FK sans cible, en termes de BDD) : le lien « Voir le X »
+# du front ne peut pas résoudre (SOURCE_APPS n'atteint l'app cible que
+# par la fiche agrégée, jamais par une native isolée).
+#
+# SOURCE UNIQUE DE VÉRITÉ : le registre BICOLLECTION_KEYS de valider.py
+# (celui qui pilote la CRÉATION des items bi-collection) — un type ajouté
+# au registre de création est automatiquement couvert par ce contrôle.
+# Les noms d'app viennent d'EXTERNAL_APPS (mapping type → app ci-dessus).
+from valider import BICOLLECTION_KEYS
+
+_APP_BY_TYPE = {spec[2]: spec[0] for spec in EXTERNAL_APPS}
+
+
+def check_native_integrity(records):
+    """Contrôle d'intégrité référentielle des fiches natives.
+
+    Retourne la liste des références pendantes [{id, type, titre,
+    source_app}] : une native d'un type référentiel qui n'est PAS
+    bi-collection avec la collection de son app source. Le fetch ne
+    bloque PAS (les données restent servies) mais chaque pendante est
+    imprimée en [INCOHERENCE] — visible dans les logs du deploy, dans
+    la sortie de tout fetch manuel, et le code de sortie reste 0.
+    """
+    pendantes = []
+    for rec in records:
+        coll_key = BICOLLECTION_KEYS.get(rec["type"])
+        if coll_key is None:
+            continue
+        if coll_key not in rec["_collections"]:
+            pendantes.append(
+                {"id": rec["id"], "type": rec["type"], "titre": rec["titre"],
+                 "source_app": _APP_BY_TYPE.get(rec["type"], rec["type"])}
+            )
+    return pendantes
+
+
 def item_to_record(item):
     """item Zotero -> dict aux clés du CSV historique + 3 champs additifs
     (zotero_key, date_modif, source_app)."""
@@ -182,6 +225,9 @@ def item_to_record(item):
         "zotero_key": (item.get("key") or "").strip(),
         "date_modif": (data.get("dateModified") or "").split("T")[0].strip(),
         "source_app": "",
+        # Interne (jamais sérialisé — retiré avant l'écriture) : collections
+        # Zotero de l'item, pour le contrôle d'intégrité référentielle.
+        "_collections": data.get("collections") or [],
     }
 
 
@@ -381,6 +427,21 @@ def main():
     # dans l'ordre du fichier de chaque app.
     externals, per_app, duplicates, no_key, skipped = aggregate_externals(records)
     all_records = records + externals
+
+    # Contrôle d'intégrité référentielle (garde-fou structurel) : une
+    # native media_publie/outil_publie DOIT être bi-collection. Une
+    # référence pendante est une incohérence de contrat, pas un crash :
+    # imprimée en [INCOHERENCE], le JSON est quand même servi.
+    pendantes = check_native_integrity(records)
+    for ref in pendantes:
+        print(f"[INCOHERENCE] {ref['id']} ({ref['type']}) : absente de la "
+              f"collection {ref['source_app']} — référence pendante, "
+              f"retyper la fiche (evenement/information) ou la mettre "
+              f"bi-collection")
+
+    # Le champ interne _collections ne sort JAMAIS dans le JSON servi.
+    for rec in all_records:
+        rec.pop("_collections", None)
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(

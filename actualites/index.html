@@ -61,20 +61,38 @@
                 aria-multiselectable="true"
               ></div>
             </div>
-            <!-- Parcours de contribution (esprit Datami) — calque médiathèque. -->
-            <button type="button" id="propose-btn" class="btn btn-primary propose-btn">
-              Proposer une actualité
-            </button>
+            <!-- Filtre Type d'actualité, multi-choix — calque strict du
+                 filtre Mois (dropdown custom, le <select> natif ne permet
+                 pas le multi-choix). CEO 12/10/26. -->
+            <div class="dropdown" id="type-dropdown">
+              <button
+                type="button"
+                id="type-toggle"
+                class="dd-toggle"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+              >
+                <span class="dd-pill" id="type-pill">Tous les types</span>
+                <span class="dd-caret" aria-hidden="true">▾</span>
+              </button>
+              <div
+                id="type-menu"
+                class="dd-menu"
+                role="listbox"
+                aria-multiselectable="true"
+              ></div>
+            </div>
           </div>
           <div id="month-pills" class="filter-pills" aria-label="Mois sélectionnés"></div>
+          <div id="type-pills" class="filter-pills" aria-label="Types sélectionnés"></div>
           <div class="header-controls">
             <nav id="pagination-top" class="pagination pagination-top" aria-label="Pagination haut"></nav>
             <label for="page-size-select" class="page-size-label">Afficher
               <select id="page-size-select">
+                <option value="3">3</option>
+                <option value="6" selected>6</option>
                 <option value="9">9</option>
-                <option value="18">18</option>
-                <option value="36">36</option>
-                <option value="all">Tout</option>
+                <option value="12">12</option>
               </select>
             </label>
           </div>
@@ -84,6 +102,15 @@
         <p class="muted center">Chargement des actualités…</p>
       </div>
       <nav id="pagination" class="pagination" aria-label="Pagination bas"></nav>
+      <!-- Bouton contribution EN BAS de page (CEO 12/10/26) : plus
+           discret, sous la grille et la pagination basse. L'id
+           propose-btn reste OBLIGATOIRE (le socle commun
+           common/js/contribution.js y attache l'ouverture). -->
+      <div class="propose-footer">
+        <button type="button" id="propose-btn" class="btn btn-primary propose-btn">
+          Proposer une actualité
+        </button>
+      </div>
     </section>
   </main>
 
@@ -109,10 +136,10 @@
         <div class="form-row">
           <label for="c-type">Type d'actualité <span class="req">*</span></label>
           <select id="c-type" name="type">
-            <option value="evenement_a_venir">Événement à venir</option>
-            <option value="ressource_publiee">Ressource publiée</option>
-            <option value="evenement_passe">Événement passé</option>
-            <option value="information_parlement">Information du parlement</option>
+            <option value="evenement">Événement</option>
+            <option value="media_publie">Média publié</option>
+            <option value="outil_publie">Outil publié</option>
+            <option value="information">Information</option>
           </select>
         </div>
 

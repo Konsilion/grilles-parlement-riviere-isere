@@ -104,9 +104,15 @@
   outline-offset: 2px;
 }
 
-/* ============== Bouton contribution (toolbar) ==============
+/* ============== Bouton contribution (bas de page) ==============
    Calque médiathèque : .btn/.btn-primary viennent du socle
-   commun contribution.css, seul l'ancrage toolbar est propre. */
+   commun contribution.css. Le bouton vit EN BAS de la page,
+   sous la pagination basse (CEO 12/10/26) — conteneur dédié,
+   centré, tokens existants. */
+.propose-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+}
 .propose-btn {
   white-space: nowrap;
 }
@@ -220,23 +226,29 @@
 /* Body scroll lock quand modale ouverte (calque médiathèque) */
 body.modal-open { overflow: hidden; }
 
-/* Palette de badges 100% claire (calque vitrine) */
-.card-type.type-evenement-avenir {
+/* Palette de badges 100% claire (calque vitrine). Contrat de types
+   CEO 12/10/26 : evenement / media_publie / outil_publie /
+   information — ce sont les dates qui font foi, plus de
+   evenement_passe (la pastille rouge « Passé(e) » s'en charge). */
+.card-type.type-evenement {
   background: #e3ecf7;
   border-color: #c3d3eb;
   color: #2b579a; /* bleu Word */
 }
-.card-type.type-ressource-publiee {
+.card-type.type-media-publie {
   background: #e3f1e8;
   border-color: #bfdccb;
   color: #1e6b3c; /* vert Excel */
 }
-.card-type.type-evenement-passe {
-  background: #f0f0f1;
-  border-color: #d9d9dc;
-  color: #5a5a5e; /* gris */
+/* Outil publié : teinte teal/vert d'eau distincte des autres
+   (bleu événement, vert média, jaune information) — palette
+   claire cohérente, ni gris ni sombre. */
+.card-type.type-outil-publie {
+  background: #dff3f3;
+  border-color: #b8dede;
+  color: #12655f; /* teal profond */
 }
-.card-type.type-information-parlement {
+.card-type.type-information {
   background: #fdf3d8;
   border-color: #f2dfa4;
   color: #8a6116; /* jaune Outlook */

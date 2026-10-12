@@ -3,9 +3,9 @@
    Lit data/actualites.json (généré par scripts/fetch_actualites.py
    depuis Zotero, cf. K4 ; fixture = conversion du CSV historique),
    rend une grille de cartes avec pagination (socle commun
-   GrillePagination), filtres multi-choix Année + Mois (dropdowns
-   custom GrilleDropdown) et recherche floue (GrilleSearch).
-   Zéro dépendance, zéro build.
+   GrillePagination), filtres multi-choix Année + Mois + Type
+   (dropdowns custom GrilleDropdown) et recherche floue
+   (GrilleSearch). Zéro dépendance, zéro build.
    ========================================================= */
 "use strict";
 
@@ -17,11 +17,24 @@ const { paginate: paginateItems, renderPagination } = window.GrillePagination;
 const { makeDropdown } = window.GrilleDropdown;
 
 /* ---------- Constantes ---------- */
+/* Contrat des types (CEO 12/10/26) : ce sont les DATES qui font foi,
+   plus de distinction à venir/passé dans le type. evenement_a_venir
+   et evenement_passe fusionnent en evenement ; ressource_publiee
+   devient media_publie (renvoi vers la Médiathèque) ;
+   information_parlement devient information ; NOUVEAU outil_publie
+   (même logique, vers l'Outilthèque). */
 const TYPES = {
-  evenement_a_venir: { label: "Événement à venir", slug: "evenement-avenir" },
-  ressource_publiee: { label: "Ressource publiée", slug: "ressource-publiee" },
-  evenement_passe: { label: "Événement passé", slug: "evenement-passe" },
-  information_parlement: { label: "Information du parlement", slug: "information-parlement" },
+  evenement: { label: "Événement", slug: "evenement" },
+  media_publie: { label: "Média publié", slug: "media-publie" },
+  outil_publie: { label: "Outil publié", slug: "outil-publie" },
+  information: { label: "Information", slug: "information" },
+};
+
+/* Libellé du lien des cartes selon le type (CEO 12/10/26) :
+   médias → Médiathèque, outils → Outilthèque, le reste inchangé. */
+const LINK_LABELS = {
+  media_publie: "Voir le média",
+  outil_publie: "Voir l'outil",
 };
 
 const MONTHS_FR = [
@@ -34,8 +47,9 @@ const state = {
   items: [],
   searchText: "",
   selectedYears: new Set(), // années cochées (vide = toutes)
-  selectedMonths: new Set(), // numéros de mois "01"-"12" cochés (vide = tous)
-  pageSize: "9", // "9" | "18" | "36" | "all" (calque vitrine Zotero)
+  selectedMonths: new Set(), // numéros de mois "01"-""12" cochés (vide = tous)
+  selectedTypes: new Set(), // types d'actualité cochés (vide = tous)
+  pageSize: "6", // "3" | "6" | "9" | "12" (CEO 12/10/26)
   currentPage: 0, // index 0-based
 };
 
@@ -56,6 +70,11 @@ const els = {
   monthPill: null,
   monthMenu: null,
   monthPills: null,
+  typeDropdown: null,
+  typeToggle: null,
+  typePill: null,
+  typeMenu: null,
+  typePills: null,
 };
 
 function grabEls() {
@@ -74,6 +93,11 @@ function grabEls() {
   els.monthPill = document.getElementById("month-pill");
   els.monthMenu = document.getElementById("month-menu");
   els.monthPills = document.getElementById("month-pills");
+  els.typeDropdown = document.getElementById("type-dropdown");
+  els.typeToggle = document.getElementById("type-toggle");
+  els.typePill = document.getElementById("type-pill");
+  els.typeMenu = document.getElementById("type-menu");
+  els.typePills = document.getElementById("type-pills");
 }
 
 /* ---------- Normalisation des items JSON ----------
@@ -97,22 +121,88 @@ function normalizeItems(raw) {
   }));
 }
 
-/* ---------- Tri : événements à venir d'abord, puis par date ---------- */
-function sortItems(items) {
+/* ---------- Tri : EN COURS → À VENIR → PASSÉ (CEO 12/10/26) ----------
+   Un enregistrement EN COURS (début passé, fin non atteinte) doit
+   apparaître en premier — ex. l'arrêté sécheresse en tête de grille.
+   - EN COURS (0) : période commencée et non terminée (date_debut ≤
+     aujourd'hui ET fin effective non passée). Fin effective =
+     date_fin, sinon (type evenement sans fin) date_debut. Un item
+     sans aucune date reste dans ce compartiment (une information ou
+     une ressource sans fin reste d'actualité). Ordre interne : fin
+     effective croissante (échéance la plus proche d'abord), items
+     sans fin EN DERNIER, puis date_debut croissante, puis id.
+   - À VENIR (1) : date_debut > aujourd'hui. Ordre : date_debut
+     croissante, puis id croissant.
+   - PASSÉ (2) : fin effective < aujourd'hui. Ordre : plus récent
+     d'abord (fin effective décroissante, puis date_debut
+     décroissante, puis id décroissant). */
+function todayMidnight() {
   const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const ts = (a) => parseISO(a.date_debut || a.date_ajout || "");
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+}
+
+// Fin effective d'une actualité (null = pas de fin, reste d'actualité).
+function effectiveEnd(item) {
+  const fi = (item.date_fin || "").trim();
+  if (fi) return parseISO(fi);
+  // Un événement sans date_fin se termine le jour de sa date_debut.
+  if (item.type.startsWith("evenement")) return parseISO(item.date_debut || "");
+  return null;
+}
+
+function sortItems(items) {
+  const today = todayMidnight();
+  const de = (it) => parseISO(it.date_debut || "");
+  const fi = (it) => effectiveEnd(it);
+
+  // 0 = EN COURS, 1 = À VENIR, 2 = PASSÉ.
+  function compartment(it) {
+    const start = de(it);
+    if (start && start > today) return 1;
+    const end = fi(it);
+    if (end && end < today) return 2;
+    return 0;
+  }
+
+  const idAsc = (a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 
   return items.slice().sort((a, b) => {
-    const ta = ts(a) || today;
-    const tb = ts(b) || today;
-    const aUpcoming = a.type === "evenement_a_venir" && (ta ? ta >= today : false);
-    const bUpcoming = b.type === "evenement_a_venir" && (tb ? tb >= today : false);
-    // Événements à venir (proches en premier), puis le reste par date desc.
-    if (aUpcoming && bUpcoming) return ta - tb;
-    if (aUpcoming) return -1;
-    if (bUpcoming) return 1;
-    return tb - ta;
+    const ca = compartment(a);
+    const cb = compartment(b);
+    if (ca !== cb) return ca - cb;
+
+    if (ca === 1) {
+      // À VENIR : date_debut croissante (sans date en dernier), puis id.
+      const da = de(a);
+      const db = de(b);
+      if (da && db && da !== db) return da - db;
+      if (!!da !== !!db) return da ? -1 : 1;
+      return idAsc(a, b);
+    }
+
+    if (ca === 2) {
+      // PASSÉ : plus récent d'abord — fin effective décroissante,
+      // puis date_debut décroissante, puis id décroissant.
+      const fa = fi(a);
+      const fb = fi(b);
+      if (fa && fb && fa !== fb) return fb - fa;
+      const da = de(a);
+      const db = de(b);
+      if (da && db && da !== db) return db - da;
+      return b.id < a.id ? -1 : b.id > a.id ? 1 : 0;
+    }
+
+    // EN COURS : fin effective croissante, items sans fin EN DERNIER,
+    // puis date_debut croissante, puis id croissant.
+    const fa = fi(a);
+    const fb = fi(b);
+    if (!!fa !== !!fb) return fa ? -1 : 1;
+    if (fa && fb && fa !== fb) return fa - fb;
+    const da = de(a);
+    const db = de(b);
+    if (da && db && da !== db) return da - db;
+    if (!!da !== !!db) return da ? -1 : 1;
+    return idAsc(a, b);
   });
 }
 
@@ -170,7 +260,9 @@ function renderCard(item) {
     a.href = item.lien;
     a.target = "_blank";
     a.rel = "noopener noreferrer";
-    a.textContent = "En savoir plus";
+    // Libellé du lien selon le type (CEO 12/10/26) : médias →
+    // « Voir le média », outils → « Voir l'outil », sinon inchangé.
+    a.textContent = LINK_LABELS[item.type] || "En savoir plus";
     linkWrap.appendChild(a);
     card.appendChild(linkWrap);
   }
@@ -212,7 +304,7 @@ function itemYears(item) {
   return years;
 }
 
-/* ---------- Filtrage combiné (recherche ∧ année ∧ mois) ---------- */
+/* ---------- Filtrage combiné (recherche ∧ année ∧ mois ∧ type) ---------- */
 function getFilteredItems() {
   const qNorm = GS.searchNormalize(state.searchText.trim());
   const qWords = qNorm ? qNorm.split(/[^a-z0-9]+/).filter((w) => w.length >= 2) : [];
@@ -227,6 +319,8 @@ function getFilteredItems() {
       const months = new Set(itemMonths(it).map((k) => k.slice(5)));
       if (!hasIntersection(months, state.selectedMonths)) return false;
     }
+    // Intersection stricte : un item n'a qu'un type.
+    if (state.selectedTypes.size > 0 && !state.selectedTypes.has(it.type)) return false;
     return true;
   });
 }
@@ -258,6 +352,14 @@ function buildFilterMenus() {
   monthDD.fill(
     [...keys].sort((a, b) => a.localeCompare(b)).map((k) => ({ value: k, label: monthLabel(k) })),
     () => onFilterChange(monthDD)
+  );
+
+  // Les 4 types canoniques, TOUJOURS dans l'ordre de TYPES — même
+  // « Outil publié » qui a 0 item aujourd'hui (le CEO veut que le
+  // type existe visuellement).
+  typeDD.fill(
+    Object.keys(TYPES).map((k) => ({ value: k, label: TYPES[k].label })),
+    () => onFilterChange(typeDD)
   );
 }
 
@@ -320,11 +422,47 @@ function renderMonthPills() {
   }
 }
 
+/* ---------- Pastilles des types sélectionnés (CEO 12/10/26) ----------
+   Calque strict de renderMonthPills : une pastille par type coché,
+   croix × pour le retirer, synchronisée à CHAQUE renderGrid (les
+   deux sens : pastille → menu, menu → pastille). L'ordre suit
+   l'ordre canonique de TYPES, comme le menu. */
+function renderTypePills() {
+  if (!els.typePills) return;
+  els.typePills.innerHTML = "";
+
+  for (const key of Object.keys(TYPES)) {
+    if (!state.selectedTypes.has(key)) continue;
+    const pill = document.createElement("span");
+    pill.className = "filter-pill";
+
+    const label = document.createElement("span");
+    label.textContent = TYPES[key].label;
+    pill.appendChild(label);
+
+    const x = document.createElement("button");
+    x.type = "button";
+    x.className = "filter-pill-x";
+    x.setAttribute("aria-label", "Retirer le filtre " + TYPES[key].label);
+    x.textContent = "×";
+    x.addEventListener("click", () => {
+      state.selectedTypes.delete(key);
+      state.currentPage = 0; // tout changement de filtre ramène à la page 1
+      typeDD.syncUI();
+      renderGrid();
+    });
+    pill.appendChild(x);
+
+    els.typePills.appendChild(pill);
+  }
+}
+
 /* ---------- Rendu de la page courante ---------- */
 function renderGrid() {
   if (!els.grid) return;
   els.grid.innerHTML = "";
   renderMonthPills();
+  renderTypePills();
 
   const items = getFilteredItems();
   const { totalPages, pageRows } = paginateItems(state, items);
@@ -337,7 +475,8 @@ function renderGrid() {
     const p = document.createElement("p");
     p.className = "empty";
     p.textContent =
-      state.searchText.trim() || state.selectedYears.size || state.selectedMonths.size
+      state.searchText.trim() || state.selectedYears.size || state.selectedMonths.size ||
+        state.selectedTypes.size
         ? "Aucune actualité ne correspond à ces filtres."
         : "Aucune actualité pour le moment.";
     els.grid.appendChild(p);
@@ -384,7 +523,7 @@ async function load() {
   state.currentPage = 0;
   // AUCUN filtre coché par défaut (CEO 12/10/26, inverse la règle du
   // 11/10) : les actualités passées sont TOUJOURS affichées ; les
-  // filtres Année/Mois suffisent pour naviguer, et la pastille
+  // filtres Année/Mois/Type suffisent pour naviguer, et la pastille
   // rouge « Passé(e) » marque les périodes terminées.
   buildFilterMenus();
   renderGrid();
@@ -432,11 +571,12 @@ function attachListeners() {
     description: () => document.getElementById("c-description"),
   };
 
+  // Calque de l'existant : sans accents (contrat valider_contribution.py).
   const TYPE_LABELS = {
-    evenement_a_venir: "Evenement a venir",
-    ressource_publiee: "Ressource publiee",
-    evenement_passe: "Evenement passe",
-    information_parlement: "Information parlement",
+    evenement: "Evenement",
+    media_publie: "Media publie",
+    outil_publie: "Outil publie",
+    information: "Information",
   };
 
   function validate() {
@@ -548,6 +688,16 @@ const monthDD = makeDropdown({
   allLabel: "Tous les mois",
   unitWord: "mois",
   labelOf: monthLabel,
+});
+const typeDD = makeDropdown({
+  dropdown: els.typeDropdown,
+  toggle: els.typeToggle,
+  pill: els.typePill,
+  menu: els.typeMenu,
+  set: state.selectedTypes,
+  allLabel: "Tous les types",
+  unitWord: "types",
+  labelOf: (v) => TYPES[v]?.label || v,
 });
 attachListeners();
 document.addEventListener("DOMContentLoaded", load);

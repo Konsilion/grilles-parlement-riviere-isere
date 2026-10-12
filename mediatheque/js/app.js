@@ -6,7 +6,11 @@
      multi-choix via dropdown commun + type multi-choix)
    - Types dynamiques : compteurs recalculés à chaque filtre,
      types à 0 masqués
-   - Modale détail + copie BibTeX (tags conservés en modale)
+   - Modale détail : socle commun GrilleDetail (définition
+     « mediatheque », common/js/details/mediatheque.js) — badge type,
+     meta auteurs, résumé, source, copie BibTeX et ancrage du mode
+     intégré vivent dans la définition ; ce fichier consomme
+     GD.open/GD.close et les helpers (typeClass, formatAuthors*).
    - Recherche floue / pagination / dropdown : socles communs
      (../common/js/*) partagés avec l'app actualités (K5).
    ========================================================= */
@@ -18,6 +22,11 @@
   const GS = window.GrilleSearch;
   const { paginate: paginateItems, renderPagination } = window.GrillePagination;
   const { makeDropdown } = window.GrilleDropdown;
+  // Modale détail : socle GrilleDetail (engine + définition « mediatheque »
+  // chargés avant ce script). La définition expose ses utilitaires via
+  // helpers — le rendu des cartes les consomme (zéro duplication).
+  const GD = window.GrilleDetail;
+  const { typeClass, formatAuthorsShort } = GD.helpers("mediatheque");
 
   // ---------- Mode intégré (iframe hôte, ?mode=integre) ----------
   // La vitrine embarquée n'a PAS de défilement propre : l'iframe est
@@ -66,33 +75,6 @@
     pageSizeSelect: document.getElementById("page-size-select"),
     pagination: document.getElementById("pagination"),
     paginationTop: document.getElementById("pagination-top"),
-    modal: document.getElementById("modal"),
-    modalType: document.getElementById("modal-type"),
-    modalTitle: document.getElementById("modal-title"),
-    modalMetaLine: document.getElementById("modal-meta-line"),
-    modalTags: document.getElementById("modal-tags"),
-    modalAbstract: document.getElementById("modal-abstract"),
-    modalSource: document.getElementById("modal-source"),
-    modalBibtex: document.getElementById("modal-bibtex"),
-    modalCopied: document.getElementById("modal-copied"),
-    modalContent: document.querySelector(".modal-content"),
-    modalBackdrop: document.querySelector(".modal-backdrop"),
-  };
-
-  // ---------- Utils ----------
-  const formatAuthors = (authors) => {
-    if (!authors || authors.length === 0) return "Auteur inconnu";
-    if (authors.length === 1) return authors[0];
-    if (authors.length === 2) return authors.join(" & ");
-    if (authors.length <= 5) return authors.slice(0, -1).join(", ") + " & " + authors.at(-1);
-    return authors.slice(0, 3).join(", ") + ", et al.";
-  };
-
-  const formatAuthorsShort = (authors) => {
-    if (!authors || authors.length === 0) return "Auteur inconnu";
-    if (authors.length === 1) return authors[0];
-    if (authors.length === 2) return authors.join(", ");
-    return authors[0] + " et al.";
   };
 
   // ---------- Index de recherche (haystack médiathèque) ----------
@@ -265,18 +247,8 @@
     notifyHeight();
   }
 
-  // ---------- Vignettes de type (classe CSS par type) ----------
-  const TYPE_CLASS_MAP = {
-    "Rapport": "rapport",
-    "Document": "document",
-    "Présentation": "presentation",
-    "Audio": "audio",
-    "Article de revue": "article",
-    "Newsletter": "newsletter",
-  };
-
-  const typeClass = (type) => "type-" + (TYPE_CLASS_MAP[type] || "autre");
-
+  // ---------- Vignettes de type : typeClass vient des helpers de la
+  // définition GrilleDetail (même map pour cartes ET modale) ----------
   function renderCard(it) {
     return `
       <article class="card" data-key="${escapeHtml(it.key)}" tabindex="0" role="button" aria-label="Voir le détail de ${escapeHtml(it.title)}">
@@ -288,78 +260,21 @@
     `;
   }
 
-  // ---------- Modale ----------
-  // Ligne meta compacte : « Par : <auteurs> · 📅 <année> · Ajouté le <date> ».
-  // Chaque segment absent de l'item est omis ; seuls les segments présents
-  // sont séparés par « · ». Les auteurs absents restent « Auteur inconnu »
-  // (comportement formatAuthors conservé).
-  function buildMetaSegments(item) {
-    const segments = [];
-    const authors = formatAuthors(item.authors);
-    if (authors) segments.push(`Par : ${authors}`);
-    if (item.year) segments.push(`📅 ${item.year}`);
-    if (item.dateAdded) segments.push(`Ajouté le ${item.dateAdded}`);
-    return segments;
-  }
-
-  function renderMetaLine(item) {
-    const segments = buildMetaSegments(item);
-    els.modalMetaLine.textContent = "";
-    segments.forEach((seg, i) => {
-      if (i > 0) els.modalMetaLine.append(" · ");
-      if (seg.startsWith("Par : ")) {
-        const span = document.createElement("span");
-        span.className = "modal-meta-authors";
-        span.textContent = seg;
-        els.modalMetaLine.append(span);
-      } else {
-        els.modalMetaLine.append(seg);
-      }
-    });
-  }
-
+  // ---------- Modale détail : consommation du socle GrilleDetail ----------
+  // Tout le remplissage (badge type, ligne meta « Par : … », tags, résumé,
+  // source, BibTeX) vit dans la définition « mediatheque »
+  // (common/js/details/mediatheque.js) ; l'engine gère fermeture
+  // ×/voile/Échap, scroll-lock et ids uniques (gd-mediatheque-*).
   function openModal(item, triggerEl) {
-    els.modalType.textContent = item.type || "Document";
-    els.modalType.className = "modal-type " + typeClass(item.type);
-    els.modalTitle.textContent = item.title;
-    renderMetaLine(item);
-
-    els.modalTags.innerHTML = (item.tags || [])
-      .map((t) => `<span class="card-tag">${escapeHtml(t)}</span>`)
-      .join("");
-
-    if (item.abstract && item.abstract.trim()) {
-      els.modalAbstract.textContent = item.abstract;
-      els.modalAbstract.classList.remove("empty");
-    } else {
-      els.modalAbstract.textContent = "Pas de résumé disponible.";
-      els.modalAbstract.classList.add("empty");
-    }
-
-    const sourceUrl = item.url || (item.doi ? `https://doi.org/${item.doi}` : null);
-    if (sourceUrl) {
-      els.modalSource.href = sourceUrl;
-      els.modalSource.classList.remove("disabled");
-      els.modalSource.textContent = "Ouvrir la source";
-    } else {
-      els.modalSource.removeAttribute("href");
-      els.modalSource.classList.add("disabled");
-      els.modalSource.textContent = "Pas de lien disponible";
-    }
-
-    els.modalBibtex.dataset.key = item.key;
-    els.modalCopied.textContent = "";
-
-    els.modal.setAttribute("aria-hidden", "false");
-    document.body.classList.add("modal-open");
-    if (EMBED_MODE) positionEmbedModal(triggerEl);
+    GD.open("mediatheque", item, { triggerEl });
   }
 
   // En mode intégré, l'iframe est haute comme son contenu : un placement
   // « fixed » centrerait la modale hors du champ visible. On l'ancre donc
-  // sur la carte cliquée — visible par définition — et le voile couvre
-  // tout le document. Généralisée aux DEUX modales (détail + contribution).
-  function positionEmbedModal(triggerEl, modal = els.modal, backdrop = els.modalBackdrop, content = els.modalContent) {
+  // sur l'élément déclencheur — visible par définition — et le voile couvre
+  // tout le document. Ici : modale CONTRIBUTION seule (la modale détail
+  // est ancrée par la définition GrilleDetail, via son onOpen).
+  function positionEmbedModal(triggerEl, modal, backdrop, content) {
     const top = triggerEl
       ? Math.max(8, Math.round(triggerEl.getBoundingClientRect().top) - 16)
       : 16;
@@ -369,78 +284,6 @@
     requestAnimationFrame(() => {
       content.scrollIntoView({ block: "center", behavior: "smooth" });
     });
-  }
-
-  function closeModal() {
-    els.modal.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("modal-open");
-    if (EMBED_MODE) {
-      els.modal.style.top = "";
-      els.modalBackdrop.style.top = "";
-      els.modalBackdrop.style.height = "";
-    }
-  }
-
-  // ---------- BibTeX ----------
-  function buildBibtex(item) {
-    const FR_TO_BIBTEX = {
-      "Livre": "book",
-      "Chapitre de livre": "incollection",
-      "Article de revue": "article",
-      "Article de magazine": "article",
-      "Article de presse": "article",
-      "Thèse": "phdthesis",
-      "Rapport": "techreport",
-      "Communication": "inproceedings",
-      "Manuscrit": "unpublished",
-      "Page web": "misc",
-      "Pré-publication": "article",
-    };
-    const type = FR_TO_BIBTEX[item.type] || "misc";
-
-    const firstAuthor = (item.authors && item.authors[0]) || "inconnu";
-    const lastName = firstAuthor.split(" ").pop().toLowerCase().replace(/[^a-z]/g, "");
-    const year = item.year || "nodate";
-    const citeKey = `${lastName}${year}_${(item.key || "").slice(-4)}`;
-
-    const bibAuthors = (item.authors || [])
-      .map((a) => {
-        const parts = a.trim().split(/\s+/);
-        if (parts.length === 1) return parts[0];
-        const last = parts[0];
-        const first = parts.slice(1).join(" ");
-        return `${last}, ${first}`;
-      })
-      .join(" and ");
-
-    const fields = [];
-    fields.push(`  title = {${item.title || ""}}`);
-    if (bibAuthors) fields.push(`  author = {${bibAuthors}}`);
-    if (item.year) fields.push(`  year = {${item.year}}`);
-    if (item.doi) fields.push(`  doi = {${item.doi}}`);
-    if (item.url) fields.push(`  url = {${item.url}}`);
-    if (item.abstract) fields.push(`  abstract = {${item.abstract.replace(/[{}]/g, "")}}`);
-    if (item.dateAdded) fields.push(`  note = {Ajouté à Zotero le ${item.dateAdded}}`);
-
-    return `@${type}{${citeKey},\n${fields.join(",\n")}\n}`;
-  }
-
-  async function copyToClipboard(text) {
-    try {
-      await navigator.clipboard.writeText(text);
-      return true;
-    } catch (e) {
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
-      let ok = false;
-      try { ok = document.execCommand("copy"); } catch (_) { /* ignore */ }
-      document.body.removeChild(ta);
-      return ok;
-    }
   }
 
   // ---------- Contribution (esprit Datami) ----------
@@ -487,7 +330,7 @@
 
   function openContributeModal() {
     // Sécurité : une seule modale à la fois (referme la modale détail).
-    if (els.modal.getAttribute("aria-hidden") === "false") closeModal();
+    if (GD.isOpen("mediatheque")) GD.close("mediatheque");
     // Réinitialisation : formulaire visible, confirmations masquées
     elsC.form.hidden = false;
     elsC.success.hidden = true;
@@ -695,28 +538,11 @@
       render();
     });
 
-    els.modal.querySelectorAll("[data-close]").forEach((el) => {
-      el.addEventListener("click", closeModal);
-    });
-    // Échap : priorité au menu Année (fermé par le dropdown commun, qui
-    // rend le focus au bouton) — la modale ne se ferme que si le menu
-    // était déjà fermé (comportement d'origine).
-    document.addEventListener("keydown", (e) => {
-      if (e.key !== "Escape") return;
-      if (els.yearMenu.classList.contains("open")) return;
-      if (els.modal.getAttribute("aria-hidden") === "false") {
-        closeModal();
-      }
-    });
-
-    els.modalBibtex.addEventListener("click", async () => {
-      const key = els.modalBibtex.dataset.key;
-      const item = state.items.find((i) => i.key === key);
-      if (!item) return;
-      const bib = buildBibtex(item);
-      const ok = await copyToClipboard(bib);
-      els.modalCopied.textContent = ok ? "✓ Citation BibTeX copiée !" : "⚠️ Copie impossible — sélectionne manuellement.";
-    });
+    // Modale détail : RIEN à brancher ici — le socle GrilleDetail gère la
+    // fermeture (×, voile) et Échap (priorité au menu Année ouvert, l'engine
+    // vérifie .dd-menu.open avant de fermer : comportement d'origine
+    // conservé, la modale passe après le menu). La copie BibTeX est branchée
+    // par la définition à chaque remplissage (aucun empilement).
 
     // ----- Modale contribution -----
     if (elsC.btn && elsC.modal) {

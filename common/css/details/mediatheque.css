@@ -1,0 +1,134 @@
+/* =========================================================
+   GrilleDetail — définition « mediatheque » (bibliothèque Zotero)
+
+   Styles propres à la modale détail Médiathèque, injectés par le
+   socle (common/js/detail.js) à la première ouverture :
+   - badge type coloré (déplacé de mediatheque/css/style.css — il
+     sert AUSSI la modale contribution inline de l'app, qui garde
+     <span class="modal-type type-autre">) ;
+   - écarts historiques de la médiathèque sur le socle structurel
+     common/css/modal.css, scopés .gd-modal ;
+   - le reste (conteneur, boutons, tags, sections) vient du socle.
+
+   Largeur : --modal-maxw: 700px est posé aux DEUX niveaux — :root de
+   l'app (mediatheque/css/style.css, pour la modale contribution inline,
+   historiquement 700px elle aussi) ET scopé .gd-modal ci-dessous (pour
+   une ouverture à distance depuis une autre app, qui ne charge pas le
+   style.css de la médiathèque).
+   ========================================================= */
+
+/* ---------- Largeur historique (ouverture à distance incluse) ---------- */
+.gd-modal[data-gd-root="mediatheque"] {
+  --modal-maxw: 700px;
+}
+
+/* ---------- Badge type (modale détail + modale contribution inline) ---------- */
+.modal-type {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--accent);
+  background: var(--tag-bg);
+  margin-bottom: 0.5rem;
+}
+.modal-type.type-rapport {
+  background: #e3ecf7;
+  border-color: #c3d3eb;
+  color: #2b579a; /* bleu Word */
+}
+.modal-type.type-document {
+  background: #f0f0f1;
+  border-color: #d9d9dc;
+  color: #5a5a5e; /* gris */
+}
+.modal-type.type-presentation {
+  background: #fbeae3;
+  border-color: #f2c9bc;
+  color: #c2401f; /* orange PowerPoint */
+}
+.modal-type.type-audio {
+  background: #f1e9fb;
+  border-color: #dccaf4;
+  color: #6d28d9; /* violet */
+}
+.modal-type.type-article {
+  background: #e3f1e8;
+  border-color: #bfdccb;
+  color: #1e6b3c; /* vert Excel */
+}
+.modal-type.type-newsletter {
+  background: #fdf3d8;
+  border-color: #f2dfa4;
+  color: #8a6116; /* jaune Outlook */
+}
+.modal-type.type-autre {
+  background: var(--tag-bg);
+  border-color: var(--border);
+  color: var(--accent);
+}
+
+/* Mode intégré : re-forçage des variantes claires du badge (les valeurs
+   de l'app hôte imposent le clair — même logique que les .card-type,
+   re-forcées dans mediatheque/css/style.css). Sert la modale détail
+   ET le badge « Contribuer » de la modale contribution inline. */
+html[data-embed="1"] .modal-type.type-rapport {
+  background: #e3ecf7; border-color: #c3d3eb; color: #2b579a;
+}
+html[data-embed="1"] .modal-type.type-document {
+  background: #f0f0f1; border-color: #d9d9dc; color: #5a5a5e;
+}
+html[data-embed="1"] .modal-type.type-presentation {
+  background: #fbeae3; border-color: #f2c9bc; color: #c2401f;
+}
+html[data-embed="1"] .modal-type.type-audio {
+  background: #f1e9fb; border-color: #dccaf4; color: #6d28d9;
+}
+html[data-embed="1"] .modal-type.type-article {
+  background: #e3f1e8; border-color: #bfdccb; color: #1e6b3c;
+}
+html[data-embed="1"] .modal-type.type-newsletter {
+  background: #fdf3d8; border-color: #f2dfa4; color: #8a6116;
+}
+
+/* ---------- Écarts historiques sur le socle modal.css ---------- */
+/* Titre + ligne meta : mêmes espacements que l'ancienne modale inline
+   (le socle serre le titre à margin:0 et la ligne meta à 0.2rem). */
+.gd-modal[data-gd-root="mediatheque"] .modal-title {
+  margin: 0 0 0.75rem;
+}
+.gd-modal[data-gd-root="mediatheque"] .modal-meta-line {
+  margin: 0 0 0.25rem;
+}
+.gd-modal[data-gd-root="mediatheque"] .modal-meta-authors {
+  color: var(--text);
+}
+
+/* Tags de la modale : pastilles plus généreuses que les cartes. */
+.gd-modal[data-gd-root="mediatheque"] .modal-tags .card-tag {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.6rem;
+}
+
+/* Résumé pre-wrap ; absence → mention italique atténuée. */
+.gd-modal[data-gd-root="mediatheque"] .modal-abstract {
+  white-space: pre-wrap;
+  line-height: 1.6;
+  margin: 0;
+}
+.gd-modal[data-gd-root="mediatheque"] .modal-abstract.empty {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Message de copie BibTeX : vert, hauteur stable (ligne vide ou pleine). */
+.gd-modal[data-gd-root="mediatheque"] .copied-msg {
+  display: inline-block;
+  color: #16a34a;
+  min-height: 1.2em;
+}

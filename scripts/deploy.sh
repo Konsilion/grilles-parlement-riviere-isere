@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
-# deploy.sh — synchronise Zotero (médiathèque + actualités + contacts +
-# projets), commit et push.
+# deploy.sh — synchronise Zotero (les NEUF apps), commit et push.
 #
-# Étendu (P1) : les QUATRE fetchs —
-#   1. scripts/fetch_zotero.py      -> mediatheque/data/collection.json
-#   2. scripts/fetch_actualites.py  -> actualites/data/actualites.json
-#   3. scripts/fetch_contacts.py    -> contacts/data/contacts.json
-#   4. scripts/fetch_projets.py     -> projets/data/projets.json
-# puis commit des quatre data/ et push vers GitHub Pages.
+# Étendu (5e grille, 12/10/26) : les NEUF fetchs —
+#   1. scripts/fetch_zotero.py           -> mediatheque/data/collection.json
+#   2. scripts/fetch_actualites.py       -> actualites/data/actualites.json
+#   3. scripts/fetch_contacts.py         -> contacts/data/contacts.json
+#   4. scripts/fetch_projets.py          -> projets/data/projets.json
+#   5. scripts/fetch_organisations.py    -> organisations/data/organisations.json
+#   6. scripts/fetch_outils.py           -> outiltheque/data/outils.json
+#   7. scripts/fetch_lieux.py            -> lieux/data/lieux.json
+#   8. scripts/fetch_questions.py        -> questions/data/questions.json
+#   9. scripts/fetch_idees.py            -> idees/data/idees.json
+# puis commit des neuf data/ et push vers GitHub Pages.
 #
 # Usage:
 #   bash scripts/deploy.sh             # exécution réelle
@@ -23,10 +27,10 @@ elif [ $# -gt 0 ]; then
     exit 2
 fi
 
-echo "════════════════════════════════════════════════"
+echo "══════════════════════════════════════════════"
 echo "  Grilles Parlement — déploiement GitHub Pages"
-echo "  (médiathèque + actualités + contacts + projets)"
-echo "════════════════════════════════════════════════"
+echo "  (les 9 applications)"
+echo "══════════════════════════════════════════════"
 
 # 1. Vérifier config.py (clé lecture pour fetch_zotero.py — jamais commitée)
 if [ ! -f scripts/config.py ]; then
@@ -47,37 +51,49 @@ fi
 if [ "$DRY_RUN" = "1" ]; then
     echo ""
     echo "[DRY-RUN] Étapes qui seraient exécutées :"
-    echo "  1. python3 scripts/fetch_zotero.py      -> mediatheque/data/collection.json"
-    echo "  2. python3 scripts/fetch_actualites.py  -> actualites/data/actualites.json"
-    echo "  3. python3 scripts/fetch_contacts.py    -> contacts/data/contacts.json"
-    echo "  4. python3 scripts/fetch_projets.py     -> projets/data/projets.json"
-    echo "  5. git add mediatheque/data/collection.json actualites/data/actualites.json contacts/data/contacts.json projets/data/projets.json"
-    echo "  6. git commit + push origin main"
+    echo "  1-9. les NEUF fetchs (fetch_zotero, fetch_actualites, fetch_contacts,"
+    echo "        fetch_projets, fetch_organisations, fetch_outils, fetch_lieux,"
+    echo "        fetch_questions, fetch_idees) — chaque script présent est exécuté"
+    echo "  10. git add des data/*.json présents + commit + push origin main"
     exit 0
 fi
 
-# 3. Les QUATRE fetchs Zotero
-echo ""
-echo "→ Fetch médiathèque (fetch_zotero.py)…"
-python3 scripts/fetch_zotero.py
+# 3. Les NEUF fetchs Zotero
+run_fetch() {
+    # $1 = nom du script, $2 = libellé
+    if [ -f "scripts/$1" ]; then
+        echo ""
+        echo "→ Fetch $2 (scripts/$1)…"
+        python3 "scripts/$1"
+    else
+        echo ""
+        echo "→ Fetch $2 (scripts/$1) absent — ignoré (app non déployée)"
+    fi
+}
 
-echo ""
-echo "→ Fetch actualités (fetch_actualites.py)…"
-python3 scripts/fetch_actualites.py
+run_fetch fetch_zotero.py "médiathèque"
+run_fetch fetch_actualites.py "actualités"
+run_fetch fetch_contacts.py "contacts"
+run_fetch fetch_projets.py "projets"
+run_fetch fetch_organisations.py "organisations"
+run_fetch fetch_outils.py "outilthèque"
+run_fetch fetch_lieux.py "lieux"
+run_fetch fetch_questions.py "questions"
+run_fetch fetch_idees.py "idées"
 
-echo ""
-echo "→ Fetch contacts (fetch_contacts.py)…"
-python3 scripts/fetch_contacts.py
-
-echo ""
-echo "→ Fetch projets (fetch_projets.py)…"
-python3 scripts/fetch_projets.py
-
-# 4. Commit + push des quatre data/
+# 4. Commit + push des data/ présents (le timer horaire ne pousse JAMAIS
+#    les pending_proposals.json — règle anti-fuite message-ids)
 echo ""
 echo "→ Mise à jour du dépôt Git…"
-git add mediatheque/data/collection.json actualites/data/actualites.json contacts/data/contacts.json projets/data/projets.json
-git commit -m "Mise à jour Zotero (médiathèque + actualités + contacts + projets) ($(date '+%Y-%m-%d %H:%M'))" || {
+DATA_FILES=()
+for f in mediatheque/data/collection.json actualites/data/actualites.json \
+         contacts/data/contacts.json projets/data/projets.json \
+         organisations/data/organisations.json outiltheque/data/outils.json \
+         lieux/data/lieux.json questions/data/questions.json idees/data/idees.json; do
+    [ -f "$f" ] && DATA_FILES+=("$f")
+done
+git add "${DATA_FILES[@]}"
+git commit -m "Mise à jour Zotero (les 9 applications) ($(date '+%Y-%m-%d %H:%M'))" || {
     echo "  Aucun changement à committer (données inchangées)."
     exit 0
 }

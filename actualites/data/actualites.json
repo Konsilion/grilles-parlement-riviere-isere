@@ -142,5 +142,17 @@
     "lien": "https://enquetedeau.eaufrance.fr/programme",
     "date_ajout": "2026-10-10",
     "source_message_id": "1129e300-4ac1-8808-5eff-02bae5b0dfc9@fne-aura.org"
+  },
+  {
+    "id": "A0013",
+    "type": "evenement_a_venir",
+    "titre": "Impacte Ton Territoire sur le thème de l'eau — Lac de Paladru",
+    "description": "Événement annuel Ronalpia Pays Voironnais : approches innovantes de la gestion de l'eau. Ateliers, interviews collectives et temps d'échange avec acteurs du territoire. Gratuit sur inscription.",
+    "date_debut": "2026-10-07",
+    "date_fin": "2026-10-07",
+    "lieu": "Musée Archéologique du Lac de Paladru (MALP)",
+    "lien": "https://www.billetweb.fr/la-semaine-de-la-rse-2026",
+    "date_ajout": "2026-10-12",
+    "source_message_id": "b6ba819ec4099aa463266fbaae018777@free.fr"
   }
 ]

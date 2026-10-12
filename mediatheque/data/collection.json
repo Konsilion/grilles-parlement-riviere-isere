@@ -1,8 +1,24 @@
 {
-  "generated_at": "2026-10-12T13:07:42Z",
+  "generated_at": "2026-10-12T13:56:42Z",
   "collection_id": "MCKNJI9M",
   "count": 92,
   "items": [
+    {
+      "key": "43RMCG28",
+      "title": "Une gestion globale pour l'Isère — état cible d'Albertville à Valence",
+      "authors": [
+        "Marcel Macaire"
+      ],
+      "year": "2018",
+      "type": "Rapport",
+      "abstract": "Propositions de la FRAPNA (fédération Rhône-Alpes de protection de la nature), rédigées par Marcel Macaire en février 2018, pour une gestion globale de la rivière Isère, d'Albertville à Valence. La première partie retrace son histoire : un lit en tresse — un cours d'eau qui se divise en plusieurs bras — endigué au XVIIIe siècle, un endiguement trop local au XIXe, la fin de la navigation au XXe ; le plan Durance et le plan Rhône n'ont pas d'équivalent pour l'Isère. Constat : une gestion actuelle locale et sectorielle sans cohérence — trois départements, une gestion des crues départementalisée, EDF contrôlant presque totalement l'Isère aval, des collectivités peu impliquées. L'état et le fonctionnement écologiques sont dégradés : 5 barrages au fil de l'eau sans passes à poissons sur la basse Isère, dérivations Isère-Arc et Arc-Isère alimentant les centrales de Randens et du Cheylas, variations de débit et de température.\n\nLe barrage de St Egrève, par ses chasses annuelles, injecte en 2 ou 3 jours un à trois millions de tonnes de sédiments fins ; en 2008, plus de 4 millions de tonnes en une semaine, contre les 9 millions de tonnes amenées à la mer par le Rhône pendant toute l'année 2008. La FRAPNA s'oppose à tout nouveau barrage en aval de l'Echaillon (le projet Isère moyenne aval de 1981 prévoyait 3 barrages ; seul St Egrève fut réalisé) pour préserver le réservoir biologique Echaillon–pont de St Gervais, où le blageon, espèce protégée, est le poisson le plus abondant. Elle propose un état cible pour 2027 : un SAGE (schéma d'aménagement et de gestion des eaux) et un EPTB (établissement public territorial de bassin) à l'échelle du bassin, un contrat de rivière entre Grenoble et St Gervais, des reculs de digues et l'équipement des barrages et seuils en passes.",
+      "tags": [
+        "Marcel Macaire"
+      ],
+      "doi": null,
+      "url": "https://drive.google.com/file/d/1nXHZf_9IBDTbrYuXUtme_6lOLJ8ay4pk/view",
+      "dateAdded": "2026-10-08"
+    },
     {
       "key": "XP582MUZ",
       "title": "La Navigation sur l'Isère — couverture du recueil",
@@ -33,22 +49,6 @@
       ],
       "doi": null,
       "url": "https://drive.google.com/file/d/19nlI8V112-M8jp70CjrcPsBGNO8Xuzq0/view",
-      "dateAdded": "2026-10-08"
-    },
-    {
-      "key": "43RMCG28",
-      "title": "Une gestion globale pour l'Isère — état cible d'Albertville à Valence",
-      "authors": [
-        "Marcel Macaire"
-      ],
-      "year": "2026",
-      "type": "Rapport",
-      "abstract": "Propositions de la FRAPNA (fédération Rhône-Alpes de protection de la nature), rédigées par Marcel Macaire en février 2018, pour une gestion globale de la rivière Isère, d'Albertville à Valence. La première partie retrace son histoire : un lit en tresse — un cours d'eau qui se divise en plusieurs bras — endigué au XVIIIe siècle, un endiguement trop local au XIXe, la fin de la navigation au XXe ; le plan Durance et le plan Rhône n'ont pas d'équivalent pour l'Isère. Constat : une gestion actuelle locale et sectorielle sans cohérence — trois départements, une gestion des crues départementalisée, EDF contrôlant presque totalement l'Isère aval, des collectivités peu impliquées. L'état et le fonctionnement écologiques sont dégradés : 5 barrages au fil de l'eau sans passes à poissons sur la basse Isère, dérivations Isère-Arc et Arc-Isère alimentant les centrales de Randens et du Cheylas, variations de débit et de température.\n\nLe barrage de St Egrève, par ses chasses annuelles, injecte en 2 ou 3 jours un à trois millions de tonnes de sédiments fins ; en 2008, plus de 4 millions de tonnes en une semaine, contre les 9 millions de tonnes amenées à la mer par le Rhône pendant toute l'année 2008. La FRAPNA s'oppose à tout nouveau barrage en aval de l'Echaillon (le projet Isère moyenne aval de 1981 prévoyait 3 barrages ; seul St Egrève fut réalisé) pour préserver le réservoir biologique Echaillon–pont de St Gervais, où le blageon, espèce protégée, est le poisson le plus abondant. Elle propose un état cible pour 2027 : un SAGE (schéma d'aménagement et de gestion des eaux) et un EPTB (établissement public territorial de bassin) à l'échelle du bassin, un contrat de rivière entre Grenoble et St Gervais, des reculs de digues et l'équipement des barrages et seuils en passes.",
-      "tags": [
-        "Marcel Macaire"
-      ],
-      "doi": null,
-      "url": "https://drive.google.com/file/d/1nXHZf_9IBDTbrYuXUtme_6lOLJ8ay4pk/view",
       "dateAdded": "2026-10-08"
     },
     {
@@ -143,6 +143,51 @@
       ],
       "doi": null,
       "url": "https://drive.google.com/file/d/1Y8K2Y0ee536K6y4g9sZ_9yhlgQG_pONK/view",
+      "dateAdded": "2026-10-08"
+    },
+    {
+      "key": "5MMXIEFR",
+      "title": "Nappes phréatiques : « En Californie, on se dirige vers la disparition totale des ressources souterraines »",
+      "authors": [
+        "Kristel Chanard",
+        "Lacroux Christel"
+      ],
+      "year": "2023",
+      "type": "Article de presse",
+      "abstract": "Article de presse dans lequel Kristel Chanard, hydrologue — une spécialiste de l'eau —, alerte sur les nappes souterraines, ces réserves d'eau stockées sous terre. Selon elle, la surexploitation des nappes — quand on pompe plus d'eau qu'elles ne peuvent en reconstituer — entraîne leur tassement et un affaissement du sol.\n\nLe phénomène est déjà à l'œuvre en Californie, où, comme le dit le titre, « on se dirige vers la disparition totale des ressources souterraines ». C'est un avertissement que la France pourrait avoir à connaître à son tour, selon l'hydrologue.",
+      "tags": [
+        "Articles de presse"
+      ],
+      "doi": null,
+      "url": "https://drive.google.com/file/d/1HE05Rm1CiJqetbTL73oXX699AHxPmnce/view",
+      "dateAdded": "2026-10-08"
+    },
+    {
+      "key": "5GVXX2B9",
+      "title": "Les très polluants préfets du 38",
+      "authors": [],
+      "year": "2024",
+      "type": "Document",
+      "abstract": "Article du Canard Enchaîné (24 avril 2024, signé Yann Voldoire) sur les rejets de l'usine Arkema dans la Romanche, à une dizaine de kilomètres du centre de Grenoble. Une trentaine de substances chimiques y sont déversées, alors que des périmètres de protection de la ressource en eau potable avaient été établis par la préfecture en 1967. Tous les préfets depuis 1976 ont autorisé l'industriel à rejeter ; à compter de 2007, un seuil limite de 83000 mètres cubes par jour a été fixé, « soit l'équivalent de 22 piscines olympiques chimiques quotidiennes ». En septembre 2017, un rapport d'inspection relève des « fuites de chlorates (2 tonnes par jour en moyenne) et de perchlorates (50 kg par jour en moyenne) » réinfiltrées dans les eaux souterraines ; deux mois plus tard, la préfecture a pris un arrêté... pour autoriser ces fuites.\n\n200000 habitants de la métropole de Grenoble sont alimentés par la nappe menacée, ce qui inquiète les élus écolos. Anne-Sophie Olmos, présidente du conseil d'exploitation de la régie des eaux, a saisi le procureur au début de 2023 (ouverture d'une enquête préliminaire) ; l'ex-élu écolo Raymond Avrillier a déposé neuf recours au tribunal administratif entre septembre 2022 et décembre 2023 ; la municipalité écolo de Grenoble a lancé une procédure administrative contre la préfecture fin mars 2024. Un document interne de l'agence régionale de santé évoquait dès 2017 « un risque fort pour la sécurité sanitaire » ; le préfet a pourtant pris le 19 octobre 2023 un nouvel arrêté autorisant Arkema à poursuivre ses rejets, l'industriel assurant se conformer aux réglementations.",
+      "tags": [
+        "Articles de presse"
+      ],
+      "doi": null,
+      "url": "https://drive.google.com/file/d/1QlDtzt-fG46yMz4OWRKP_PRhGcuYi1OJ/view",
+      "dateAdded": "2026-10-08"
+    },
+    {
+      "key": "PTJTJDP5",
+      "title": "Accès à l'eau dans les pays en voie de développement",
+      "authors": [],
+      "year": "2008",
+      "type": "Document",
+      "abstract": "Dossier d'articles sur l'accès à l'eau dans le monde, paru dans la revue Visions Croisées (n° 2, printemps 2008). Premier article, sur les villes des pays en développement (Anastasia Angueletou-Marteau, Université Pierre Mendès France) : l'urbanisation croissante et les restrictions financières expliquent le retard des municipalités et l'apparition d'opérateurs informels, des fournisseurs d'eau hors des réseaux officiels. Depuis la conférence de Mar del Plata (Argentine) en 1977, les rencontres internationales fixent des objectifs : le Sommet du millénaire de 2000 proposait de réduire de moitié, d'ici 2015, la population sans accès durable à une source améliorée ; l'assainissement s'y ajoute à Johannesburg en 2002, et la décennie 2005-2015 est déclarée « l'eau source de vie ».\n\nLa couverture mondiale est passée de 78 % en 1990 à 83 % en 2004, mais 1,1 milliard de personnes restent sans source améliorée. Deuxième article, par Karima Seghir : à Tébessa, en Algérie (environ 194 000 habitants), une très longue sécheresse a abaissé les nappes ; l'oued Bouakous (environ 16 km², environ 310 mm de pluie par an) pourrait réalimenter l'aquifère, la roche souterraine qui stocke l'eau. Le dossier comprend aussi un article de Gilles Bertrand, professeur d'histoire moderne, sur l'eau dans la recherche des historiens, et un autre sur les écroulements rocheux en haute montagne, effet méconnu du réchauffement climatique.",
+      "tags": [
+        "Articles de presse"
+      ],
+      "doi": null,
+      "url": "https://drive.google.com/file/d/1-iJ6xr0MTcoRah4wmPL70uIV-cTQue_d/view",
       "dateAdded": "2026-10-08"
     },
     {
@@ -246,20 +291,6 @@
       "dateAdded": "2026-10-08"
     },
     {
-      "key": "PTJTJDP5",
-      "title": "Accès à l'eau dans les pays en voie de développement",
-      "authors": [],
-      "year": "2026",
-      "type": "Document",
-      "abstract": "Dossier d'articles sur l'accès à l'eau dans le monde, paru dans la revue Visions Croisées (n° 2, printemps 2008). Premier article, sur les villes des pays en développement (Anastasia Angueletou-Marteau, Université Pierre Mendès France) : l'urbanisation croissante et les restrictions financières expliquent le retard des municipalités et l'apparition d'opérateurs informels, des fournisseurs d'eau hors des réseaux officiels. Depuis la conférence de Mar del Plata (Argentine) en 1977, les rencontres internationales fixent des objectifs : le Sommet du millénaire de 2000 proposait de réduire de moitié, d'ici 2015, la population sans accès durable à une source améliorée ; l'assainissement s'y ajoute à Johannesburg en 2002, et la décennie 2005-2015 est déclarée « l'eau source de vie ».\n\nLa couverture mondiale est passée de 78 % en 1990 à 83 % en 2004, mais 1,1 milliard de personnes restent sans source améliorée. Deuxième article, par Karima Seghir : à Tébessa, en Algérie (environ 194 000 habitants), une très longue sécheresse a abaissé les nappes ; l'oued Bouakous (environ 16 km², environ 310 mm de pluie par an) pourrait réalimenter l'aquifère, la roche souterraine qui stocke l'eau. Le dossier comprend aussi un article de Gilles Bertrand, professeur d'histoire moderne, sur l'eau dans la recherche des historiens, et un autre sur les écroulements rocheux en haute montagne, effet méconnu du réchauffement climatique.",
-      "tags": [
-        "Articles de presse"
-      ],
-      "doi": null,
-      "url": "https://drive.google.com/file/d/1-iJ6xr0MTcoRah4wmPL70uIV-cTQue_d/view",
-      "dateAdded": "2026-10-08"
-    },
-    {
       "key": "TFMUTNQZ",
       "title": "Herbicide dangereux (le flufénacet) : notre ONG demande l'interdiction immédiate de ce pesticide-PFAS-perturbateur endocrinien",
       "authors": [
@@ -353,36 +384,6 @@
       ],
       "doi": null,
       "url": "https://drive.google.com/file/d/1AnPhvkXAwSYi16mSpppQ3G67lfx7BR4G/view",
-      "dateAdded": "2026-10-08"
-    },
-    {
-      "key": "5GVXX2B9",
-      "title": "Les très polluants préfets du 38",
-      "authors": [],
-      "year": "2026",
-      "type": "Document",
-      "abstract": "Article du Canard Enchaîné (24 avril 2024, signé Yann Voldoire) sur les rejets de l'usine Arkema dans la Romanche, à une dizaine de kilomètres du centre de Grenoble. Une trentaine de substances chimiques y sont déversées, alors que des périmètres de protection de la ressource en eau potable avaient été établis par la préfecture en 1967. Tous les préfets depuis 1976 ont autorisé l'industriel à rejeter ; à compter de 2007, un seuil limite de 83000 mètres cubes par jour a été fixé, « soit l'équivalent de 22 piscines olympiques chimiques quotidiennes ». En septembre 2017, un rapport d'inspection relève des « fuites de chlorates (2 tonnes par jour en moyenne) et de perchlorates (50 kg par jour en moyenne) » réinfiltrées dans les eaux souterraines ; deux mois plus tard, la préfecture a pris un arrêté... pour autoriser ces fuites.\n\n200000 habitants de la métropole de Grenoble sont alimentés par la nappe menacée, ce qui inquiète les élus écolos. Anne-Sophie Olmos, présidente du conseil d'exploitation de la régie des eaux, a saisi le procureur au début de 2023 (ouverture d'une enquête préliminaire) ; l'ex-élu écolo Raymond Avrillier a déposé neuf recours au tribunal administratif entre septembre 2022 et décembre 2023 ; la municipalité écolo de Grenoble a lancé une procédure administrative contre la préfecture fin mars 2024. Un document interne de l'agence régionale de santé évoquait dès 2017 « un risque fort pour la sécurité sanitaire » ; le préfet a pourtant pris le 19 octobre 2023 un nouvel arrêté autorisant Arkema à poursuivre ses rejets, l'industriel assurant se conformer aux réglementations.",
-      "tags": [
-        "Articles de presse"
-      ],
-      "doi": null,
-      "url": "https://drive.google.com/file/d/1QlDtzt-fG46yMz4OWRKP_PRhGcuYi1OJ/view",
-      "dateAdded": "2026-10-08"
-    },
-    {
-      "key": "5MMXIEFR",
-      "title": "Nappes phréatiques : « En Californie, on se dirige vers la disparition totale des ressources souterraines »",
-      "authors": [
-        "Kristel Chanard"
-      ],
-      "year": "2026",
-      "type": "Article de presse",
-      "abstract": "Article de presse dans lequel Kristel Chanard, hydrologue — une spécialiste de l'eau —, alerte sur les nappes souterraines, ces réserves d'eau stockées sous terre. Selon elle, la surexploitation des nappes — quand on pompe plus d'eau qu'elles ne peuvent en reconstituer — entraîne leur tassement et un affaissement du sol.\n\nLe phénomène est déjà à l'œuvre en Californie, où, comme le dit le titre, « on se dirige vers la disparition totale des ressources souterraines ». C'est un avertissement que la France pourrait avoir à connaître à son tour, selon l'hydrologue.",
-      "tags": [
-        "Articles de presse"
-      ],
-      "doi": null,
-      "url": "https://drive.google.com/file/d/1HE05Rm1CiJqetbTL73oXX699AHxPmnce/view",
       "dateAdded": "2026-10-08"
     },
     {

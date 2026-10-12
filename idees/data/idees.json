@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "id": "I0001",
+    "titre": "Une réunion publique sur la baignade dans l'Isère et le Drac",
+    "description": "Après ses baignades collectives dans le Drac puis dans l'Isère, le collectif « Les gens qui ont chaud » appelle une réunion publique à l'automne pour ouvrir un débat contradictoire sur la baignade urbaine — une étape que le Parlement peut accueillir et nourrir.",
+    "lien": "https://tgplus.fr/article/apres-le-drac-le-collectif-les-gens-qui-ont-chaud-plonge-dans-lisere/",
+    "auteur": "Collectif « Les gens qui ont chaud »",
+    "categories": [
+      "baignade urbaine",
+      "débat public"
+    ],
+    "date_ajout": "2026-10-12"
+  },
+  {
+    "id": "I0002",
+    "titre": "Garantir un accès équitable à la fraîcheur pour tous les habitants",
+    "description": "Prolonger les travaux de Grenoble 2040 sur la baignade urbaine par son enjeu de justice sociale : assurer à chacun·e, y compris hors des eaux vives, un accès équitable à la fraîcheur pendant les étés caniculaires.",
+    "lien": "https://www.grenoble.fr/1223-les-baignades-urbaines-un-enjeu-pour-les-politiques-publiques.htm",
+    "auteur": "Débat Grenoble 2040 (Ville et Métropole)",
+    "categories": [
+      "fraîcheur",
+      "justice sociale"
+    ],
+    "date_ajout": "2026-10-12"
+  },
+  {
+    "id": "I0003",
+    "titre": "Des diagnostics de baignade opérationnels sur les sites pressentis",
+    "description": "Poursuivre les études engagées par Grenoble 2040 vers des diagnostics opérationnels — qualité de l'eau, sécurité des accès, impact sur la biodiversité — pour chaque site pressenti de l'Isère et du Drac, avant tout aménagement.",
+    "lien": "https://www.grenoble.fr/1223-les-baignades-urbaines-un-enjeu-pour-les-politiques-publiques.htm",
+    "auteur": "Débat Grenoble 2040 (Ville et Métropole)",
+    "categories": [
+      "baignade urbaine",
+      "eau"
+    ],
+    "date_ajout": "2026-10-12"
+  }
+]

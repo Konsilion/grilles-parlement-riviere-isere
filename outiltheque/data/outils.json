@@ -1,1 +1,58 @@
-[]
+[
+  {
+    "id": "U0001",
+    "nom": "Livret « Eau et neige artificielle »",
+    "description": "Support pédagogique de FNE AURA présenté en webinaire : il met en relation l'enneigement artificiel des stations et la gestion quantitative de l'eau en montagne — utile aux commissions du Parlement pour les débats sur la fonte nivale et la ressource.",
+    "lieu": "En ligne (FNE AURA)",
+    "categorie": "support pédagogique",
+    "disponibilite": "diffusé en ligne",
+    "lien": "https://framaforms.org/15-octobre-webinaire-livret-eau-et-neige-artificielle-1789633804",
+    "categories": [
+      "eau",
+      "montagne"
+    ],
+    "date_ajout": "2026-10-12"
+  },
+  {
+    "id": "U0002",
+    "nom": "Support pédagogique « Biodiversité des ripisylves »",
+    "description": "Kit pédagogique de FNE pour faire connaître la biodiversité des ripisylves (forêts riveraines des cours d'eau), présenté en webinaire par la fédération. Sert de support aux sorties nature et à la sensibilisation du public du bassin de l'Isère.",
+    "lieu": "En ligne (FNE)",
+    "categorie": "support pédagogique",
+    "disponibilite": "diffusé en ligne",
+    "lien": "https://framaforms.org/inscription-webinaire-presentation-support-pedagogique-biodiversite-des-ripisylves-1790870305",
+    "categories": [
+      "biodiversité",
+      "rivière"
+    ],
+    "date_ajout": "2026-10-12"
+  },
+  {
+    "id": "U0003",
+    "nom": "Carte de navigation « Gren-Val »",
+    "description": "Carte de navigation de l'Isère de Grenoble à Valence dressée par Marcel Macaire, référencée dans la médiathèque du Parlement. Elle localise seuils, ports et passages de la rivière pour les sorties et l'inventaire du territoire.",
+    "lieu": "Médiathèque du Parlement (en ligne)",
+    "categorie": "carte",
+    "disponibilite": "consultable en ligne",
+    "lien": "https://konsilion.github.io/grilles-parlement-riviere-isere/mediatheque/",
+    "categories": [
+      "carte",
+      "navigation"
+    ],
+    "date_ajout": "2026-10-12"
+  },
+  {
+    "id": "U0004",
+    "nom": "Programme « En quête d'eau »",
+    "description": "Programme national de sciences participatives sur les cours d'eau : chacun·e relève des observations (aspect, odeur, vie aquatique…) sur son cours d'eau et les verse dans une base publique. Un protocole directement mobilisable par les Gardiennes et Gardiens de la rivière.",
+    "lieu": "Cours d'eau du territoire",
+    "categorie": "sciences participatives",
+    "disponibilite": "ouvert à tou·te·s, en ligne",
+    "lien": "https://enquetedeau.eaufrance.fr/programme",
+    "categories": [
+      "observation",
+      "sciences participatives"
+    ],
+    "date_ajout": "2026-10-12"
+  }
+]

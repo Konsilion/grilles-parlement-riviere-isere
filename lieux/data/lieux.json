@@ -1,1 +1,62 @@
-[]
+[
+  {
+    "id": "L0001",
+    "nom": "Maison de la Nature et de l'Environnement de l'Isère (MNEI)",
+    "description": "Maison des associations environnementales de l'Isère, à deux pas de la gare : médiathèque unique de culture environnementale (~10 000 ouvrages) et salles mobilisables pour les réunions. La journée d'échange « Eau, Montagne et Aménagement du territoire » et la commission Eau du réseau eau Isère s'y tiennent.",
+    "adresse": "5 place Bir Hakeim, 38000 Grenoble",
+    "lien": "https://www.mnei.fr",
+    "categories": [
+      "maison des associations",
+      "salle"
+    ],
+    "date_ajout": "2026-10-12"
+  },
+  {
+    "id": "L0002",
+    "nom": "Maison Climat Planète — IGE, campus UGA",
+    "description": "Maison de recherche et de débat climat de l'Institut des géosciences de l'environnement (IGE, UGA/CNRS/IRD/Météo-France) : elle accueille les séminaires du projet MEPAG, dont la restitution intermédiaire « Manquer d'eau potable à Grenoble ? » en salle A 177.",
+    "adresse": "Campus UGA, Grenoble",
+    "lien": "https://www.ige-grenoble.fr/Contact-Acces",
+    "categories": [
+      "séminaire",
+      "université"
+    ],
+    "date_ajout": "2026-10-12"
+  },
+  {
+    "id": "L0003",
+    "nom": "Bâtiment Malraux — salle Rocher Blanc",
+    "description": "Salle du bâtiment Malraux à Grenoble, utilisée par les séminaires urbains du programme POPSU (plateforme d'observation des projets et stratégies urbaines) — « Retrouver les voi(es)x de l'eau » y a été présenté.",
+    "adresse": "1 place André Malraux, Grenoble",
+    "lien": "https://popsu.archi.fr/projet/grenoble-alpes-metropole-0",
+    "categories": [
+      "salle",
+      "séminaire"
+    ],
+    "date_ajout": "2026-10-12"
+  },
+  {
+    "id": "L0004",
+    "nom": "Hôtel du Département de l'Isère",
+    "description": "Siège du Conseil départemental de l'Isère, à Grenoble : il accueille les journées techniques pour les élu·e·s, comme le séminaire « Eau & GEMAPI » d'ARRA².",
+    "adresse": "Hôtel du Département, Grenoble",
+    "lien": "https://www.arraa.org/journees-techniques/seminaire-eau-gemapi-pour-les-elues-grenoble",
+    "categories": [
+      "institution",
+      "séminaire"
+    ],
+    "date_ajout": "2026-10-12"
+  },
+  {
+    "id": "L0005",
+    "nom": "Musée de Saint-Antoine-l'Abbaye",
+    "description": "Musée d'art et d'histoire du réseau des musées de l'Isère, installé dans l'abbaye médiévale : l'exposition « Entre fleuve et mer. Une histoire médiévale » y est présentée — un éclairage historique sur les relations entre les sociétés et les fleuves.",
+    "adresse": "Saint-Antoine-l'Abbaye",
+    "lien": "https://musees.isere.fr/expo/musee-de-saint-antoine-labbaye-entre-fleuve-et-mer-une-histoire-medievale",
+    "categories": [
+      "exposition",
+      "musée"
+    ],
+    "date_ajout": "2026-10-12"
+  }
+]

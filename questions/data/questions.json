@@ -1,1 +1,54 @@
-[]
+[
+  {
+    "id": "Q0001",
+    "titre": "Manquer d'eau potable à Grenoble ?",
+    "description": "Question au centre de la restitution intermédiaire du projet MEPAG (Maison Climat Planète, IGE, campus UGA), séminaire inscrit au programme des actualités du Parlement.",
+    "lien": "https://www.ige-grenoble.fr/Contact-Acces",
+    "question": "L'agglomération grenobloise peut-elle venir à manquer d'eau potable — dans quels scénarios, à quel horizon, et quelles marges d'action ?",
+    "deposant": "Séminaire MEPAG",
+    "categories": [
+      "climat",
+      "eau potable"
+    ],
+    "date_ajout": "2026-10-12"
+  },
+  {
+    "id": "Q0002",
+    "titre": "Comment rouvrir l'Isère et le Drac à la baignade ?",
+    "description": "Question posée par le collectif « Les gens qui ont chaud », qui objective le débat par des données hydrologiques et des analyses bactériologiques et organise des baignades collectives pour la porter.",
+    "lien": "https://www.grenoble.fr/1215-et-si-on-se-baignait-dans-l-isere-avec-elise-lemercier.htm",
+    "question": "À quelles conditions — qualité de l'eau, sécurité, aménagements, gouvernance — la baignade urbaine peut-elle être autorisée dans l'Isère et le Drac ?",
+    "deposant": "Collectif « Les gens qui ont chaud »",
+    "categories": [
+      "baignade urbaine",
+      "eau"
+    ],
+    "date_ajout": "2026-10-12"
+  },
+  {
+    "id": "Q0003",
+    "titre": "Comment agréger les données dispersées sur l'eau de l'Isère ?",
+    "description": "Question de travail de la commission scientifique du Parlement : c'est l'objet du chantier « Observatoire de l'eau », présenté en travaux en cours lors de la deuxième session.",
+    "lien": "",
+    "question": "Comment constituer un observatoire de l'eau neutre et indépendant, qui rassemble, centralise et vulgarise les données dispersées sur l'Isère et ses affluents ?",
+    "deposant": "Commission scientifique du Parlement",
+    "categories": [
+      "données",
+      "observatoire"
+    ],
+    "date_ajout": "2026-10-12"
+  },
+  {
+    "id": "Q0004",
+    "titre": "Quelles suites donner à la Déclaration des droits de la rivière Isère ?",
+    "description": "Le texte fondateur, rédigé par la commission juridique et lu à la deuxième session (22 mars 2025, Journée mondiale de l'eau), sert de support de mobilisation pour la suite de la démarche.",
+    "lien": "",
+    "question": "Comment rendre la Déclaration des droits de la rivière Isère opérante — mobilisation, alerte des pouvoirs publics, saisine de la justice ?",
+    "deposant": "Commission juridique du Parlement",
+    "categories": [
+      "droits de la nature",
+      "juridique"
+    ],
+    "date_ajout": "2026-10-12"
+  }
+]

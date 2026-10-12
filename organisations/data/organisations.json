@@ -1,1 +1,58 @@
-[]
+[
+  {
+    "id": "O0001",
+    "nom": "France Nature Environnement Isère",
+    "description": "Fédération départementale des associations de protection de la nature et de l'environnement de l'Isère, hébergée à la Maison de la Nature et de l'Environnement (MNEI). Acteur engagé du Parlement de la rivière Isère : elle anime notamment le réseau eau Isère et la commission juridique.",
+    "lieu": "Grenoble",
+    "lien": "https://www.fne-aura.org/isere/",
+    "email": "isere@fne-aura.org",
+    "telephone": "04 76 54 82 89",
+    "categories": [
+      "collectif",
+      "eau"
+    ],
+    "date_ajout": "2026-10-12"
+  },
+  {
+    "id": "O0002",
+    "nom": "Collectif « Les gens qui ont chaud »",
+    "description": "Collectif grenoblois de nageurs en eau libre, d'hydrologues, d'urbanistes et d'habitant·e·s qui milite pour la baignade urbaine dans l'Isère et le Drac. Il objective le débat par des données hydrologiques et des analyses bactériologiques et organise des baignades collectives (« big splash »). Son membre Julien Némery est intervenu à la troisième session du Parlement.",
+    "lieu": "Grenoble",
+    "lien": "https://www.grenoble.fr/1215-et-si-on-se-baignait-dans-l-isere-avec-elise-lemercier.htm",
+    "email": "",
+    "telephone": "",
+    "categories": [
+      "baignade urbaine",
+      "collectif"
+    ],
+    "date_ajout": "2026-10-12"
+  },
+  {
+    "id": "O0003",
+    "nom": "ARRA² — Association Rivière Rhône-Alpes Auvergne",
+    "description": "Association d'élu·e·s et de techniciens consacrée à la gestion des rivières et à la compétence GEMAPI en Auvergne-Rhône-Alpes. Elle anime des journées techniques et des séminaires, comme « Eau & GEMAPI » pour les élu·e·s à Grenoble, relayés dans les actualités du Parlement.",
+    "lieu": "Auvergne-Rhône-Alpes",
+    "lien": "https://www.arraa.org",
+    "email": "",
+    "telephone": "",
+    "categories": [
+      "association",
+      "eau"
+    ],
+    "date_ajout": "2026-10-12"
+  },
+  {
+    "id": "O0004",
+    "nom": "Grenoble-Alpes Métropole",
+    "description": "Intercommunalité grenobloise, engagée sur l'eau dans la ville : gestion des eaux de pluie (forum « Eau dans la ville »), travaux du programme d'ambiance Grenoble 2040 sur la baignade urbaine dans l'Isère et le Drac et sur l'accès à la fraîcheur.",
+    "lieu": "Grenoble",
+    "lien": "https://www.grenoblealpesmetropole.fr/",
+    "email": "",
+    "telephone": "",
+    "categories": [
+      "eau",
+      "institution"
+    ],
+    "date_ajout": "2026-10-12"
+  }
+]

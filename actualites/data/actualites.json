@@ -151,7 +151,7 @@
   },
   {
     "id": "A0011",
-    "type": "media_publie",
+    "type": "evenement",
     "titre": "Exposition « Entre fleuve et mer. Une histoire médiévale » — Saint-Antoine-l'Abbaye",
     "description": "Exposition de la saison culturelle « Eau, quelle histoire ! » du Département : l'imaginaire médiéval des fleuves et de la mer, en quatre séquences. Le musée de l'Ancien évêché prépare aussi une expo sur la rivière Isère.",
     "date_debut": "2026-07-05",
@@ -166,7 +166,7 @@
   },
   {
     "id": "A0012",
-    "type": "media_publie",
+    "type": "information",
     "titre": "Programme « En quête d'eau » — sciences participatives",
     "description": "Programme de sciences participatives piloté par l'Office international de l'eau pour mieux connaître l'écoulement des cours d'eau : observations citoyennes, carte interactive.",
     "date_debut": "2026-09-23",

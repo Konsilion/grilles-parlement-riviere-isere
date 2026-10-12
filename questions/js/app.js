@@ -55,15 +55,6 @@ const els = {
   catPill: null,
   catMenu: null,
   modal: null,
-  modalTitle: null,
-  modalMetaLine: null,
-  modalCats: null,
-  modalQuestionSection: null,
-  modalQuestion: null,
-  modalDescSection: null,
-  modalDescription: null,
-  modalCoordsSection: null,
-  modalCoords: null,
 };
 
 function grabEls() {
@@ -78,16 +69,6 @@ function grabEls() {
   els.catToggle = document.getElementById("cat-toggle");
   els.catPill = document.getElementById("cat-pill");
   els.catMenu = document.getElementById("cat-menu");
-  els.modal = document.getElementById("modal");
-  els.modalTitle = document.getElementById("modal-title");
-  els.modalMetaLine = document.getElementById("modal-meta-line");
-  els.modalCats = document.getElementById("modal-cats");
-  els.modalQuestionSection = document.getElementById("modal-question-section");
-  els.modalQuestion = document.getElementById("modal-question");
-  els.modalDescSection = document.getElementById("modal-desc-section");
-  els.modalDescription = document.getElementById("modal-description");
-  els.modalCoordsSection = document.getElementById("modal-coords-section");
-  els.modalCoords = document.getElementById("modal-coords");
 }
 
 /* ---------- Normalisation (contrat FROZEN, absents → "") ---------- */
@@ -177,62 +158,16 @@ function render() {
   });
 }
 
-/* ---------- Modale détail (calque organisations + section Question) ---------- */
-function addCoord(list, label, value, href, external) {
-  const li = document.createElement("li");
-  li.className = "coord";
-  const lab = document.createElement("span");
-  lab.className = "coord-label";
-  lab.textContent = label;
-  li.appendChild(lab);
-  const a = document.createElement("a");
-  a.href = href;
-  if (external) {
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-  }
-  a.textContent = value;
-  li.appendChild(a);
-  list.appendChild(li);
-}
+/* ---------- Modale détail (définition « questions » du socle
+   GrilleDetail, common/js/details/questions.js — aucune
+   duplication : le conteneur et les blocs structurels viennent du
+   socle commun modal.css, le style du bloc Question de
+   common/css/details/questions.css, scopé .gd-modal) ---------- */
+const GD = window.GrilleDetail;
 
+/* ---------- Modale détail : consommation du socle GrilleDetail ---------- */
 function openModal(item) {
-  els.modalTitle.textContent = item.titre || "(sans titre)";
-
-  // Ligne meta : posée par <deposant> · Ajouté le
-  const segs = [];
-  if (item.deposant) segs.push(`Posée par ${item.deposant}`);
-  if (item.date_ajout) segs.push(`Ajouté le ${formatDate(item.date_ajout)}`);
-  els.modalMetaLine.textContent = segs.join(" · ");
-
-  els.modalCats.innerHTML = item.categories
-    .map((c) => `<span class="card-tag">${esc(c)}</span>`)
-    .join("");
-
-  // SECTION Question (bloc visuel distinct, style .modal-question)
-  if (item.question && item.question.trim()) {
-    els.modalQuestionSection.style.display = "";
-    els.modalQuestion.textContent = item.question;
-  } else {
-    els.modalQuestionSection.style.display = "none";
-  }
-
-  // Description (contexte)
-  if (item.description && item.description.trim()) {
-    els.modalDescSection.style.display = "";
-    els.modalDescription.textContent = item.description;
-  } else {
-    els.modalDescSection.style.display = "none";
-  }
-
-  // Coordonnées : lien http/s seul
-  els.modalCoords.innerHTML = "";
-  if (item.lien && /^https?:\/\//i.test(item.lien)) {
-    addCoord(els.modalCoords, "Lien", item.lien, item.lien, true);
-  }
-  els.modalCoordsSection.style.display = els.modalCoords.children.length ? "" : "none";
-
-  GA.openModal(els.modal);
+  GD.open("questions", item);
 }
 
 /* ---------- Menu Catégories (dropdown commun) ---------- */
@@ -271,9 +206,7 @@ function onFilterChange(dd) {
   };
 
   function closeDetailModal() {
-    if (els.modal && els.modal.getAttribute("aria-hidden") === "false") {
-      GA.closeModal(els.modal);
-    }
+    if (GD.isOpen("questions")) GD.close("questions");
   }
 
   function validate() {
@@ -367,7 +300,6 @@ const catDD = makeDropdown({
 GA.attachSearch(els.search, state, render);
 GA.attachPageSize(els.pageSizeSelect, state, render);
 GA.attachSort(els.sortSelect, state, render);
-GA.attachModalClose(els.modal, [els.catMenu]);
 document.addEventListener("DOMContentLoaded", () => {
   GA.load({
     dataUrl: DATA_URL,

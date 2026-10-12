@@ -50,13 +50,6 @@ const els = {
   catPill: null,
   catMenu: null,
   modal: null,
-  modalTitle: null,
-  modalMetaLine: null,
-  modalCats: null,
-  modalDescSection: null,
-  modalDescription: null,
-  modalCoordsSection: null,
-  modalCoords: null,
 };
 
 function grabEls() {
@@ -71,14 +64,6 @@ function grabEls() {
   els.catToggle = document.getElementById("cat-toggle");
   els.catPill = document.getElementById("cat-pill");
   els.catMenu = document.getElementById("cat-menu");
-  els.modal = document.getElementById("modal");
-  els.modalTitle = document.getElementById("modal-title");
-  els.modalMetaLine = document.getElementById("modal-meta-line");
-  els.modalCats = document.getElementById("modal-cats");
-  els.modalDescSection = document.getElementById("modal-desc-section");
-  els.modalDescription = document.getElementById("modal-description");
-  els.modalCoordsSection = document.getElementById("modal-coords-section");
-  els.modalCoords = document.getElementById("modal-coords");
 }
 
 /* ---------- Normalisation (contrat FROZEN, absents → "") ---------- */
@@ -165,55 +150,15 @@ function render() {
   });
 }
 
-/* ---------- Modale détail (calque contacts, sans avatar) ---------- */
-function addCoord(list, label, value, href, external) {
-  const li = document.createElement("li");
-  li.className = "coord";
-  const lab = document.createElement("span");
-  lab.className = "coord-label";
-  lab.textContent = label;
-  li.appendChild(lab);
-  const a = document.createElement("a");
-  a.href = href;
-  if (external) {
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-  }
-  a.textContent = value;
-  li.appendChild(a);
-  list.appendChild(li);
-}
+/* ---------- Modale détail (définition « organisations » du socle
+   GrilleDetail, common/js/details/organisations.js — aucune
+   duplication : le conteneur et les blocs structurels viennent du
+   socle commun modal.css) ---------- */
+const GD = window.GrilleDetail;
 
+/* ---------- Modale détail : consommation du socle GrilleDetail ---------- */
 function openModal(item) {
-  els.modalTitle.textContent = item.nom || "(sans nom)";
-
-  // Ligne meta : lieu · ajouté le
-  const segs = [];
-  if (item.lieu) segs.push(item.lieu);
-  if (item.date_ajout) segs.push(`Ajouté le ${formatDate(item.date_ajout)}`);
-  els.modalMetaLine.textContent = segs.join(" · ");
-
-  els.modalCats.innerHTML = item.categories
-    .map((c) => `<span class="card-tag">${esc(c)}</span>`)
-    .join("");
-
-  if (item.description && item.description.trim()) {
-    els.modalDescSection.style.display = "";
-    els.modalDescription.textContent = item.description;
-  } else {
-    els.modalDescSection.style.display = "none";
-  }
-
-  // Coordonnées : email (mailto:), téléphone (tel:), lien externe (_blank)
-  els.modalCoords.innerHTML = "";
-  if (item.email) addCoord(els.modalCoords, "Email", item.email, `mailto:${item.email}`, false);
-  if (item.telephone) addCoord(els.modalCoords, "Téléphone", item.telephone, `tel:${item.telephone.replace(/\s+/g, "")}`, false);
-  if (item.lien && /^https?:\/\//i.test(item.lien)) {
-    addCoord(els.modalCoords, "Lien", item.lien, item.lien, true);
-  }
-  els.modalCoordsSection.style.display = els.modalCoords.children.length ? "" : "none";
-
-  GA.openModal(els.modal);
+  GD.open("organisations", item);
 }
 
 /* ---------- Menu Catégories (dropdown commun) ---------- */
@@ -253,9 +198,7 @@ function onFilterChange(dd) {
   };
 
   function closeDetailModal() {
-    if (els.modal && els.modal.getAttribute("aria-hidden") === "false") {
-      GA.closeModal(els.modal);
-    }
+    if (GD.isOpen("organisations")) GD.close("organisations");
   }
 
   function validate() {
@@ -348,7 +291,6 @@ const catDD = makeDropdown({
 GA.attachSearch(els.search, state, render);
 GA.attachPageSize(els.pageSizeSelect, state, render);
 GA.attachSort(els.sortSelect, state, render);
-GA.attachModalClose(els.modal, [els.catMenu]);
 document.addEventListener("DOMContentLoaded", () => {
   GA.load({
     dataUrl: DATA_URL,

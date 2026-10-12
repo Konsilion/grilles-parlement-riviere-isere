@@ -1,0 +1,25 @@
+/* =========================================================
+   GrilleDetail — styles propres de la modale « questions »
+
+   SEUL style propre des 4 modales du lot D : le bloc
+   « Question », visuellement DISTINCT et placé avant la
+   description (intention CEO — la question complète est le
+   cœur de la fiche).
+
+   Règles d'usage du socle : un CSS de définition est TOUJOURS
+   scopé .gd-modal (la classe posée par l'engine GrilleDetail
+   sur la racine de la modale). Tokens existants uniquement —
+   aucune couleur nouvelle : fond var(--bg-soft), bordure
+   var(--border), radius.
+   ========================================================= */
+
+.gd-modal .modal-question {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem;
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-size: 1rem;
+}

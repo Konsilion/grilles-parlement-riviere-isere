@@ -87,14 +87,13 @@
           <div id="type-pills" class="filter-pills" aria-label="Types sélectionnés"></div>
           <div class="header-controls">
             <nav id="pagination-top" class="pagination pagination-top" aria-label="Pagination haut"></nav>
-            <label for="page-size-select" class="page-size-label">Afficher
-              <select id="page-size-select">
-                <option value="3">3</option>
-                <option value="6" selected>6</option>
-                <option value="9">9</option>
-                <option value="12">12</option>
-              </select>
-            </label>
+            <!-- Bouton contribution EN HAUT À DROITE (CEO 12/10/26 soir,
+                 inverse « en bas ») : dans .header-controls, donc poussé à
+                 droite par son margin-left:auto. L'id propose-btn reste
+                 OBLIGATOIRE (le socle commun y attache l'ouverture). -->
+            <button type="button" id="propose-btn" class="btn btn-primary propose-btn">
+              Proposer une actualité
+            </button>
           </div>
         </div>
       </div>
@@ -102,15 +101,6 @@
         <p class="muted center">Chargement des actualités…</p>
       </div>
       <nav id="pagination" class="pagination" aria-label="Pagination bas"></nav>
-      <!-- Bouton contribution EN BAS de page (CEO 12/10/26) : plus
-           discret, sous la grille et la pagination basse. L'id
-           propose-btn reste OBLIGATOIRE (le socle commun
-           common/js/contribution.js y attache l'ouverture). -->
-      <div class="propose-footer">
-        <button type="button" id="propose-btn" class="btn btn-primary propose-btn">
-          Proposer une actualité
-        </button>
-      </div>
     </section>
   </main>
 

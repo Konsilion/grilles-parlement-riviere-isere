@@ -49,7 +49,7 @@ const state = {
   selectedYears: new Set(), // années cochées (vide = toutes)
   selectedMonths: new Set(), // numéros de mois "01"-""12" cochés (vide = tous)
   selectedTypes: new Set(), // types d'actualité cochés (vide = tous)
-  pageSize: "6", // "3" | "6" | "9" | "12" (CEO 12/10/26)
+  pageSize: "12", // fixe 12 (CEO 12/10/26 soir : filtre « Afficher » retiré)
   currentPage: 0, // index 0-based
 };
 
@@ -60,7 +60,6 @@ const els = {
   search: null,
   pagination: null,
   paginationTop: null,
-  pageSizeSelect: null,
   yearDropdown: null,
   yearToggle: null,
   yearPill: null,
@@ -83,7 +82,6 @@ function grabEls() {
   els.search = document.getElementById("search");
   els.pagination = document.getElementById("pagination");
   els.paginationTop = document.getElementById("pagination-top");
-  els.pageSizeSelect = document.getElementById("page-size-select");
   els.yearDropdown = document.getElementById("year-dropdown");
   els.yearToggle = document.getElementById("year-toggle");
   els.yearPill = document.getElementById("year-pill");
@@ -541,13 +539,7 @@ function attachListeners() {
     }, 150);
   });
 
-  if (els.pageSizeSelect) {
-    els.pageSizeSelect.addEventListener("change", (e) => {
-      state.pageSize = e.target.value;
-      state.currentPage = 0; // changement de taille de page → retour page 1
-      renderGrid();
-    });
-  }
+  // Filtre « Afficher » retiré (CEO 12/10/26 soir) : pageSize fixe 12.
 }
 
 /* ---------- Contribution (esprit Datami) ----------

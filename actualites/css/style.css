@@ -104,17 +104,52 @@
   outline-offset: 2px;
 }
 
-/* ============== Bouton contribution (bas de page) ==============
+/* ============== Bouton contribution (haut à droite) ==============
    Calque médiathèque : .btn/.btn-primary viennent du socle
-   commun contribution.css. Le bouton vit EN BAS de la page,
-   sous la pagination basse (CEO 12/10/26) — conteneur dédié,
-   centré, tokens existants. */
-.propose-footer {
-  text-align: center;
-  margin-top: 1.5rem;
-}
+   commun contribution.css. Le bouton vit dans .header-controls
+   (CEO 12/10/26 soir : en haut à droite, poussé par son
+   margin-left:auto — inverse « bas de page »). */
 .propose-btn {
   white-space: nowrap;
+}
+
+/* ============== Filtre « Type d'actualité » en vert ==============
+   CEO 12/10/26 soir : différencier visuellement le filtre Type du
+   filtre Mois (bleu) — police et pastille du type en VERT. Surcharges
+   ciblées sur #type-dropdown/#type-pills UNIQUEMENT (le socle
+   common/css/base.css reste tel quel : il sert les 9 apps). Vert
+   sombre lisible sur fond blanc, thème clair unique. */
+#type-dropdown .dd-toggle {
+  color: #1e6b3a;
+}
+#type-dropdown .dd-pill {
+  color: #1e6b3a;
+}
+#type-dropdown.open .dd-pill,
+#type-dropdown .dd-toggle.active .dd-pill {
+  color: #1e6b3a;
+  font-weight: 600;
+}
+#type-dropdown .dd-option input[type="checkbox"]:checked + .dd-option-name {
+  color: #1e6b3a;
+  font-weight: 600;
+}
+#type-dropdown .dd-toggle.active {
+  border-color: rgba(30, 107, 58, 0.45);
+}
+#type-pills .filter-pill {
+  background: rgba(30, 107, 58, 0.08);
+  border-color: rgba(30, 107, 58, 0.25);
+  color: #1e6b3a;
+}
+#type-pills .filter-pill-x {
+  color: #1e6b3a;
+}
+#type-pills .filter-pill-x:hover {
+  background: rgba(30, 107, 58, 0.15);
+}
+#type-pills .filter-pill-x:focus-visible {
+  outline-color: #1e6b3a;
 }
 
 /* Bouton d'action (calque projets/médiathèque .btn.btn-primary) */

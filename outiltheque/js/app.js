@@ -1,0 +1,354 @@
+/* =========================================================
+   Outilthèque — Parlement de la rivière Isère
+   Grille des outils du Parlement de la rivière Isère.
+   Lit data/outils.json (contrat fetch_outils.py :
+   id, nom, description, lieu, categorie, disponibilite,
+   lien, categories, date_ajout).
+
+   Bâtie sur window.GrilleApp (common/js/app-core.js), calque
+   strict de organisations/js/app.js : tout le générique (état,
+   chargement, rendu de grille, pagination, compteur,
+   recherche/taille/tri, modale) vient du socle — ce fichier ne
+   garde QUE le spécifique.
+
+   Autres socles : GrilleSearch (recherche floue),
+   GrilleDropdown (filtre catégories), GrilleDom (esc/dates),
+   GrilleContribution (parcours de contribution). Zéro dépendance.
+   ========================================================= */
+"use strict";
+
+const DATA_URL = "data/outils.json";
+
+const GA = window.GrilleApp;
+const { esc } = window.GrilleDom;
+const { formatDate } = window.GrilleDom;
+const GS = window.GrilleSearch;
+const { makeDropdown } = window.GrilleDropdown;
+
+/* ---------- Mode intégré (?mode=integre) ----------
+   Calque organisations : aucune iframe prévue aujourd'hui, le mode est
+   hérité pour l'avenir (fond transparent si un jour embarquée). */
+const EMBED_MODE =
+  new URLSearchParams(location.search).get("mode") === "integre";
+if (EMBED_MODE) document.documentElement.setAttribute("data-embed", "1");
+
+/* ---------- État (fabrication du socle + filtres propres) ---------- */
+const state = GA.makeState({
+  selectedCats: new Set(), // catégories cochées (vide = toutes)
+});
+
+/* ---------- Références DOM ---------- */
+const els = {
+  grid: null,
+  count: null,
+  search: null,
+  pagination: null,
+  paginationTop: null,
+  pageSizeSelect: null,
+  sortSelect: null,
+  catDropdown: null,
+  catToggle: null,
+  catPill: null,
+  catMenu: null,
+  modal: null,
+  modalTitle: null,
+  modalMetaLine: null,
+  modalCats: null,
+  modalDescSection: null,
+  modalDescription: null,
+  modalCoordsSection: null,
+  modalCoords: null,
+};
+
+function grabEls() {
+  els.grid = document.getElementById("grid");
+  els.count = document.getElementById("result-count");
+  els.search = document.getElementById("search");
+  els.pagination = document.getElementById("pagination");
+  els.paginationTop = document.getElementById("pagination-top");
+  els.pageSizeSelect = document.getElementById("page-size-select");
+  els.sortSelect = document.getElementById("sort-select");
+  els.catDropdown = document.getElementById("cat-dropdown");
+  els.catToggle = document.getElementById("cat-toggle");
+  els.catPill = document.getElementById("cat-pill");
+  els.catMenu = document.getElementById("cat-menu");
+  els.modal = document.getElementById("modal");
+  els.modalTitle = document.getElementById("modal-title");
+  els.modalMetaLine = document.getElementById("modal-meta-line");
+  els.modalCats = document.getElementById("modal-cats");
+  els.modalDescSection = document.getElementById("modal-desc-section");
+  els.modalDescription = document.getElementById("modal-description");
+  els.modalCoordsSection = document.getElementById("modal-coords-section");
+  els.modalCoords = document.getElementById("modal-coords");
+}
+
+/* ---------- Normalisation (contrat FROZEN, absents → "") ---------- */
+function normalizeItems(raw) {
+  return raw.map((o) => ({
+    id: String(o?.id ?? ""),
+    nom: String(o?.nom ?? ""),
+    description: String(o?.description ?? ""),
+    lieu: String(o?.lieu ?? ""),
+    categorie: String(o?.categorie ?? "").trim(),
+    disponibilite: String(o?.disponibilite ?? "").trim(),
+    lien: String(o?.lien ?? "").trim(),
+    categories: Array.isArray(o?.categories) ? o.categories.map(String) : [],
+    date_ajout: String(o?.date_ajout ?? "").trim(),
+  }));
+}
+
+/* ---------- Tri (nom A-Z défaut ; « recent » = date_ajout desc) ---------- */
+function sortItems(items) {
+  const byName = (a, b) =>
+    a.nom.localeCompare(b.nom, "fr", { sensitivity: "base" }) ||
+    a.id.localeCompare(b.id);
+  if (state.sortMode === "recent") {
+    // Ajout le plus récent d'abord : date_ajout desc, puis nom A-Z.
+    return items.slice().sort((a, b) => {
+      if (a.date_ajout !== b.date_ajout)
+        return a.date_ajout < b.date_ajout ? 1 : -1;
+      return byName(a, b);
+    });
+  }
+  return items.slice().sort(byName); // défaut : nom A-Z
+}
+
+/* ---------- Recherche floue (haystack : nom + description + lieu + categorie) ---------- */
+const getSearchIndex = GS.makeSearchCache(
+  (item) => item.id,
+  (item) => [item.nom, item.description, item.lieu, item.categorie].join(" ")
+);
+
+/* ---------- Filtrage combiné (recherche ∧ catégories) ---------- */
+function getFilteredItems() {
+  const qNorm = GS.searchNormalize(state.searchText.trim());
+  const qWords = qNorm ? qNorm.split(/[^a-z0-9]+/).filter((w) => w.length >= 2) : [];
+
+  return state.items.filter((it) => {
+    if (qNorm && !GS.matchesQuery(getSearchIndex(it), qNorm, qWords)) return false;
+    if (state.selectedCats.size > 0 && !it.categories.some((c) => state.selectedCats.has(c))) {
+      return false;
+    }
+    return true;
+  });
+}
+
+/* ---------- Rendu d'une carte ---------- */
+function renderCard(item) {
+  const cats = item.categories
+    .map((c) => `<span class="card-tag">${esc(c)}</span>`)
+    .join("");
+
+  return `
+    <article class="card outil-card" data-id="${esc(item.id)}" tabindex="0" role="button" aria-label="Voir le détail de ${esc(item.nom)}">
+      <h2 class="card-title">${esc(item.nom)}</h2>
+      ${item.categorie ? `<p class="card-meta">${esc(item.categorie)}</p>` : ""}
+      ${item.lieu ? `<p class="card-meta">${esc(item.lieu)}</p>` : ""}
+      ${cats ? `<div class="card-tags">${cats}</div>` : ""}
+    </article>
+  `;
+}
+
+/* ---------- Rendu de la page courante (via le socle GrilleApp) ---------- */
+function render() {
+  GA.renderGrid({
+    state,
+    grid: els.grid,
+    count: els.count,
+    noun: { zero: "aucun outil", one: "outil", many: "outils" },
+    cardClass: "outil-card",
+    renderCard,
+    onCardClick: openModal,
+    getVisibleItems: () => sortItems(getFilteredItems()),
+    paginationNavs: [els.pagination, els.paginationTop],
+    hasActiveFilters: () => Boolean(state.searchText.trim() || state.selectedCats.size),
+    emptyFilteredMsg: "Aucun outil ne correspond à ces filtres.",
+    emptyMsg: "Aucun outil pour le moment.",
+  });
+}
+
+/* ---------- Modale détail (calque organisations, sans avatar) ---------- */
+function addCoord(list, label, value, href, external) {
+  const li = document.createElement("li");
+  li.className = "coord";
+  const lab = document.createElement("span");
+  lab.className = "coord-label";
+  lab.textContent = label;
+  li.appendChild(lab);
+  const a = document.createElement("a");
+  a.href = href;
+  if (external) {
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+  }
+  a.textContent = value;
+  li.appendChild(a);
+  list.appendChild(li);
+}
+
+function openModal(item) {
+  els.modalTitle.textContent = item.nom || "(sans nom)";
+
+  // Ligne meta : catégorie · lieu · ajouté le
+  const segs = [];
+  if (item.categorie) segs.push(item.categorie);
+  if (item.lieu) segs.push(item.lieu);
+  if (item.date_ajout) segs.push(`Ajouté le ${formatDate(item.date_ajout)}`);
+  els.modalMetaLine.textContent = segs.join(" · ");
+
+  els.modalCats.innerHTML = item.categories
+    .map((c) => `<span class="card-tag">${esc(c)}</span>`)
+    .join("");
+
+  if (item.description && item.description.trim()) {
+    els.modalDescSection.style.display = "";
+    els.modalDescription.textContent = item.description;
+  } else {
+    els.modalDescSection.style.display = "none";
+  }
+
+  // Coordonnées : lien externe uniquement (http/s) — pas d'e-mail/téléphone
+  els.modalCoords.innerHTML = "";
+  if (item.lien && /^https?:\/\//i.test(item.lien)) {
+    addCoord(els.modalCoords, "Lien", item.lien, item.lien, true);
+  }
+  els.modalCoordsSection.style.display = els.modalCoords.children.length ? "" : "none";
+
+  GA.openModal(els.modal);
+}
+
+/* ---------- Menu Catégories (dropdown commun, tags) ---------- */
+function buildCatMenu() {
+  const cats = new Set();
+  for (const it of state.items) for (const c of it.categories) cats.add(c);
+  catDD.fill(
+    [...cats].sort((a, b) => a.localeCompare(b, "fr")).map((c) => ({ value: c, label: c })),
+    () => onFilterChange(catDD)
+  );
+}
+
+function onFilterChange(dd) {
+  state.currentPage = 0; // tout filtre ramène à la page 1
+  dd.syncUI();
+  render();
+}
+
+/* ---------- Contribution (esprit Datami) ----------
+   Calque organisations, socle commun common/js/contribution.js :
+   envoi silencieux au relais VPS → issue GitHub étiquetée
+   « contribution » ; repli manuel si le relais échoue. Les champs
+   suivent le mapping fetch_outils.py / ajouter_outil.py
+   (labels extra ANGLAIS sans accents : Categorie:/Disponibilite:,
+   citationKey U000N). */
+(function initContribution() {
+  const GC = window.GrilleContribution;
+  if (!GC) return;
+
+  const f = {
+    nom: () => document.getElementById("c-nom"),
+    categorie: () => document.getElementById("c-categorie"),
+    lieu: () => document.getElementById("c-lieu"),
+    description: () => document.getElementById("c-description"),
+    url: () => document.getElementById("c-url"),
+  };
+
+  function closeDetailModal() {
+    if (els.modal && els.modal.getAttribute("aria-hidden") === "false") {
+      GA.closeModal(els.modal);
+    }
+  }
+
+  function validate() {
+    let ok = true;
+    const nom = f.nom().value.trim();
+
+    if (!nom) {
+      GC.setFieldError(f.nom(), "Le nom est nécessaire pour que l'équipe vérifie l'outil.");
+      ok = false;
+    } else if (nom.length < 3) {
+      GC.setFieldError(f.nom(), "Le nom paraît trop court — quelques mots suffisent.");
+      ok = false;
+    } else {
+      GC.setFieldError(f.nom(), null);
+    }
+
+    const url = f.url().value.trim();
+    if (url) {
+      let urlOk = false;
+      try {
+        const u = new URL(url);
+        urlOk = u.protocol === "http:" || u.protocol === "https:";
+      } catch { /* invalide */ }
+      if (!urlOk) {
+        GC.setFieldError(f.url(), "Collez une adresse web complète commençant par https:// (ou http://).");
+        ok = false;
+      } else {
+        GC.setFieldError(f.url(), null);
+      }
+    }
+
+    return ok;
+  }
+
+  GC.init({
+    app: "outiltheque",
+    firstFieldId: "c-nom",
+    onOpen: closeDetailModal,
+    titleOf: (d) => d.nom,
+    collect: () => ({
+      nom: f.nom().value.trim(),
+      categorie: f.categorie().value.trim(),
+      lieu: f.lieu().value.trim(),
+      description: f.description().value.trim(),
+      url: f.url().value.trim(),
+    }),
+    validate,
+    payload: (d) => d,
+    table: (d) => [
+      ["Nom", d.nom],
+      ["Catégorie", d.categorie || "—"],
+      ["Lieu", d.lieu || "—"],
+      ["Description", d.description || "—"],
+      ["Lien", d.url || "—"],
+    ],
+    issueTexts: {
+      heading: "Proposition d'outil",
+      intro:
+        "Un·e visiteur de la grille Outilthèque propose d'ajouter cet outil.",
+      closing:
+        "La validation crée l'item Zotero (collection « Outilthèque », mapping : " +
+        "extra Categorie:/Disponibilite:, citationKey U000N), ferme cette issue et le prochain " +
+        "`deploy.sh` publie l'outil.",
+    },
+  });
+})();
+
+/* ---------- Boot ---------- */
+grabEls();
+const catDD = makeDropdown({
+  dropdown: els.catDropdown,
+  toggle: els.catToggle,
+  pill: els.catPill,
+  menu: els.catMenu,
+  set: state.selectedCats,
+  allLabel: "Toutes les catégories",
+  unitWord: "catégories",
+  labelOf: (v) => v,
+});
+GA.attachSearch(els.search, state, render);
+GA.attachPageSize(els.pageSizeSelect, state, render);
+GA.attachSort(els.sortSelect, state, render);
+GA.attachModalClose(els.modal, [els.catMenu]);
+document.addEventListener("DOMContentLoaded", () => {
+  GA.load({
+    dataUrl: DATA_URL,
+    grid: els.grid,
+    normalize: normalizeItems,
+    afterLoad: (items) => {
+      state.items = items;
+      state.currentPage = 0;
+      buildCatMenu();
+      render();
+    },
+  });
+});

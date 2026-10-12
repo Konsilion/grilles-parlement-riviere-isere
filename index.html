@@ -30,7 +30,7 @@
     justify-content: center;
     padding: 2rem 1.25rem;
   }
-  main { max-width: 42rem; width: 100%; }
+  main { max-width: 48rem; width: 100%; }
   h1 { font-size: 1.55rem; font-weight: 600; letter-spacing: .01em; }
   .subtitle {
     color: var(--text-muted);
@@ -39,9 +39,14 @@
   }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     margin-top: 1.75rem;
+  }
+  .tile-wide { grid-column: span 2; }
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    .tile-wide { grid-column: auto; }
   }
   .tile {
     display: block;
@@ -74,15 +79,19 @@
 <body>
 <main>
   <h1>Grilles de carte — Parlement de la rivière Isère</h1>
-  <p class="subtitle">Quatre applications pour suivre le Parlement de la rivière Isère&nbsp;: neuf applications pour suivre le Parlement de la rivière Isère : médiathèque, actualités, contacts, projets, organisations, outilthèque, lieux, questions et idées.</p>
+  <p class="subtitle">Neuf applications pour suivre le Parlement de la rivière Isère&nbsp;: médiathèque, actualités, contacts, projets, organisations, outilthèque, lieux, questions et idées.</p>
   <div class="grid">
+    <a class="tile tile-wide" href="actualites/">
+      <span class="tile-title">Actualités</span>
+      <p class="tile-desc">Événements à venir et passés, ressources publiées et informations du Parlement de la rivière Isère.</p>
+    </a>
     <a class="tile" href="mediatheque/">
       <span class="tile-title">Médiathèque</span>
       <p class="tile-desc">Collection documentaire du groupe Zotero&nbsp;: rapports, études, textes, audios — avec recherche, filtres et fiche détaillée.</p>
     </a>
-    <a class="tile" href="actualites/">
-      <span class="tile-title">Actualités</span>
-      <p class="tile-desc">Événements à venir et passés, ressources publiées et informations du Parlement de la rivière Isère.</p>
+    <a class="tile" href="outiltheque/">
+      <span class="tile-title">Outilthèque</span>
+      <p class="tile-desc">Matériels et outils que des personnes mettent à disposition&nbsp;: jeux sérieux, démarches et cadres scientifiques, vidéoprojecteurs, tableaux blancs…</p>
     </a>
     <a class="tile" href="contacts/">
       <span class="tile-title">Contacts</span>
@@ -95,10 +104,6 @@
     <a class="tile" href="organisations/">
       <span class="tile-title">Organisations</span>
       <p class="tile-desc">Organisations qui gravitent autour du Parlement de la rivière Isère&nbsp;: collectivités, associations, structures partenaires et leurs coordonnées publiques.</p>
-    </a>
-    <a class="tile" href="outiltheque/">
-      <span class="tile-title">Outilthèque</span>
-      <p class="tile-desc">Matériels et outils que des personnes mettent à disposition&nbsp;: jeux sérieux, démarches et cadres scientifiques, vidéoprojecteurs, tableaux blancs…</p>
     </a>
     <a class="tile" href="lieux/">
       <span class="tile-title">Lieux</span>

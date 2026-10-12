@@ -9,9 +9,12 @@ L'item (itemType document) est créé dans la collection « Projets »
 (RPZFWI9M, racine du groupe 6610185) :
 
   title=titre, abstractNote=description, publisher=porteur, place=lieu,
-  date=« AAAA-MM-JJ/AAAA-MM-JJ » si début+fin (OPTION B), sinon début seul,
-  url=lien, extra=ligne « Statut: … » (seulement si renseigné),
-  tags=categories, citationKey=prochain P000N (scan max+1),
+  date=« AAAA-MM-JJ/AAAA-MM-JJ » si début+fin (OPTION B), sinon début seul
+  (dates FACULTATIVES : sans aucune date le projet s'affiche « En
+  construction » côté front), url=lien, extra=ligne « Statut: … »
+  (seulement si renseigné — SURCHARGE optionnelle, le front déduit
+  sinon le statut des dates), tags=categories,
+  citationKey=prochain P000N (scan max+1),
   dateAdded/dateModified=maintenant (ISO 8601 Z).
 
 Statuts conseillés : « En cours », « À venir », « Terminé » (le front
@@ -54,19 +57,28 @@ def build_parser():
         epilog=(
             "Exemples :\n"
             '  python3 scripts/ajouter_projet.py --titre "Où atterrir ?" '
-            '--porteur "Parlement de la rivière Isère" --statut "En cours" '
+            '--description "Étude des sites d\'atterrissage des déblais, '
+            "avec les acteurs du bassin grenoblois.\" "
+            '--porteur "Parlement de la rivière Isère" '
             "--date-debut 2026-10-01 --categorie animation\n"
             '  python3 scripts/ajouter_projet.py --titre "Atlas des zones humides" '
-            "--porteur \"CCIAG\" --statut \"À venir\" "
+            '--description "Cartographie collaborative des zones humides du bassin." '
+            "--porteur \\\"CCIAG\\\" "
             "--date-debut 2027-01-15 --date-fin 2027-12-31 --categorie étude "
-            "--lieu Grenoble --lien https://exemple.fr"
+            "--lieu Grenoble --lien https://exemple.fr\n"
+            "\n"
+            "Dates facultatives : sans aucune date le projet s'affiche "
+            "« En construction » sur la grille. --statut reste une "
+            "SURCHARGE optionnelle (le front déduit le statut des dates : "
+            "Terminé si la fin est passée, À venir si le début est futur, "
+            "En cours sinon) — ne l'employer que pour forcer un libellé."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p.add_argument("--titre", required=True, metavar="TITRE",
                    help="nom du projet (obligatoire)")
-    p.add_argument("--description", default="", metavar="TEXTE",
-                   help="description du projet")
+    p.add_argument("--description", required=True, metavar="TEXTE",
+                   help="description du projet (OBLIGATOIRE — le front l'exige aussi)")
     p.add_argument("--porteur", default="", metavar="TEXTE",
                    help="organisation porteuse (ex. Parlement de la rivière Isère)")
     p.add_argument("--lieu", default="", metavar="TEXTE",

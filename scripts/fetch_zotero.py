@@ -192,6 +192,9 @@ def format_item(raw, collection_map=None):
         "doi": doi,
         "url": url,
         "dateAdded": data.get("dateAdded", "")[:10] if data.get("dateAdded") else None,
+        # Champ additif pour l'agrégateur « Actualités » : date de dernière
+        # modification (la clé Zotero existe déjà dans le JSON : "key").
+        "date_modif": data.get("dateModified", "")[:10] if data.get("dateModified") else None,
     }
 
 

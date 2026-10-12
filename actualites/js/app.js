@@ -393,7 +393,13 @@ function renderCard(item) {
     // dans le registre TYPES — 8 types hérités portent leur
     // linkLabel « Voir le X », les types natifs (evenement,
     // information) retombent sur « En savoir plus ».
-    a.textContent = TYPES[item.type]?.linkLabel || "En savoir plus";
+    // Natives à type hérité (source_app vide, ex. expo du musée) :
+    // PAS de fiche dans l'app cible → l'ancien libellé « Voir le X »
+    // promettait un pop-up inexistant ; « En savoir plus » (lien
+    // externe, comportement inchangé) est honnête.
+    a.textContent = item.source_app
+      ? (TYPES[item.type]?.linkLabel || "En savoir plus")
+      : "En savoir plus";
     // Lot E : pour une fiche agrégée (source_app non vide) dont le
     // type a une app cible, le clic ouvre le POP-UP de détail de
     // l'app cible dans cette page (GrilleDetail.openFrom) au lieu de

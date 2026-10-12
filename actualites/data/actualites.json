@@ -1,7 +1,7 @@
 [
   {
     "id": "A0001",
-    "type": "evenement_a_venir",
+    "type": "evenement",
     "titre": "Séminaire MEPAG — restitution intermédiaire « Manquer d'eau potable à Grenoble ? »",
     "description": "Restitution intermédiaire du projet de recherche MEPAG : une géohistoire des sécheresses dans les bassins du Drac et de la Romanche, du XIXe siècle à aujourd'hui.",
     "date_debut": "2026-11-27",
@@ -13,7 +13,7 @@
   },
   {
     "id": "A0002",
-    "type": "evenement_a_venir",
+    "type": "evenement",
     "titre": "Forum « Eau dans la ville » — gestion des eaux de pluie",
     "description": "Événement biennal de Grenoble Alpes Métropole dédié à la gestion de l'eau de pluie : retours d'expériences sur les projets d'aménagement publics et privés.",
     "date_debut": "2026-11-20",
@@ -25,7 +25,7 @@
   },
   {
     "id": "A0003",
-    "type": "evenement_a_venir",
+    "type": "evenement",
     "titre": "Séminaire POPSU Grenoble — « Retrouver les voi(es)x de l'eau »",
     "description": "Séminaire POPSU Transitions « Grenoble XXI » : mise en débat des premiers livrables et résultats du programme sur l'eau, quand la recherche sillonne vers l'action.",
     "date_debut": "2026-11-19",
@@ -37,7 +37,7 @@
   },
   {
     "id": "A0004",
-    "type": "evenement_a_venir",
+    "type": "evenement",
     "titre": "Journée d'échange « Eau, Montagne et Aménagement du territoire »",
     "description": "Journée interassociative FNE (AURA, Isère, Savoie, Haute-Savoie) sur l'eau et l'aménagement en montagne : sujets prioritaires le matin, ateliers stratégiques l'après-midi.",
     "date_debut": "2026-11-05",
@@ -49,7 +49,7 @@
   },
   {
     "id": "A0005",
-    "type": "evenement_a_venir",
+    "type": "evenement",
     "titre": "Commission Eau du réseau eau Isère",
     "description": "Prochaine commission eau du réseau eau Isère (FNE38) : ordre du jour collaboratif, difficultés de réunions de CLE (Bièvre, Bourbre), point projets 2026-2027.",
     "date_debut": "2026-10-20",
@@ -61,7 +61,7 @@
   },
   {
     "id": "A0006",
-    "type": "evenement_a_venir",
+    "type": "evenement",
     "titre": "Webinaire « Neige artificielle & gestion quantitative de l'eau »",
     "description": "Présentation du livret technique mis à jour par FNE AURA sur la neige de culture et la gestion quantitative de l'eau, avec pistes d'actions pour défendre les positions du mouvement.",
     "date_debut": "2026-10-15",
@@ -73,7 +73,7 @@
   },
   {
     "id": "A0007",
-    "type": "evenement_a_venir",
+    "type": "evenement",
     "titre": "Webinaire biodiversité des ripisylves — support pédagogique FNE",
     "description": "Présentation d'un support pédagogique FNE pour découvrir la biodiversité des ripisylves, les forêts qui bordent les rivières.",
     "date_debut": "2026-10-12",
@@ -85,7 +85,7 @@
   },
   {
     "id": "A0008",
-    "type": "information_parlement",
+    "type": "information",
     "titre": "Arrêté sécheresse : restrictions prolongées jusqu'au 31 octobre 2026",
     "description": "L'arrêté préfectoral n°38-2026-09-28-00012 prolonge les mesures de restriction des prélèvements d'eau sur l'Isère jusqu'au 31 octobre 2026.",
     "date_debut": "2026-09-28",
@@ -97,7 +97,7 @@
   },
   {
     "id": "A0009",
-    "type": "evenement_a_venir",
+    "type": "evenement",
     "titre": "Séminaire « Eau & GEMAPI » pour les élu.es — ARRA²",
     "description": "Deux journées ARRA² pour accompagner les élus sur les enjeux de l'eau : gouvernance et compétences eau-GEMAPI le premier jour, solutions concrètes et retours d'expérience le second.",
     "date_debut": "2026-10-22",
@@ -109,7 +109,7 @@
   },
   {
     "id": "A0010",
-    "type": "evenement_a_venir",
+    "type": "evenement",
     "titre": "Webinaire « Sentinelles de la nature & mares » — FNE Savoie",
     "description": "Présentation de deux actions participatives citoyennes : le réseau Sentinelles de la nature pour alerter sur les atteintes à l'environnement, et le programme mares.",
     "date_debut": "2026-11-16",
@@ -121,7 +121,7 @@
   },
   {
     "id": "A0011",
-    "type": "ressource_publiee",
+    "type": "media_publie",
     "titre": "Exposition « Entre fleuve et mer. Une histoire médiévale » — Saint-Antoine-l'Abbaye",
     "description": "Exposition de la saison culturelle « Eau, quelle histoire ! » du Département : l'imaginaire médiéval des fleuves et de la mer, en quatre séquences. Le musée de l'Ancien évêché prépare aussi une expo sur la rivière Isère.",
     "date_debut": "2026-07-05",
@@ -133,7 +133,7 @@
   },
   {
     "id": "A0012",
-    "type": "ressource_publiee",
+    "type": "media_publie",
     "titre": "Programme « En quête d'eau » — sciences participatives",
     "description": "Programme de sciences participatives piloté par l'Office international de l'eau pour mieux connaître l'écoulement des cours d'eau : observations citoyennes, carte interactive.",
     "date_debut": "2026-09-23",
@@ -145,7 +145,7 @@
   },
   {
     "id": "A0013",
-    "type": "evenement_a_venir",
+    "type": "evenement",
     "titre": "Impacte Ton Territoire sur le thème de l'eau — Lac de Paladru",
     "description": "Événement annuel Ronalpia Pays Voironnais : approches innovantes de la gestion de l'eau. Ateliers, interviews collectives et temps d'échange avec acteurs du territoire. Gratuit sur inscription.",
     "date_debut": "2026-10-07",

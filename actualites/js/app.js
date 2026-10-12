@@ -395,6 +395,16 @@ function renderMonthPills() {
   els.monthPills.innerHTML = "";
 
   const months = [...state.selectedMonths].sort((a, b) => a.localeCompare(b));
+  // Ligne entière + libellé « Mois : » uniquement si sélection
+  // (CEO 12/10/26 soir) : vide, le conteneur est masqué par le
+  // socle commun (.filter-pills:empty → display:none).
+  if (!months.length) return;
+
+  const caption = document.createElement("span");
+  caption.className = "pills-label";
+  caption.textContent = "Mois :";
+  els.monthPills.appendChild(caption);
+
   for (const m of months) {
     const pill = document.createElement("span");
     pill.className = "filter-pill";
@@ -429,8 +439,18 @@ function renderTypePills() {
   if (!els.typePills) return;
   els.typePills.innerHTML = "";
 
-  for (const key of Object.keys(TYPES)) {
-    if (!state.selectedTypes.has(key)) continue;
+  // Ligne entière + libellé « Type : » uniquement si sélection
+  // (CEO 12/10/26 soir) : vide, le conteneur est masqué par le
+  // socle commun (.filter-pills:empty → display:none).
+  const selected = Object.keys(TYPES).filter((k) => state.selectedTypes.has(k));
+  if (!selected.length) return;
+
+  const caption = document.createElement("span");
+  caption.className = "pills-label";
+  caption.textContent = "Type :";
+  els.typePills.appendChild(caption);
+
+  for (const key of selected) {
     const pill = document.createElement("span");
     pill.className = "filter-pill";
 

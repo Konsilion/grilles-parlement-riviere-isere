@@ -54,6 +54,25 @@
   gap: 0.5rem;
 }
 
+/* ============== Pastilles de filtre : une ligne chacune ==============
+   CEO 12/10/26 soir : les pastilles des filtres Mois et Type ne
+   partagent PLUS la ligne des filtres — chacune a SA ligne propre
+   sous la barre recherche/dropdowns. flex-basis:100% force le
+   retour à la ligne dans la toolbar flex-wrap ; masquées vides par
+   le socle commun (.filter-pills:empty → display:none), donc la
+   ligne n'existe QUE quand des pastilles sont sélectionnées. */
+#month-pills,
+#type-pills {
+  flex-basis: 100%;
+}
+
+/* Libellé « Mois : » / « Type : » devant les pastilles (rendu par
+   le JS uniquement quand il y a une sélection). */
+.pills-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
 /* En écran étroit, le groupe pagination/taille de page passe sous
    les filtres, aligné à GAUCHE (CEO 11/10/26). */
 .header-controls {

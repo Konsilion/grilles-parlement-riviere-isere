@@ -25,25 +25,22 @@ const { makeDropdown } = window.GrilleDropdown;
    (même logique, vers l'Outilthèque).
    Lot 3 (agrégation) : 6 types pour les fiches des autres apps —
    contact, projet, organisation, lieu, question, idee (médiathèque
-   et outilthèque agrégées arrivent en media_publie / outil_publie). */
+   et outilthèque agrégées arrivent en media_publie / outil_publie).
+   CEO 12/10/26 soir : 2 types NATIFS (evenement, information — pas
+   de linkLabel → « En savoir plus ») ; 8 types HÉRITÉS, chacun
+   portant son libellé de lien « Voir le X » mutualisé ici même via
+   linkLabel (fin de l'ancienne table séparée de libellés). */
 const TYPES = {
   evenement: { label: "Événement", slug: "evenement" },
-  media_publie: { label: "Média publié", slug: "media-publie" },
-  outil_publie: { label: "Outil publié", slug: "outil-publie" },
+  media_publie: { label: "Média publié", slug: "media-publie", linkLabel: "Voir le média" },
+  outil_publie: { label: "Outil publié", slug: "outil-publie", linkLabel: "Voir l’outil" },
   information: { label: "Information", slug: "information" },
-  contact: { label: "Contact", slug: "contact" },
-  projet: { label: "Projet", slug: "projet" },
-  organisation: { label: "Organisation", slug: "organisation" },
-  lieu: { label: "Lieu", slug: "lieu" },
-  question: { label: "Question", slug: "question" },
-  idee: { label: "Idée", slug: "idee" },
-};
-
-/* Libellé du lien des cartes selon le type (CEO 12/10/26) :
-   médias → Médiathèque, outils → Outilthèque, le reste inchangé. */
-const LINK_LABELS = {
-  media_publie: "Voir le média",
-  outil_publie: "Voir l'outil",
+  contact: { label: "Contact", slug: "contact", linkLabel: "Voir le contact" },
+  projet: { label: "Projet", slug: "projet", linkLabel: "Voir le projet" },
+  organisation: { label: "Organisation", slug: "organisation", linkLabel: "Voir l’organisation" },
+  lieu: { label: "Lieu", slug: "lieu", linkLabel: "Voir le lieu" },
+  question: { label: "Question", slug: "question", linkLabel: "Voir la question" },
+  idee: { label: "Idée", slug: "idee", linkLabel: "Voir l’idée" },
 };
 
 const MONTHS_FR = [
@@ -310,9 +307,11 @@ function renderCard(item) {
     a.href = item.lien;
     a.target = "_blank";
     a.rel = "noopener noreferrer";
-    // Libellé du lien selon le type (CEO 12/10/26) : médias →
-    // « Voir le média », outils → « Voir l'outil », sinon inchangé.
-    a.textContent = LINK_LABELS[item.type] || "En savoir plus";
+    // Libellé du lien selon le type (CEO 12/10/26 soir) : mutualisé
+    // dans le registre TYPES — 8 types hérités portent leur
+    // linkLabel « Voir le X », les types natifs (evenement,
+    // information) retombent sur « En savoir plus ».
+    a.textContent = TYPES[item.type]?.linkLabel || "En savoir plus";
     linkWrap.appendChild(a);
     card.appendChild(linkWrap);
   }

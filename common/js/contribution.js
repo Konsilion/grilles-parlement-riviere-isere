@@ -75,6 +75,27 @@ window.GrilleContribution = (() => {
     elsC.form.querySelectorAll(".invalid").forEach((i) => i.classList.remove("invalid"));
   }
 
+  // Message d'erreur global du formulaire (ex. refus de modération) : un
+  // seul <p class="field-error"> sous les boutons, nettoyé à la réouverture
+  // et à chaque nouvel envoi.
+  function setFormError(msg) {
+    if (!elsC.form) return;
+    clearFormError();
+    if (!msg) return;
+    const p = document.createElement("p");
+    p.className = "field-error contribute-form-error";
+    p.textContent = msg;
+    const actions = elsC.form.querySelector(".modal-actions");
+    if (actions) elsC.form.insertBefore(p, actions);
+    else elsC.form.appendChild(p);
+  }
+
+  function clearFormError() {
+    if (!elsC.form) return;
+    const e = elsC.form.querySelector(".contribute-form-error");
+    if (e) e.remove();
+  }
+
   function openModal() {
     if (!elsC.modal) return;
     // Sécurité : une seule modale à la fois — l'app peut fermer sa
@@ -86,6 +107,7 @@ window.GrilleContribution = (() => {
     elsC.fallback.hidden = true;
     elsC.form.reset();
     clearAllFieldErrors();
+    clearFormError();
     elsC.modal.setAttribute("aria-hidden", "false");
     document.body.classList.add("modal-open");
     const first = cfg.firstFieldId ? document.getElementById(cfg.firstFieldId) : null;
@@ -163,6 +185,7 @@ window.GrilleContribution = (() => {
     const prev = btn ? btn.textContent : null;
     if (btn) { btn.disabled = true; btn.textContent = "Envoi en cours…"; }
     const restore = () => { if (btn) { btn.disabled = false; btn.textContent = prev; } };
+    clearFormError();
     const body = Object.assign(
       { gotcha: elsC.gotcha ? elsC.gotcha.value : "" },
       cfg.payload(d)
@@ -183,7 +206,16 @@ window.GrilleContribution = (() => {
         showSuccess();
         return;
       }
-      // 429/4xx/5xx du relais → repli GitHub.
+      // Refus de modération (respect/décence) : message DANS la modale,
+      // AUCUN repli GitHub — sinon l'issue serait publiée sans modération.
+      if (resp.status === 422) {
+        let msg = null;
+        try { msg = (await resp.json()).message; } catch { /* format inattendu */ }
+        restore();
+        setFormError(msg || "Votre proposition ne peut pas être publiée.");
+        return;
+      }
+      // Autres 4xx/5xx du relais → repli GitHub.
     } catch { /* réseau/timeout → repli GitHub */ }
     restore();
     showFallback(d);

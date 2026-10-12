@@ -11,7 +11,9 @@ selon le contrat FIXE consommé par le front :
   auteur (ligne « Auteur: » du champ extra, libellé SANS accents,
   exactement « Auteur: » ; absente = chaîne vide),
   lien (url), categories (tags),
-  date_ajout (dateAdded coupé AAAA-MM-JJ)
+  date_ajout (dateAdded coupé AAAA-MM-JJ), zotero_key (clé racine de
+  l'item Zotero), date_modif (dateModified coupé AAAA-MM-JJ) — ces deux
+  derniers additifs, pour l'agrégateur « Actualités »
 
 itemType document, collection racine du groupe (aucune
 sous-collection : items/top suffit, calque organisations).
@@ -84,6 +86,10 @@ def item_to_record(item):
         rec[field] = extra.get(label, "").strip()
     rec["categories"] = categories
     rec["date_ajout"] = (data.get("dateAdded") or "")[:10]
+    # Champs additifs pour l'agrégateur « Actualités » (dédoublonnage
+    # inter-apps par zotero_key + tri par date de modification).
+    rec["zotero_key"] = (item.get("key") or "").strip()
+    rec["date_modif"] = (data.get("dateModified") or "")[:10]
     return rec
 
 

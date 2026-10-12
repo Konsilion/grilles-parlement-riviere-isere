@@ -87,6 +87,10 @@ def item_to_record(item):
         rec[field] = extra.get(label, "").strip()
     rec["categories"] = categories
     rec["date_ajout"] = (data.get("dateAdded") or "")[:10]
+    # Champs additifs pour l'agrégateur « Actualités » (dédoublonnage
+    # inter-apps par zotero_key + tri par date de modification).
+    rec["zotero_key"] = (item.get("key") or "").strip()
+    rec["date_modif"] = (data.get("dateModified") or "")[:10]
     return rec
 
 

@@ -12,7 +12,9 @@ consommé par le front :
   date_debut/date_fin (champ date : split « / », OPTION B — calque
   fetch_actualites.py), lien (url), statut (ligne « Statut: » du champ
   extra ; absente = chaîne vide, le front déduit alors des dates),
-  categories (tags), date_ajout (dateAdded coupé AAAA-MM-JJ)
+  categories (tags), date_ajout (dateAdded coupé AAAA-MM-JJ), zotero_key (clé racine de
+  l'item Zotero), date_modif (dateModified coupé AAAA-MM-JJ) — ces deux
+  derniers additifs, pour l'agrégateur « Actualités »
 
 itemType document, collection racine du groupe (aucune
 sous-collection : items/top suffit, calque contacts).
@@ -101,6 +103,10 @@ def item_to_record(item):
         rec[field] = extra.get(label, "").strip()
     rec["categories"] = categories
     rec["date_ajout"] = (data.get("dateAdded") or "")[:10]
+    # Champs additifs pour l'agrégateur « Actualités » (dédoublonnage
+    # inter-apps par zotero_key + tri par date de modification).
+    rec["zotero_key"] = (item.get("key") or "").strip()
+    rec["date_modif"] = (data.get("dateModified") or "")[:10]
     return rec
 
 

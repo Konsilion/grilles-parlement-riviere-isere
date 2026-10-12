@@ -9,7 +9,9 @@ selon le contrat FIXE consommé par le front :
 
   id (citationKey L000N), nom (title), description (abstractNote),
   adresse (place), lien (url), categories (tags),
-  date_ajout (dateAdded coupé AAAA-MM-JJ)
+  date_ajout (dateAdded coupé AAAA-MM-JJ), zotero_key (clé racine de
+  l'item Zotero), date_modif (dateModified coupé AAAA-MM-JJ) — ces deux
+  derniers additifs, pour l'agrégateur « Actualités »
 
 itemType document, collection racine du groupe (aucune
 sous-collection : items/top suffit, calque contacts/projets).
@@ -61,6 +63,10 @@ def item_to_record(item):
         "lien": (data.get("url") or "").strip(),
         "categories": categories,
         "date_ajout": (data.get("dateAdded") or "")[:10],
+        # Champs additifs pour l'agrégateur « Actualités » (dédoublonnage
+        # inter-apps par zotero_key + tri par date de modification).
+        "zotero_key": (item.get("key") or "").strip(),
+        "date_modif": (data.get("dateModified") or "")[:10],
     }
 
 

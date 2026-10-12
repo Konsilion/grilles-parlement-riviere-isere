@@ -138,7 +138,11 @@
       <!-- Étape 1 : choix du type d'actualité (CEO 12/10/26). Les 4 types
            fermés du contrat ; le formulaire affiché ensuite dépend du type
            (média = formulaire Médiathèque, outil = formulaire Outilthèque,
-           événement/information = formulaire propre à Actualités). -->
+           événement/information = formulaire propre à Actualités).
+           Lot 4 (CEO 12/10/26 soir) : les 6 types des autres apps se
+           comportent comme média/outil — une proposition de type T crée
+           UN item Zotero membre des deux collections (Actualités +
+           collection de T), formulaires calqués sur les apps sources. -->
       <div id="c-type-step">
         <p class="c-step-label">Quel type d'actualité proposez-vous&nbsp;?</p>
         <div class="c-type-grid" id="c-type-choices" role="list">
@@ -161,6 +165,36 @@
             <span class="c-type-dot type-information"></span>
             <span class="c-type-name">Information</span>
             <span class="c-type-desc">Actualité, annonce, restriction…</span>
+          </button>
+          <button type="button" class="c-type-choice" data-actutype="contact" role="listitem">
+            <span class="c-type-dot type-contact"></span>
+            <span class="c-type-name">Contact</span>
+            <span class="c-type-desc">Personne-ressource à ajouter au répertoire…</span>
+          </button>
+          <button type="button" class="c-type-choice" data-actutype="projet" role="listitem">
+            <span class="c-type-dot type-projet"></span>
+            <span class="c-type-name">Projet</span>
+            <span class="c-type-desc">Étude, chantier, démarche en cours…</span>
+          </button>
+          <button type="button" class="c-type-choice" data-actutype="organisation" role="listitem">
+            <span class="c-type-dot type-organisation"></span>
+            <span class="c-type-name">Organisation</span>
+            <span class="c-type-desc">Association, collectivité, institution…</span>
+          </button>
+          <button type="button" class="c-type-choice" data-actutype="lieu" role="listitem">
+            <span class="c-type-dot type-lieu"></span>
+            <span class="c-type-name">Lieu</span>
+            <span class="c-type-desc">Site, espace, adresse à repérer…</span>
+          </button>
+          <button type="button" class="c-type-choice" data-actutype="question" role="listitem">
+            <span class="c-type-dot type-question"></span>
+            <span class="c-type-name">Question</span>
+            <span class="c-type-desc">Interroger le Parlement sur la rivière…</span>
+          </button>
+          <button type="button" class="c-type-choice" data-actutype="idee" role="listitem">
+            <span class="c-type-dot type-idee"></span>
+            <span class="c-type-name">Idée</span>
+            <span class="c-type-desc">Suggestion, piste d'action à étudier…</span>
           </button>
         </div>
       </div>
@@ -220,6 +254,18 @@
         <!-- Outil publié : calque du formulaire Outilthèque, injecté par
              common/js/contribution-forms.js (GrilleForms.outil.html()). -->
         <div id="c-form-outil" class="c-form-variant" hidden></div>
+
+        <!-- Lot 4 : les 6 types des autres apps, calques des formulaires
+             sources injectés par common/js/contribution-forms.js
+             (GrilleForms.contact.html(), etc.). Ids préfixés c-a-<type>-
+             dans les calques — aucune collision possible, ni entre
+             formes ni avec les ids des formulaires natifs. -->
+        <div id="c-form-contact" class="c-form-variant" hidden></div>
+        <div id="c-form-projet" class="c-form-variant" hidden></div>
+        <div id="c-form-organisation" class="c-form-variant" hidden></div>
+        <div id="c-form-lieu" class="c-form-variant" hidden></div>
+        <div id="c-form-question" class="c-form-variant" hidden></div>
+        <div id="c-form-idee" class="c-form-variant" hidden></div>
 
         <p class="contribute-privacy">
           En envoyant, vous acceptez que ces informations soient publiées sur

@@ -696,22 +696,24 @@ function attachListeners() {
 
 /* ---------- Contribution (esprit Datami) ----------
    Modale en 2 étapes (CEO 12/10/26) :
-   1) choix du type d'actualité (evenement / media_publie /
-      outil_publie / information) ;
+   1) choix du type d'actualité — 10 types depuis le lot 4 (CEO
+      12/10/26 soir) : evenement / media_publie / outil_publie /
+      information + contact / projet / organisation / lieu /
+      question / idee ;
    2) formulaire selon le type — événement et information partagent le
       formulaire propre à Actualités (dates, lieu, lien, résumé) ;
       média publié et outil publié affichent les calques des
       formulaires Médiathèque / Outilthèque (common/js/
       contribution-forms.js — une seule forme dans le DOM à la fois,
-      aucune collision d'ids).
+      aucune collision d'ids) ; les 6 types agrégés affichent les
+      calques des apps sources (même socle, ids préfixés c-a-<type>-).
 
    Derrière, le socle commun contribution.js (envoi silencieux au
    relais VPS → issue GitHub, repli manuel). Le type choisi part dans
    le payload (« type ») : c'est LUI qui décide de la forme des champs
-   attendus par le relais (contrat 3 formes) et du traitement Zotero à
-   la validation (item unique membre des collections Actualités +
-   Médiathèque/Outilthèque — décision CEO 12/10/26 « un seul et même
-   enregistrement »). */
+   attendus par le relais et du traitement Zotero à la validation
+   (item unique membre des collections Actualités + collection du
+   type — décision CEO 12/10/26 « un seul et même enregistrement »). */
 (function initContribution() {
   const GC = window.GrilleContribution;
   const GF = window.GrilleForms;
@@ -728,6 +730,14 @@ function attachListeners() {
     choices: () => document.querySelectorAll("#c-type-choices .c-type-choice"),
   };
 
+  // Lot 4 : les 6 types agrégés calquent les apps sources. Un variant
+  // par type, injecté à la demande dans son conteneur dédié.
+  const AGGREGATE_TYPES = ["contact", "projet", "organisation", "lieu", "question", "idee"];
+  const elsAgg = {};
+  for (const t of AGGREGATE_TYPES) {
+    elsAgg[t] = () => document.getElementById(`c-form-${t}`);
+  }
+
   // Type d'actualité choisi à l'étape 1 (null = étape 1 affichée).
   let currentType = null;
 
@@ -736,6 +746,12 @@ function attachListeners() {
     media_publie: "Média publié",
     outil_publie: "Outil publié",
     information: "Information",
+    contact: "Contact",
+    projet: "Projet",
+    organisation: "Organisation",
+    lieu: "Lieu",
+    question: "Question",
+    idee: "Idée",
   };
 
   // ---------- Étape 1 : choix du type ----------
@@ -768,6 +784,17 @@ function attachListeners() {
         els2.outil().innerHTML = GF.outil.html();
         els2.outil().dataset.injected = "1";
       }
+    } else if (GF[type]) {
+      // Lot 4 : types agrégés (contact, projet, organisation, lieu,
+      // question, idée). Les ids du calque sont préfixés c-a-<type>-
+      // (UNIQUES par champ) : les 6 variants peuvent donc rester
+      // injectés ensemble sans aucune collision — pas de purge.
+      // Injection paresseuse au premier passage vers ce type.
+      const box = elsAgg[type]();
+      if (!box.dataset.injected) {
+        box.innerHTML = GF[type].html();
+        box.dataset.injected = "1";
+      }
     }
 
     // Badge du type en tête du formulaire (couleur du contrat).
@@ -781,27 +808,33 @@ function attachListeners() {
     badge.appendChild(label);
 
     // Un seul variant visible.
-    els2.actu().hidden = type === "media_publie" || type === "outil_publie";
+    els2.actu().hidden = type === "media_publie" || type === "outil_publie" || !!GF[type];
     els2.media().hidden = type !== "media_publie";
     els2.outil().hidden = type !== "outil_publie";
+    for (const t of AGGREGATE_TYPES) {
+      elsAgg[t]().hidden = type !== t;
+    }
 
     els2.step().hidden = true;
     els2.form().hidden = false;
-    const first =
-      type === "media_publie" ? document.getElementById(GF.media.firstFieldId)
-      : type === "outil_publie" ? document.getElementById(GF.outil.firstFieldId)
-      : document.getElementById("c-titre");
+    let first;
+    if (type === "media_publie") first = document.getElementById(GF.media.firstFieldId);
+    else if (type === "outil_publie") first = document.getElementById(GF.outil.firstFieldId);
+    else if (GF[type]) first = document.getElementById(GF[type].firstFieldId);
+    else first = document.getElementById("c-titre");
     setTimeout(() => first && first.focus(), 50);
   }
 
   // ---------- Collecte / validation selon le type ----------
   const isMedia = () => currentType === "media_publie";
   const isOutil = () => currentType === "outil_publie";
+  const isAgg = () => !!GF[currentType];
   const isActu = () => currentType === "evenement" || currentType === "information";
 
   function collect() {
     if (isMedia()) return Object.assign({ type: currentType }, GF.media.get());
     if (isOutil()) return Object.assign({ type: currentType }, GF.outil.get());
+    if (isAgg()) return Object.assign({ type: currentType }, GF[currentType].get());
     return {
       type: currentType,
       titre: document.getElementById("c-titre").value.trim(),
@@ -818,6 +851,7 @@ function attachListeners() {
     if (!currentType) return false;
     if (isMedia()) return GF.media.validate(GC.setFieldError);
     if (isOutil()) return GF.outil.validate(GC.setFieldError);
+    if (isAgg()) return GF[currentType].validate(GC.setFieldError);
     // Formulaire actu : calque de l'existant (ids c-a-* propres à
     // l'app pour ne pas entrer en collision avec les ids des formulaires
     // mutualisés média/outil).
@@ -870,6 +904,7 @@ function attachListeners() {
   function payloadOf(d) {
     if (isMedia()) return Object.assign({ type: d.type }, GF.media.payload(d));
     if (isOutil()) return Object.assign({ type: d.type }, GF.outil.payload(d));
+    if (isAgg()) return Object.assign({ type: d.type }, GF[d.type].payload(d));
     return {
       type: d.type,
       titre: d.titre,
@@ -890,6 +925,10 @@ function attachListeners() {
       const rows = [["Type d'actualité", "Outil publié"]];
       return rows.concat(GF.outil.table(d));
     }
+    if (isAgg()) {
+      const rows = [["Type d'actualité", GF[d.type].label || TYPE_LABELS[d.type] || d.type]];
+      return rows.concat(GF[d.type].table(d));
+    }
     return [
       ["Titre", d.titre],
       ["Type", TYPE_LABELS[d.type] || d.type],
@@ -903,6 +942,7 @@ function attachListeners() {
   function titleOf(d) {
     if (isMedia()) return GF.media.titleOf(d);
     if (isOutil()) return GF.outil.titleOf(d);
+    if (isAgg()) return GF[d.type].titleOf(d);
     return d.titre;
   }
 
@@ -936,9 +976,11 @@ function attachListeners() {
       intro:
         "Un·e visiteur de la grille Actualités propose d'ajouter cette actualité.",
       closing:
-        "La validation crée l'item Zotero (collections « Actualités » et " +
-        "« Médiathèque »/« Outilthèque » selon le type, citationKey A000N), " +
-        "ferme cette issue et le prochain `deploy.sh` publie l'actualité.",
+        "La validation crée l'item Zotero membre des collections « Actualités » " +
+        "et de l'app du type choisi (Médiathèque, Outilthèque, Contacts, " +
+        "Projets, Organisations, Lieux, Questions ou Idées — un seul et même " +
+        "enregistrement, citationKey A000N), ferme cette issue et le prochain " +
+        "`deploy.sh` publie l'actualité.",
     },
   });
 

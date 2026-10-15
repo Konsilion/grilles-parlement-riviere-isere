@@ -165,7 +165,7 @@ def parse_date(date_field):
 # --------------------------------------------- intégrité référentielle natives
 
 # Contrat de type (CEO 12/10/26 « un seul et même enregistrement ») : une
-# native media_publie/outil_publie/contact/projet/organisation/lieu/
+# native media_publie/outil_publie/personne/projet/organisation/lieu/
 # question/idee EST un item bi-collection (Actualités + collection de
 # l'app source). Ces 8 types sont des RÉFÉRENCES vers une fiche de l'app
 # cible — une native qui n'est pas bi-collection est une RÉFÉRENCE

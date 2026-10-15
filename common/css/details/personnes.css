@@ -1,12 +1,12 @@
 /* =========================================================
-   GrilleDetail — styles PROPRES à la modale « contacts »
+   GrilleDetail — styles PROPRES à la modale « personnes »
 
    Seuls les blocs spécifiques au répertoire (avatar pastille,
    tête de modale avatar + nom + organisation) vivent ici :
    le conteneur et les blocs structurels viennent du socle
    commun common/css/modal.css. Tout est scopé .gd-modal —
    la modale est montée par l'engine GrilleDetail (racine
-   #gd-modal-contacts.gd-modal), et ces règles ne touchent
+   #gd-modal-personnes.gd-modal), et ces règles ne touchent
    ni les cartes de l'app, ni la modale de contribution.
 
    AUCUNE nouvelle couleur : tokens du socle uniquement
@@ -60,8 +60,8 @@
   background: var(--tag-bg);
 }
 
-/* Ligne meta compacte : « Rôle · Lieu · Contact : … · Ajouté le … »
-   (le socle pose margin: 0.2rem 0 0.25rem ; la modale contacts
+/* Ligne meta compacte : « Rôle · Lieu · Rencontrée le : … · Ajouté le … »
+   (le socle pose margin: 0.2rem 0 0.25rem ; la modale personnes
    tient la médiathèque historique : margin haute nulle). */
 .gd-modal .modal-meta-line {
   margin: 0 0 0.25rem;

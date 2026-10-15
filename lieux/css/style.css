@@ -1,7 +1,7 @@
 /* =========================================================
    Lieux — Parlement de la rivière Isère : styles propres
    Calque organisations/css/style.css (lui-même calque
-   contacts, sans les styles d'avatar).
+   personnes, sans les styles d'avatar).
    Le socle commun (../common/css/base.css) porte : tokens,
    thème clair unique, .layout, .header-controls,
    .page-size-label, .search-input, .dropdown/.dd-*, .pagination/
@@ -23,7 +23,7 @@
 .content { flex: 1; }
 
 /* ============== Entête (compteur, puis barre unique) ============== */
-/* Calque organisations/contacts/actualités : compteur seul sur sa
+/* Calque organisations/personnes/actualités : compteur seul sur sa
    ligne, en dessous la barre .toolbar ; en écran étroit chaque groupe
    repasse à la ligne, aligné à GAUCHE. */
 .content-header {

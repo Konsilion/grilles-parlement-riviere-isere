@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""fetch_contacts.py — génère contacts/data/contacts.json depuis Zotero.
+"""fetch_personnes.py — génère personnes/data/personnes.json depuis Zotero.
 
-Carte C2 (chantier Contacts) : l'app Contacts (front C3) consomme
-contacts/data/contacts.json. Ce script lit la collection « Contacts » du
+Carte C2 : l'app Personnes (front C3, ex-Contacts, renommée 15/10/26) consomme
+personnes/data/personnes.json. Ce script lit la collection « Contacts » du
 groupe Zotero 6610185 et restitue chaque item selon le contrat FIXE
 consommé par le front :
 
@@ -22,7 +22,7 @@ stable rend la sortie reproductible et les diffs lisibles — même choix que
 fetch_actualites.py). UTF-8, liste JSON plate.
 
 Usage :
-  python3 scripts/fetch_contacts.py    # écrit contacts/data/contacts.json
+  python3 scripts/fetch_personnes.py   # écrit personnes/data/personnes.json
 
 Clé : lecture seule (coffre ~/sys_admin/secrets/client/zotero.key, sinon config de la
 vitrine). Clé d'écriture jamais nécessaire ici. stdlib uniquement.
@@ -36,7 +36,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from zotero_api import DEFAULT_GROUP_ID, ZoteroClient, ZoteroError, load_key
 
 REPO = Path(__file__).resolve().parent.parent
-OUT_PATH = REPO / "contacts" / "data" / "contacts.json"
+OUT_PATH = REPO / "personnes" / "data" / "personnes.json"
 
 GROUP_ID = DEFAULT_GROUP_ID
 CONTACTS_NAME = "Contacts"
@@ -140,7 +140,7 @@ def main():
     print(f"[OK] collection « {CONTACTS_NAME} » ({ckey}) : {len(items)} items top")
     print(f"[OK] écrit {OUT_PATH} ({OUT_PATH.stat().st_size} octets, UTF-8)")
     if not records:
-        print("[OK] collection vide -> contacts.json = []")
+        print("[OK] collection vide -> personnes.json = []")
     for r in records:
         cats = ", ".join(r["categories"]) if r["categories"] else "—"
         print(f"  {r['id']} | {r['nom']} | {r['organisation'] or '—'} | {cats}")

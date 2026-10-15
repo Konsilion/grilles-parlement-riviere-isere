@@ -9,9 +9,9 @@
      MÉDIATHÈQUE (mediatheque/index.html + validate de son app.js) ;
    - GrilleForms.outil : formulaire « Proposer un outil » de
      L'OUTILTHÈQUE (outiltheque/index.html + validate de son app.js) ;
-   - Lot 4 — GrilleForms.contact / projet / organisation / lieu /
+   - Lot 4 — GrilleForms.personne / projet / organisation / lieu /
      question / idee : calques des formulaires des apps SOURCES
-     (contacts/, projets/, organisations/, lieux/, questions/,
+     (personnes/, projets/, organisations/, lieux/, questions/,
      idees/ — index.html + collect/validate/table de leur app.js).
      Leurs ids sont préfixés c-a-<type>- : UNIQUES, aucune collision
      entre formes ni avec les formulaires natifs de l'app hôte →
@@ -30,7 +30,7 @@
    - titleOf(d)      : titre de l'issue.
 
    L'app qui héberge le parcours (Actualités) fournit le type
-   d'actualité (media_publie / outil_publie / contact / projet…), le
+   d'actualité (media_publie / outil_publie / personne / projet…), le
    relais et la validation Zotero ; les CHAMPS restent ceux de
    l'app d'origine.
    ========================================================= */
@@ -273,61 +273,61 @@ window.GrilleForms = (() => {
     titleOf(d) { return d.nom; },
   };
 
-  /* ---------- Formulaire CONTACT (calque app Contacts) ---------- */
+  /* ---------- Formulaire PERSONNE (calque app Personnes) ---------- */
 
-  const contact = {
-    label: "Contact",
-    firstFieldId: "c-a-contact-nom",
+  const personne = {
+    label: "Personne",
+    firstFieldId: "c-a-personne-nom",
 
     html() {
       return `
         <div class="form-row">
-          <label for="c-a-contact-nom">Nom et prénom <span class="req">*</span></label>
-          <input type="text" id="c-a-contact-nom" name="nom" required maxlength="300" autocomplete="off"
+          <label for="c-a-personne-nom">Nom et prénom <span class="req">*</span></label>
+          <input type="text" id="c-a-personne-nom" name="nom" required maxlength="300" autocomplete="off"
                  placeholder="Ex. : Marie Dupont" />
         </div>
 
         <div class="form-row form-row-2">
           <div>
-            <label for="c-a-contact-organisation">Organisation</label>
-            <input type="text" id="c-a-contact-organisation" name="organisation" maxlength="300" autocomplete="off"
+            <label for="c-a-personne-organisation">Organisation</label>
+            <input type="text" id="c-a-personne-organisation" name="organisation" maxlength="300" autocomplete="off"
                    placeholder="Ex. : Conseil départemental" />
           </div>
           <div>
-            <label for="c-a-contact-lieu">Lieu</label>
-            <input type="text" id="c-a-contact-lieu" name="lieu" maxlength="300" autocomplete="off"
+            <label for="c-a-personne-lieu">Lieu</label>
+            <input type="text" id="c-a-personne-lieu" name="lieu" maxlength="300" autocomplete="off"
                    placeholder="Ex. : Grenoble" />
           </div>
         </div>
 
         <div class="form-row form-row-2">
           <div>
-            <label for="c-a-contact-email">E-mail professionnel</label>
-            <input type="email" id="c-a-contact-email" name="email" maxlength="300" autocomplete="off"
+            <label for="c-a-personne-email">E-mail professionnel</label>
+            <input type="email" id="c-a-personne-email" name="email" maxlength="300" autocomplete="off"
                    placeholder="marie@example.fr" />
           </div>
           <div>
-            <label for="c-a-contact-telephone">Téléphone professionnel</label>
-            <input type="tel" id="c-a-contact-telephone" name="telephone" maxlength="50" autocomplete="off"
+            <label for="c-a-personne-telephone">Téléphone professionnel</label>
+            <input type="tel" id="c-a-personne-telephone" name="telephone" maxlength="50" autocomplete="off"
                    placeholder="Ex. : 04 76 00 00 00" />
           </div>
         </div>
 
         <div class="form-row">
-          <label for="c-a-contact-role">Rôle</label>
-          <input type="text" id="c-a-contact-role" name="role" maxlength="300" autocomplete="off"
+          <label for="c-a-personne-role">Rôle</label>
+          <input type="text" id="c-a-personne-role" name="role" maxlength="300" autocomplete="off"
                  placeholder="Ex. : Élue, chargée de mission…" />
         </div>
 
         <div class="form-row">
-          <label for="c-a-contact-description">Description (facultatif)</label>
-          <textarea id="c-a-contact-description" name="description" rows="4" maxlength="3000"
+          <label for="c-a-personne-description">Description (facultatif)</label>
+          <textarea id="c-a-personne-description" name="description" rows="4" maxlength="3000"
                     placeholder="En une ou deux phrases : qui est cette personne, sur quoi travaille-t-elle ?"></textarea>
         </div>
 
         <div class="form-row">
-          <label for="c-a-contact-url">Lien (facultatif)</label>
-          <input type="url" id="c-a-contact-url" name="url" maxlength="2000" autocomplete="off"
+          <label for="c-a-personne-url">Lien (facultatif)</label>
+          <input type="url" id="c-a-personne-url" name="url" maxlength="2000" autocomplete="off"
                  placeholder="https://…" />
           <p class="field-hint">Profil, site, page de l'organisation…</p>
         </div>`;
@@ -335,47 +335,47 @@ window.GrilleForms = (() => {
 
     get() {
       return {
-        nom: val("c-a-contact-nom"),
-        organisation: val("c-a-contact-organisation"),
-        lieu: val("c-a-contact-lieu"),
-        email: val("c-a-contact-email"),
-        telephone: val("c-a-contact-telephone"),
-        role: val("c-a-contact-role"),
-        description: val("c-a-contact-description"),
-        url: val("c-a-contact-url"),
+        nom: val("c-a-personne-nom"),
+        organisation: val("c-a-personne-organisation"),
+        lieu: val("c-a-personne-lieu"),
+        email: val("c-a-personne-email"),
+        telephone: val("c-a-personne-telephone"),
+        role: val("c-a-personne-role"),
+        description: val("c-a-personne-description"),
+        url: val("c-a-personne-url"),
       };
     },
 
-    // Calque exact du validate() de l'app contacts.
+    // Calque exact du validate() de l'app Personnes.
     validate(setErr) {
       let ok = true;
-      const nom = val("c-a-contact-nom");
-      const email = val("c-a-contact-email");
+      const nom = val("c-a-personne-nom");
+      const email = val("c-a-personne-email");
 
       if (!nom) {
-        setErr($("c-a-contact-nom"), "Le nom est nécessaire pour que l'équipe vérifie le contact.");
+        setErr($("c-a-personne-nom"), "Le nom est nécessaire pour que l'équipe vérifie la personne.");
         ok = false;
       } else if (nom.length < 3) {
-        setErr($("c-a-contact-nom"), "Le nom paraît trop court — prénom et nom suffisent.");
+        setErr($("c-a-personne-nom"), "Le nom paraît trop court — prénom et nom suffisent.");
         ok = false;
       } else {
-        setErr($("c-a-contact-nom"), null);
+        setErr($("c-a-personne-nom"), null);
       }
 
       if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        setErr($("c-a-contact-email"), "Cette adresse e-mail ne semble pas valide.");
+        setErr($("c-a-personne-email"), "Cette adresse e-mail ne semble pas valide.");
         ok = false;
       } else {
-        setErr($("c-a-contact-email"), null);
+        setErr($("c-a-personne-email"), null);
       }
 
-      const url = val("c-a-contact-url");
+      const url = val("c-a-personne-url");
       if (url) {
         if (!isHttpUrl(url)) {
-          setErr($("c-a-contact-url"), "Collez une adresse web complète commençant par https:// (ou http://).");
+          setErr($("c-a-personne-url"), "Collez une adresse web complète commençant par https:// (ou http://).");
           ok = false;
         } else {
-          setErr($("c-a-contact-url"), null);
+          setErr($("c-a-personne-url"), null);
         }
       }
 
@@ -581,7 +581,7 @@ window.GrilleForms = (() => {
           <div>
             <label for="c-a-organisation-email">E-mail</label>
             <input type="email" id="c-a-organisation-email" name="email" maxlength="300" autocomplete="off"
-                   placeholder="contact@example.fr" />
+                   placeholder="marie@example.fr" />
           </div>
           <div>
             <label for="c-a-organisation-telephone">Téléphone</label>
@@ -983,5 +983,5 @@ window.GrilleForms = (() => {
     titleOf(d) { return d.titre; },
   };
 
-  return { media, outil, contact, projet, organisation, lieu, question, idee };
+  return { media, outil, personne, projet, organisation, lieu, question, idee };
 })();

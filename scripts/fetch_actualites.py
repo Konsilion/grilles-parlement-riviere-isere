@@ -19,7 +19,7 @@ Deux périmètres :
    ACTUALITÉS + extensions :
      source_app      fichier                              structure
      mediatheque     mediatheque/data/collection.json     dict {items: [...]}
-     contacts        contacts/data/contacts.json          liste
+     personnes       personnes/data/personnes.json         liste
      projets         projets/data/projets.json            liste
      organisations   organisations/data/organisations.json liste
      outiltheque     outiltheque/data/outils.json         liste
@@ -28,14 +28,14 @@ Deux périmètres :
      idees           idees/data/idees.json                liste
    Mapping FIGÉ par app (contrat — ne pas inventer) :
      id          = id de la fiche source (médiathèque : la « key » Zotero)
-     type        = media_publie | contact | projet | organisation |
+     type        = media_publie | personne | projet | organisation |
                    outil_publie | lieu | question | idee (fermé)
-     titre       = title (médiathèque) | nom (contacts/organisations/
+     titre       = title (médiathèque) | nom (personnes/organisations/
                    outiltheque/lieux) | titre (projets/questions/idees)
      description = abstract (médiathèque) | description (autres)
      date_debut / date_fin = TOUJOURS "" (règle CEO : le tri d'affichage se
                    fait par date d'ajout — même les projets qui ont des dates)
-     lieu        = lieu (contacts/projets/organisations/outiltheque) |
+     lieu        = lieu (personnes/projets/organisations/outiltheque) |
                    adresse (lieux) | "" (médiathèque/questions/idees)
      lien        = « lien » de la source ; médiathèque : « url »
      date_ajout  = « date_ajout » de la source ; médiathèque : « dateAdded »
@@ -108,8 +108,8 @@ CSV_FIELDS = [
 EXTERNAL_APPS = [
     ("mediatheque", "mediatheque/data/collection.json",
      "media_publie", "title", "abstract", None, "url", "dateAdded"),
-    ("contacts", "contacts/data/contacts.json",
-     "contact", "nom", "description", "lieu", "lien", "date_ajout"),
+    ("personnes", "personnes/data/personnes.json",
+     "personne", "nom", "description", "lieu", "lien", "date_ajout"),
     ("projets", "projets/data/projets.json",
      "projet", "titre", "description", "lieu", "lien", "date_ajout"),
     ("organisations", "organisations/data/organisations.json",

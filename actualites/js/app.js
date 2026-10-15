@@ -24,7 +24,7 @@ const { makeDropdown } = window.GrilleDropdown;
    information_parlement devient information ; NOUVEAU outil_publie
    (même logique, vers l'Outilthèque).
    Lot 3 (agrégation) : 6 types pour les fiches des autres apps —
-   contact, projet, organisation, lieu, question, idee (médiathèque
+   personne, projet, organisation, lieu, question, idee (médiathèque
    et outilthèque agrégées arrivent en media_publie / outil_publie).
    CEO 12/10/26 soir : 2 types NATIFS (evenement, information) ;
    8 types HÉRITÉS.
@@ -37,7 +37,7 @@ const TYPES = {
   media_publie: { label: "Média publié", slug: "media-publie" },
   outil_publie: { label: "Outil publié", slug: "outil-publie" },
   information: { label: "Information", slug: "information" },
-  contact: { label: "Contact", slug: "contact" },
+  personne: { label: "Personne", slug: "personne" },
   projet: { label: "Projet", slug: "projet" },
   organisation: { label: "Organisation", slug: "organisation" },
   lieu: { label: "Lieu", slug: "lieu" },
@@ -68,7 +68,7 @@ const MONTHS_FR = [
 const SOURCE_APPS = { // type → { app, dataUrl, script }
   media_publie:  { app: "mediatheque",  dataUrl: "../mediatheque/data/collection.json", script: "../common/js/details/mediatheque.js" },
   outil_publie:  { app: "outiltheque",  dataUrl: "../outiltheque/data/outils.json",    script: "../common/js/details/outiltheque.js" },
-  contact:       { app: "contacts",     dataUrl: "../contacts/data/contacts.json",     script: "../common/js/details/contacts.js" },
+  personne:      { app: "personnes",     dataUrl: "../personnes/data/personnes.json",    script: "../common/js/details/personnes.js" },
   projet:        { app: "projets",      dataUrl: "../projets/data/projets.json",        script: "../common/js/details/projets.js" },
   organisation:  { app: "organisations",dataUrl: "../organisations/data/organisations.json", script: "../common/js/details/organisations.js" },
   lieu:         { app: "lieux",        dataUrl: "../lieux/data/lieux.json",            script: "../common/js/details/lieux.js" },
@@ -825,7 +825,7 @@ function attachListeners() {
    Modale en 2 étapes (CEO 12/10/26) :
    1) choix du type d'actualité — 10 types depuis le lot 4 (CEO
       12/10/26 soir) : evenement / media_publie / outil_publie /
-      information + contact / projet / organisation / lieu /
+      information + personne / projet / organisation / lieu /
       question / idee ;
    2) formulaire selon le type — événement et information partagent le
       formulaire propre à Actualités (dates, lieu, lien, résumé) ;
@@ -859,7 +859,7 @@ function attachListeners() {
 
   // Lot 4 : les 6 types agrégés calquent les apps sources. Un variant
   // par type, injecté à la demande dans son conteneur dédié.
-  const AGGREGATE_TYPES = ["contact", "projet", "organisation", "lieu", "question", "idee"];
+  const AGGREGATE_TYPES = ["personne", "projet", "organisation", "lieu", "question", "idee"];
   const elsAgg = {};
   for (const t of AGGREGATE_TYPES) {
     elsAgg[t] = () => document.getElementById(`c-form-${t}`);
@@ -873,7 +873,7 @@ function attachListeners() {
     media_publie: "Média publié",
     outil_publie: "Outil publié",
     information: "Information",
-    contact: "Contact",
+    personne: "Personne",
     projet: "Projet",
     organisation: "Organisation",
     lieu: "Lieu",
@@ -912,7 +912,7 @@ function attachListeners() {
         els2.outil().dataset.injected = "1";
       }
     } else if (GF[type]) {
-      // Lot 4 : types agrégés (contact, projet, organisation, lieu,
+      // Lot 4 : types agrégés (personne, projet, organisation, lieu,
       // question, idée). Les ids du calque sont préfixés c-a-<type>-
       // (UNIQUES par champ) : les 6 variants peuvent donc rester
       // injectés ensemble sans aucune collision — pas de purge.
@@ -1104,7 +1104,7 @@ function attachListeners() {
         "Un·e visiteur de la grille Actualités propose d'ajouter cette actualité.",
       closing:
         "La validation crée l'item Zotero membre des collections « Actualités » " +
-        "et de l'app du type choisi (Médiathèque, Outilthèque, Contacts, " +
+        "et de l'app du type choisi (Médiathèque, Outilthèque, Personnes, " +
         "Projets, Organisations, Lieux, Questions ou Idées — un seul et même " +
         "enregistrement, citationKey A000N), ferme cette issue et le prochain " +
         "`deploy.sh` publie l'actualité.",

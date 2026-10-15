@@ -3,7 +3,7 @@
 #
 # Étendu (5e grille, 12/10/26) : les NEUF fetchs —
 #   1. scripts/fetch_zotero.py           -> mediatheque/data/collection.json
-#   2. scripts/fetch_contacts.py         -> contacts/data/contacts.json
+#   2. scripts/fetch_personnes.py         -> personnes/data/personnes.json
 #   3. scripts/fetch_projets.py          -> projets/data/projets.json
 #   4. scripts/fetch_organisations.py    -> organisations/data/organisations.json
 #   5. scripts/fetch_outils.py           -> outiltheque/data/outils.json
@@ -52,7 +52,7 @@ fi
 if [ "$DRY_RUN" = "1" ]; then
     echo ""
     echo "[DRY-RUN] Étapes qui seraient exécutées :"
-    echo "  1-8. les HUIT fetchs sources (fetch_zotero, fetch_contacts,"
+    echo "  1-8. les HUIT fetchs sources (fetch_zotero, fetch_personnes,"
     echo "        fetch_projets, fetch_organisations, fetch_outils, fetch_lieux,"
     echo "        fetch_questions, fetch_idees) — chaque script présent est exécuté"
     echo "  9. fetch_actualites.py EN DERNIER (agrège les 8 data/*.json"
@@ -76,7 +76,7 @@ run_fetch() {
 }
 
 run_fetch fetch_zotero.py "médiathèque"
-run_fetch fetch_contacts.py "contacts"
+run_fetch fetch_personnes.py "personnes"
 run_fetch fetch_projets.py "projets"
 run_fetch fetch_organisations.py "organisations"
 run_fetch fetch_outils.py "outilthèque"
@@ -91,7 +91,7 @@ echo ""
 echo "→ Mise à jour du dépôt Git…"
 DATA_FILES=()
 for f in mediatheque/data/collection.json actualites/data/actualites.json \
-         contacts/data/contacts.json projets/data/projets.json \
+         personnes/data/personnes.json projets/data/projets.json \
          organisations/data/organisations.json outiltheque/data/outils.json \
          lieux/data/lieux.json questions/data/questions.json idees/data/idees.json; do
     [ -f "$f" ] && DATA_FILES+=("$f")

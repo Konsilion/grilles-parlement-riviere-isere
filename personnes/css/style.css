@@ -5,7 +5,7 @@
    .search-input, .dropdown/.dd-*, .pagination/.page-*, .card
    (socle + halo bleu au survol), .card-title, .card-meta,
    .card-type, .empty, .muted, .center, .grid (gap).
-   Ce fichier ne garde QUE les styles spécifiques aux contacts.
+   Ce fichier ne garde QUE les styles spécifiques aux personnes.
    AUCUNE nouvelle couleur : tokens du socle uniquement
    (--accent #0b4387 et dérivés existants).
    ========================================================= */
@@ -123,7 +123,7 @@
   gap: 0.15rem;
 }
 .card-id-block .card-title {
-  /* Le socle clamp à 3 lignes ; un nom de contact tient en 2 max. */
+  /* Le socle clamp à 3 lignes ; un nom de personne tient en 2 max. */
   -webkit-line-clamp: 2;
   font-size: 1.05rem;
 }
@@ -156,11 +156,11 @@
 
 /* ============== Modale détail ==============
    La modale n'est plus inline dans l'app : le pop-up vit dans le
-   socle commun GrilleDetail (common/js/details/contacts.js) et
+   socle commun GrilleDetail (common/js/details/personnes.js) et
    ses styles structurels dans common/css/modal.css, chargé avant
-   ce fichier. Les styles propres à la modale contacts (avatar
+   ce fichier. Les styles propres à la modale personnes (avatar
    agrandi, tête de modale, pastilles scopées) vivent dans
-   common/css/details/contacts.css, scopés .gd-modal. */
+   common/css/details/personnes.css, scopés .gd-modal. */
 
 /* ============== Bouton contribution (toolbar) ==============
    .btn/.btn-primary/.btn-secondary et .modal-actions viennent du

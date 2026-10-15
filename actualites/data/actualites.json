@@ -1666,7 +1666,7 @@
   },
   {
     "id": "C0001",
-    "type": "contact",
+    "type": "personne",
     "titre": "Philippe Dubois",
     "description": "Référent de la commission juridique du Parlement de la rivière Isère, consacrée aux droits de la nature et à la rédaction de la Déclaration des droits de la rivière. Co-président de France Nature Environnement 38, l'une des associations du collectif fondateur du Parlement, et membre du comité d'organisation (note de réflexion gouvernance, mai 2025).\n\nIl a accueilli et présenté le Parlement lors de la troisième session du 28 mars 2026.",
     "date_debut": "",
@@ -1677,11 +1677,11 @@
     "source_message_id": "",
     "zotero_key": "7ZQ6ZB3K",
     "date_modif": "2026-10-11",
-    "source_app": "contacts"
+    "source_app": "personnes"
   },
   {
     "id": "C0002",
-    "type": "contact",
+    "type": "personne",
     "titre": "Lucas Mercuri",
     "description": "Référent de la commission démocratie du Parlement de la rivière Isère, chargée de la réappropriation démocratique des enjeux de l'eau : cadre démocratique du Parlement, règles de gouvernance et participation citoyenne (éducation populaire).",
     "date_debut": "",
@@ -1692,11 +1692,11 @@
     "source_message_id": "",
     "zotero_key": "KBHVZJ56",
     "date_modif": "2026-10-11",
-    "source_app": "contacts"
+    "source_app": "personnes"
   },
   {
     "id": "C0003",
-    "type": "contact",
+    "type": "personne",
     "titre": "Pierre-Louis Serero",
     "description": "Référent de la commission artistique du Parlement de la rivière Isère (attachement, affects et imaginaires liés à la rivière). Président de l'association Civipole, membre du comité d'organisation (note de réflexion gouvernance, mai 2025).\n\nIl a animé l'intervention « Retrouver les voies(x) de l'eau » (programme POPSU) lors de la troisième session du 28 mars 2026, et représenté le Parlement lors de l'échange avec STMicroelectronics sur la certification AWS (juillet 2025).",
     "date_debut": "",
@@ -1707,11 +1707,11 @@
     "source_message_id": "",
     "zotero_key": "Z8NT73KC",
     "date_modif": "2026-10-11",
-    "source_app": "contacts"
+    "source_app": "personnes"
   },
   {
     "id": "C0004",
-    "type": "contact",
+    "type": "personne",
     "titre": "David Gabriel",
     "description": "Référent de la galerie d'images de la rivière Isère (commission artistique) : il collecte les images, peintures, gravures et photographies de l'Isère et de ses affluents, et accueille les contributions et commentaires des gardien·ne·s et sympathisant·e·s.",
     "date_debut": "",
@@ -1722,11 +1722,11 @@
     "source_message_id": "",
     "zotero_key": "ZG4HMTK4",
     "date_modif": "2026-10-11",
-    "source_app": "contacts"
+    "source_app": "personnes"
   },
   {
     "id": "C0005",
-    "type": "contact",
+    "type": "personne",
     "titre": "Delphine Astier",
     "description": "Intervenante lors de la troisième session du Parlement de la rivière Isère (28 mars 2026, Les Usages de l'eau), avec « Une chaise pour la rivière » et « La chaîne du vivant ».",
     "date_debut": "",
@@ -1737,11 +1737,11 @@
     "source_message_id": "",
     "zotero_key": "M6SVUZ98",
     "date_modif": "2026-10-11",
-    "source_app": "contacts"
+    "source_app": "personnes"
   },
   {
     "id": "C0006",
-    "type": "contact",
+    "type": "personne",
     "titre": "Julien Nemery",
     "description": "Intervenant lors de la troisième session du Parlement de la rivière Isère (28 mars 2026) pour le collectif « Les gens qui ont chaud », mobilisation citoyenne croisée avec les sciences sociales et l'aménagement urbain.",
     "date_debut": "",
@@ -1752,11 +1752,11 @@
     "source_message_id": "",
     "zotero_key": "AVG4IVT3",
     "date_modif": "2026-10-11",
-    "source_app": "contacts"
+    "source_app": "personnes"
   },
   {
     "id": "C0007",
-    "type": "contact",
+    "type": "personne",
     "titre": "Antoine Brochet",
     "description": "Intervenant lors de la troisième session du Parlement de la rivière Isère (28 mars 2026) : « Retrouver les voies(x) de l'eau », programme POPSU (aménagement urbain), animé avec Pierre-Louis Serero (Civipole).",
     "date_debut": "",
@@ -1767,11 +1767,11 @@
     "source_message_id": "",
     "zotero_key": "DHB35KA3",
     "date_modif": "2026-10-11",
-    "source_app": "contacts"
+    "source_app": "personnes"
   },
   {
     "id": "C0008",
-    "type": "contact",
+    "type": "personne",
     "titre": "Radia Benzidan",
     "description": "Intervenante lors de la troisième session du Parlement de la rivière Isère (28 mars 2026) : restitution de travaux de l'École Nationale Supérieure d'Architecture de Grenoble (ENSAG).",
     "date_debut": "",
@@ -1782,11 +1782,11 @@
     "source_message_id": "",
     "zotero_key": "EZE5BXAK",
     "date_modif": "2026-10-11",
-    "source_app": "contacts"
+    "source_app": "personnes"
   },
   {
     "id": "C0009",
-    "type": "contact",
+    "type": "personne",
     "titre": "Régis Moreira",
     "description": "Membre du comité d'organisation du Parlement de la rivière Isère, qui fait le lien entre les commissions et le territoire (note de réflexion gouvernance, mai 2025).\n\nIl a animé l'atelier « Les usages de l'eau » avec les étudiants de la Faculté d'Économie de Grenoble lors de la troisième session du 28 mars 2026.",
     "date_debut": "",
@@ -1797,11 +1797,11 @@
     "source_message_id": "",
     "zotero_key": "PTE56XJQ",
     "date_modif": "2026-10-11",
-    "source_app": "contacts"
+    "source_app": "personnes"
   },
   {
     "id": "C0010",
-    "type": "contact",
+    "type": "personne",
     "titre": "Chantal Diebolt",
     "description": "Membre du comité d'organisation du Parlement de la rivière Isère, qui fait le lien entre les commissions et le territoire (note de réflexion gouvernance, mai 2025).",
     "date_debut": "",
@@ -1812,11 +1812,11 @@
     "source_message_id": "",
     "zotero_key": "SB3DI9XF",
     "date_modif": "2026-10-11",
-    "source_app": "contacts"
+    "source_app": "personnes"
   },
   {
     "id": "C0011",
-    "type": "contact",
+    "type": "personne",
     "titre": "Nicolas Brémond",
     "description": "Membre du comité d'organisation du Parlement de la rivière Isère et référent du comité Sciences. Ingénieur de formation en système énergétique, analysant les risques territoriaux industriels sur un site Seveso (transcription de l'échange STMicroelectronics, juillet 2025).",
     "date_debut": "",
@@ -1827,11 +1827,11 @@
     "source_message_id": "",
     "zotero_key": "VX37H8IK",
     "date_modif": "2026-10-11",
-    "source_app": "contacts"
+    "source_app": "personnes"
   },
   {
     "id": "C0012",
-    "type": "contact",
+    "type": "personne",
     "titre": "Sébastien Triqueneaux",
     "description": "Chercheur à l'Institut Néel / CNRS. Propose à Nicolas Brémond une rencontre de travail (le 27 ou le 29/10 à 18h au bar de l'Orangerie) sur les sujets du Parlement de la rivière Isère.",
     "date_debut": "",
@@ -1842,7 +1842,7 @@
     "source_message_id": "",
     "zotero_key": "M24GUZ7S",
     "date_modif": "2026-10-15",
-    "source_app": "contacts"
+    "source_app": "personnes"
   },
   {
     "id": "P0001",

@@ -16,7 +16,7 @@ selon le contrat FIXE consommé par le front :
   derniers additifs, pour l'agrégateur « Actualités »
 
 itemType document, collection racine du groupe (aucune
-sous-collection : items/top suffit, calque organisations/contacts).
+sous-collection : items/top suffit, calque organisations/personnes).
 
 Spécificité métier : une question est posée par quelqu'un
 (deposant) ; les réponses vivront dans le fil de l'issue GitHub du

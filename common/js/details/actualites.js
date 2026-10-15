@@ -14,7 +14,7 @@
    zotero_key, date_modif, source_app }.
 
    Les fiches AGRÉGÉES (source_app non vide : un média, un
-   contact, un projet…) ne passent PAS par ici : le clic sur
+   personne, un projet…) ne passent PAS par ici : le clic sur
    leur carte ouvre le pop-up de L'APP CIBLE (GrilleDetail.
    openFrom — socle detail.js), qui remplit avec le contrat
    riche de l'app cible.

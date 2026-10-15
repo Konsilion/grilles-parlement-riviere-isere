@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """ajouter_organisation.py — crée une organisation dans la collection Zotero « Organisations ».
 
-Outil de saisie, calque strict de ajouter_contact.py : crée l'item
+Outil de saisie, calque strict de ajouter_personne.py : crée l'item
 SANS jamais toucher à l'API à la main.
 
 L'item (itemType document) est créé dans la collection « Organisations »

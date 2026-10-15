@@ -29,7 +29,7 @@ const GD = window.GrilleDetail;
    (helpers statutOf/statutSlug/formatPeriode). */
 
 /* ---------- Mode intégré (?mode=integre) ----------
-   Calque contacts : aucune iframe prévue aujourd'hui, le mode est
+   Calque personnes : aucune iframe prévue aujourd'hui, le mode est
    hérité pour l'avenir (fond transparent si un jour embarquée). */
 const EMBED_MODE =
   new URLSearchParams(location.search).get("mode") === "integre";
@@ -42,7 +42,7 @@ const state = {
   selectedStatuts: new Set(), // statuts cochés (vide = tous)
   selectedCats: new Set(),     // catégories cochées (vide = toutes)
   sortMode: "recent",          // "recent" (défaut) | "nom" | "fin"
-  pageSize: "9",               // "9" | "18" | "36" | "all" (calque contacts)
+  pageSize: "9",               // "9" | "18" | "36" | "all" (calque personnes)
   currentPage: 0,               // index 0-based
 };
 

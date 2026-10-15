@@ -17,11 +17,11 @@ consommé par le front :
   derniers additifs, pour l'agrégateur « Actualités »
 
 itemType document, collection racine du groupe (aucune
-sous-collection : items/top suffit, calque contacts).
+sous-collection : items/top suffit, calque personnes).
 
 Ordre : tri déterministe par id (le front trie de toute façon ; un ordre
 stable rend la sortie reproductible et les diffs lisibles — même choix
-que fetch_contacts.py). UTF-8, liste JSON plate.
+que fetch_personnes.py). UTF-8, liste JSON plate.
 
 Usage :
   python3 scripts/fetch_projets.py    # écrit projets/data/projets.json

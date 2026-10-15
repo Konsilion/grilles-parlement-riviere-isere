@@ -1,23 +1,23 @@
 /* =========================================================
-   GrilleDetail — définition « contacts »
+   GrilleDetail — définition « personnes »
 
-   Le pop-up de détail d'un contact, consommé par :
-   - l'app Contacts elle-même (clic sur une carte) ;
+   Le pop-up de détail d'une fiche personne, consommé par :
+   - l'app Personnes elle-même (clic sur une carte) ;
    - toute autre app qui l'ouvre à distance (ex. Actualités,
-     lien « Voir le contact ») via GrilleDetail.openFrom().
+     fiche personne) via GrilleDetail.openFrom().
 
-   Contrat de remplissage = le contrat C2 de data/contacts.json :
+   Contrat de remplissage = le contrat C2 de data/personnes.json :
    { id, nom, description, organisation, lieu, date_contact,
      lien, email, telephone, role, categories, date_ajout }.
 
    Styles propres (avatar, tête de modale) : common/css/details/
-   contacts.css, scopés .gd-modal (auto-injecté par l'engine).
+   personnes.css, scopés .gd-modal (auto-injecté par l'engine).
    ========================================================= */
-window.GrilleDetail && window.GrilleDetail.register("contacts", {
-  css: "css/details/contacts.css",
+window.GrilleDetail && window.GrilleDetail.register("personnes", {
+  css: "css/details/personnes.css",
 
   html: `
-    <div class="modal" data-gd-root="contacts" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal" data-gd-root="personnes" aria-hidden="true" role="dialog" aria-modal="true">
       <div class="modal-backdrop" data-close></div>
       <div class="modal-content" role="document">
         <button class="modal-close" type="button" data-close aria-label="Fermer">×</button>
@@ -43,7 +43,7 @@ window.GrilleDetail && window.GrilleDetail.register("contacts", {
 
   helpers: {
     // Initiales de l'avatar (2 max) — même règle que les cartes
-    // de l'app Contacts ; exposée pour un futur usage distant.
+    // de l'app Personnes ; exposée pour un futur usage distant.
     initialsOf(nom) {
       const parts = String(nom || "").trim().split(/\s+/).filter(Boolean);
       if (!parts.length) return "?";
@@ -70,11 +70,11 @@ window.GrilleDetail && window.GrilleDetail.register("contacts", {
       org.style.display = "none";
     }
 
-    // Ligne meta : rôle · lieu · « Contact : … » · « Ajouté le … »
+    // Ligne meta : rôle · lieu · « Rencontrée le : … » · « Ajouté le … »
     const segs = [];
     if (item.role) segs.push(item.role);
     if (item.lieu) segs.push(item.lieu);
-    if (item.date_contact) segs.push("Contact : " + formatDate(item.date_contact));
+    if (item.date_contact) segs.push("Rencontrée le : " + formatDate(item.date_contact));
     if (item.date_ajout) segs.push("Ajouté le " + formatDate(item.date_ajout));
     q("meta").textContent = segs.join(" · ");
 

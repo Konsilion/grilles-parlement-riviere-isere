@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""ajouter_contact.py — crée un contact dans la collection Zotero « Contacts ».
+"""ajouter_personne.py — crée une fiche personne dans la collection Zotero « Contacts ».
 
-Outil de saisie pour le CEO (carte C2) : le dossier personnes est SA matière
+Outil de saisie pour le CEO (carte C2) : le répertoire Personnes est SA matière
 — cet outil permet de créer l'item SANS jamais toucher à l'API à la main.
 
 L'item (itemType document) est créé dans la collection « Contacts »
@@ -18,7 +18,7 @@ La clé API (écriture, coffre ~/sys_admin/secrets/client/zotero.key) n'est JAMA
 affichée ni loguée. stdlib uniquement.
 
 Usage (depuis la racine du repo) :
-  python3 scripts/ajouter_contact.py --nom "Marie Dupont" [options]
+  python3 scripts/ajouter_personne.py --nom "Marie Dupont" [options]
 """
 
 import argparse
@@ -40,18 +40,18 @@ CITATION_RE = re.compile(r"^C(\d{4,})$")   # C0001, C0012, … (tolère > 9999)
 
 def build_parser():
     p = argparse.ArgumentParser(
-        prog="ajouter_contact.py",
+        prog="ajouter_personne.py",
         description=(
-            "Ajoute un contact au répertoire public (collection Zotero "
-            "« Contacts »). Le contact est visible sur la grille après le "
+            "Ajoute une fiche personne au répertoire public (collection Zotero "
+            "« Contacts »). La fiche est visible sur la grille après le "
             "prochain fetch (deploy.sh ou tir horaire)."
         ),
         epilog=(
             "Exemples :\n"
-            '  python3 scripts/ajouter_contact.py --nom "Marie Dupont" '
+            '  python3 scripts/ajouter_personne.py --nom "Marie Dupont" '
             '--organisation "Conseil départemental" --lieu "Grenoble" '
             "--email marie@example.fr --role Élue --categorie institution\n"
-            '  python3 scripts/ajouter_contact.py --nom "Paul Martin" '
+            '  python3 scripts/ajouter_personne.py --nom "Paul Martin" '
             "--date-contact 2026-10-11 --categorie presse --categorie eau"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -186,7 +186,7 @@ def main():
         )
     item_key = successful[citation_key]
 
-    print(f"CONTACT {citation_key} -> {args.nom.strip()}"
+    print(f"PERSONNE {citation_key} -> {args.nom.strip()}"
           f"  (item Zotero {item_key})")
 
     # vérification : re-fetch de la collection

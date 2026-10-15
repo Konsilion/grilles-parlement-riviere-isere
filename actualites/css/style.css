@@ -336,13 +336,13 @@ body.modal-open { overflow: hidden; }
   color: #8a6116; /* jaune Outlook */
 }
 /* ============== Vignettes des 6 types agrégés (lot 3) ==============
-   Fiches des autres apps : contact, projet, organisation, lieu,
+   Fiches des autres apps : personne, projet, organisation, lieu,
    question, idee. Calque strict des 4 règles ci-dessus — palette
    CLAIRE UNIQUE (fonds très clairs, texte foncé lisible), 6 teintes
    distinctes entre elles ET des 4 natives (bleu, vert, teal, jaune)
    et du rouge « Passé(e) ». Pas de prefers-color-scheme, pas de
    dark mode ; common/css/base.css intouchable. */
-.card-type.type-contact {
+.card-type.type-personne {
   background: #ece9f7;
   border-color: #d0c9ec;
   color: #4b3a9e; /* violet */
@@ -458,7 +458,7 @@ body.modal-open { overflow: hidden; }
 .c-type-dot.type-information { background: #8a6116; }
 /* Lot 4 : vignettes des 6 types agrégés — mêmes couleurs que les
    badges .card-type.type-* du lot 3 (une seule palette par type). */
-.c-type-dot.type-contact       { background: #4b3a9e; }
+.c-type-dot.type-personne      { background: #4b3a9e; }
 .c-type-dot.type-projet        { background: #a3541a; }
 .c-type-dot.type-organisation  { background: #a63a63; }
 .c-type-dot.type-lieu          { background: #7a4a24; }

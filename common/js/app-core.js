@@ -1,7 +1,7 @@
 /* =========================================================
    Grilles de carte — socle applicatif commun (window.GrilleApp)
 
-   Extrait des parties communes de contacts/js/app.js et
+   Extrait des parties communes de personnes/js/app.js et
    projets/js/app.js (audit 11/10/26 : ~177 lignes JS dupliquées
    — modale + grille + compteur + écouteurs, convention CEO
    « 5e grille : extraire le socle AVANT de bâtir »).
@@ -241,7 +241,7 @@ window.GrilleApp = (() => {
   // des menus .dd-menu susceptibles d'être ouverts — Échap ne
   // ferme la modale que si AUCUN n'est ouvert (le dropdown
   // ferme son menu en premier et rend le focus au bouton,
-  // comportement calque médiathèque/contacts).
+  // comportement calque médiathèque/personnes).
   function attachModalClose(modalEl, openMenus) {
     if (!modalEl) return;
     modalEl.querySelectorAll("[data-close]").forEach((el) => {

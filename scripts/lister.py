@@ -21,7 +21,7 @@ TYPE_LABELS = {
     "information": "Information",
     # Lot 5 — 6 nouvelles formes (fiches des 8 autres apps affichées
     # par la grille Actualités) : libellés des grilles sources.
-    "contact": "Contact",
+    "personne": "Personne",
     "projet": "Projet",
     "organisation": "Organisation",
     "lieu": "Lieu",

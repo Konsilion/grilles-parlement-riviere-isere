@@ -22,7 +22,7 @@ Comportement :
                         media_publie -> report
                         outil_publie  -> document
                         information   -> document
-                        contact/projet/organisation/lieu/
+                        personne/projet/organisation/lieu/
                         question/idee -> document (lot 5, bi-collection)
     Alias legacy ACCEPTÉS en entrée et NORMALISÉS avant écriture
     (l'item Zotero porte TOUJOURS le type nouveau dans « Type: ») :
@@ -31,7 +31,7 @@ Comportement :
         information_parlement              -> information
     (« evenement_passe » n'existe plus : c'est les dates qui font foi
     pour le caractère passé.)
-    Lot 5 — les 6 nouvelles formes (contact, projet, organisation,
+    Lot 5 — les 6 nouvelles formes (personne, projet, organisation,
     lieu, question, idee) sont BI-COLLECTION (Actualités + collection
     de l'app source : calque du précédent media_publie → Médiathèque,
     outil_publie → Outilthèque) et SANS date obligatoire (projet :
@@ -94,7 +94,7 @@ TYPE_TO_ITEMTYPE = {
     "information": "document",
     # Lot 5 — 6 nouvelles formes (calque des constructeurs des apps
     # sources, itemType document)
-    "contact": "document",
+    "personne": "document",
     "projet": "document",
     "organisation": "document",
     "lieu": "document",
@@ -108,7 +108,7 @@ TYPE_TO_ITEMTYPE = {
 BICOLLECTION_KEYS = {
     "media_publie": MEDIATHEQUE_COLLECTION_KEY,
     "outil_publie": OUTILTHEQUE_COLLECTION_KEY,
-    "contact": CONTACTS_COLLECTION_KEY,
+    "personne": CONTACTS_COLLECTION_KEY,
     "projet": PROJETS_COLLECTION_KEY,
     "organisation": ORGANISATIONS_COLLECTION_KEY,
     "lieu": LIEUX_COLLECTION_KEY,
@@ -119,7 +119,7 @@ BICOLLECTION_KEYS = {
 # Types du lot 5 : formes des autres apps, SANS contrainte de date
 # (le pipeline mail ne les remplit pas forcément ; projet porte ses
 # dates en OPTION B si fournies, calque check_projets).
-LOT5_TYPES = {"contact", "projet", "organisation", "lieu", "question", "idee"}
+LOT5_TYPES = {"personne", "projet", "organisation", "lieu", "question", "idee"}
 
 # Alias legacy : anciens types des actualités, ACCEPTÉS en entrée
 # (propositions en vol, issues GitHub déjà ouvertes) et NORMALISÉS vers
@@ -232,7 +232,7 @@ def build_item(prop, new_id, collection_key):
     formulaires médiathèque/outilthèque (auteur·e·s, catégorie) : rien
     n'est inventé, l'item garde les champs actualités du mail.
 
-    Lot 5 — 6 nouvelles formes (contact, projet, organisation, lieu,
+    Lot 5 — 6 nouvelles formes (personne, projet, organisation, lieu,
     question, idee), calque EXACT du précédent : membre des DEUX
     collections (Actualités + collection de T via BICOLLECTION_KEYS).
     AUCUNE contrainte de date pour ces formes (le pipeline mail ne les
@@ -275,7 +275,7 @@ def build_item(prop, new_id, collection_key):
             item["date"] = d1
         return item
 
-    # --- lot 5 : formes sans date (contact, organisation, lieu,
+    # --- lot 5 : formes sans date (personne, organisation, lieu,
     #     question, idee) : AUCUNE contrainte de date — l'item est
     #     posé sans champ date si le mail n'en fournit pas ---
     if typ in LOT5_TYPES:

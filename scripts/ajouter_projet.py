@@ -3,7 +3,7 @@
 """ajouter_projet.py — crée un projet dans la collection Zotero « Projets ».
 
 Outil de saisie pour le CEO (carte P1) : crée l'item SANS jamais toucher à
-l'API à la main (calque ajouter_contact.py).
+l'API à la main (calque ajouter_personne.py).
 
 L'item (itemType document) est créé dans la collection « Projets »
 (RPZFWI9M, racine du groupe 6610185) :

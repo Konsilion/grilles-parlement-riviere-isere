@@ -2,7 +2,7 @@
    Grilles de carte — socle commun du parcours de contribution
    (esprit Datami). Calque du bloc contribution de la médiathèque
    (11/10/26), mutualisé pour les apps qui n'ont pas de code
-   contribution dédié : actualites, contacts, projets.
+   contribution dédié : actualites, personnes, projets.
 
    Mécanique identique à la médiathèque :
    - bouton #propose-btn → modale #contribute-modal ;

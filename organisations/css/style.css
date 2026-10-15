@@ -1,6 +1,6 @@
 /* =========================================================
    Organisations — Parlement de la rivière Isère : styles propres
-   Calque contacts/css/style.css SANS les styles d'avatar.
+   Calque personnes/css/style.css SANS les styles d'avatar.
    Le socle commun (../common/css/base.css) porte : tokens,
    thème clair unique, .layout, .header-controls,
    .page-size-label, .search-input, .dropdown/.dd-*, .pagination/
@@ -22,7 +22,7 @@
 .content { flex: 1; }
 
 /* ============== Entête (compteur, puis barre unique) ============== */
-/* Calque contacts/actualités : compteur seul sur sa ligne, en
+/* Calque personnes/actualités : compteur seul sur sa ligne, en
    dessous la barre .toolbar ; en écran étroit chaque groupe
    repasse à la ligne, aligné à GAUCHE. */
 .content-header {
@@ -81,7 +81,7 @@
   border-color: var(--accent);
 }
 
-/* ============== Grille (3 colonnes, calque contacts) ============== */
+/* ============== Grille (3 colonnes, calque personnes) ============== */
 .grid {
   grid-template-columns: repeat(3, 1fr);
 }
@@ -129,7 +129,7 @@
 
 
 /* ============== Mode intégré (?mode=integre) =============
-   Calque contacts : aucune iframe prévue aujourd'hui, le mode
+   Calque personnes : aucune iframe prévue aujourd'hui, le mode
    est hérité pour l'avenir — l'app adaptée sans bandeau (fond
    transparent : la page hôte fournit le sien ; l'hôte impose le
    thème clair, seul un fond opaque créerait une bande blanche). */

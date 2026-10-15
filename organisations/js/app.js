@@ -25,7 +25,7 @@ const GS = window.GrilleSearch;
 const { makeDropdown } = window.GrilleDropdown;
 
 /* ---------- Mode intégré (?mode=integre) ----------
-   Calque contacts : aucune iframe prévue aujourd'hui, le mode est
+   Calque personnes : aucune iframe prévue aujourd'hui, le mode est
    hérité pour l'avenir (fond transparent si un jour embarquée). */
 const EMBED_MODE =
   new URLSearchParams(location.search).get("mode") === "integre";
@@ -178,7 +178,7 @@ function onFilterChange(dd) {
 }
 
 /* ---------- Contribution (esprit Datami) ----------
-   Calque contacts, socle commun common/js/contribution.js :
+   Calque personnes, socle commun common/js/contribution.js :
    envoi silencieux au relais VPS → issue GitHub étiquetée
    « contribution » ; repli manuel si le relais échoue. Les champs
    suivent le mapping fetch_organisations.py / ajouter_organisation.py

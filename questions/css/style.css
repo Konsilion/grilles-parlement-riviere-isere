@@ -24,7 +24,7 @@
 .content { flex: 1; }
 
 /* ============== Entête (compteur, puis barre unique) ============== */
-/* Calque organisations/contacts : compteur seul sur sa ligne, en
+/* Calque organisations/personnes : compteur seul sur sa ligne, en
    dessous la barre .toolbar ; en écran étroit chaque groupe
    repasse à la ligne, aligné à GAUCHE. */
 .content-header {

@@ -42,7 +42,7 @@ window.GrilleDom = (() => {
 
      - attachCardClick(grid, { cardSelector, findItem, open })
          grid         : conteneur des cartes (els.grid)
-         cardSelector : sélecteur des cartes, ex. ".contact-card",
+         cardSelector : sélecteur des cartes, ex. ".personne-card",
                         ".projet-card", ".card"…
          findItem(card) → l'objet fiche associé (ou null : le clic
                         est ignoré) ; typiquement par data-id ou

@@ -77,7 +77,7 @@
   border-color: var(--accent);
 }
 
-/* ============== Grille (3 colonnes, calque actualités/contacts) ============== */
+/* ============== Grille (3 colonnes, calque actualités/personnes) ============== */
 .grid {
   grid-template-columns: repeat(3, 1fr);
 }

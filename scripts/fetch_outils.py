@@ -20,7 +20,7 @@ sous-collection : items/top suffit, calque organisations).
 
 Ordre : tri déterministe par id (le front trie de toute façon ; un ordre
 stable rend la sortie reproductible et les diffs lisibles — même choix
-que fetch_contacts.py/fetch_projets.py/fetch_organisations.py).
+que fetch_personnes.py/fetch_projets.py/fetch_organisations.py).
 UTF-8, liste JSON plate.
 
 Usage :

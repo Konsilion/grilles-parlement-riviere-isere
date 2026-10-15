@@ -21,7 +21,7 @@ d'issue) :
     mediatheque  titre, auteur·e·s, type (liste fermée), année, lien,
                  résumé → collection « Médiathèque » (MCKNJI9M) ;
     actualites   titre, type fermé (evenement|media_publie|outil_publie|
-                 information|contact|projet|organisation|lieu|question|
+                 information|personne|projet|organisation|lieu|question|
                  idee — lot 5 : 10 types ; les 4 anciens types restent
                  acceptés comme alias legacy, normalisés avant écriture),
                  date_debut, date_fin, lieu, lien, description →
@@ -29,8 +29,8 @@ d'issue) :
                  fetch_actualites.py ; les 6 formes des autres apps sont
                  BI-COLLECTION (Actualités + collection de l'app source,
                  calque des constructeurs APPS, citationKey A000N) ;
-    contacts     nom, organisation, lieu, email, telephone, role,
-                 description, url → « Contacts » (JI7JP8AZ) — mapping
+    personnes    nom, organisation, lieu, email, telephone, role,
+                 description, url → collection « Contacts » (JI7JP8AZ) — mapping
                  C2 (extra Email:/Telephone:/Role:, citationKey C000N) ;
     projets      titre, porteur, lieu, dates facultatives (sans date →
                  « En construction » côté front), description (requise),
@@ -188,14 +188,14 @@ TYPE_TO_ITEMTYPE = {
 # Types fermés de la modale Actualités (contrat fetch_actualites.py /
 # valider.py — extra « Type: », CEO 12/10/26). Lot 5 : la modale propose
 # désormais 10 types — les 4 historiques + les 6 formes des autres apps
-# (contact, projet, organisation, lieu, question, idee), toutes
+# (personne, projet, organisation, lieu, question, idee), toutes
 # itemType « document » (calque des constructeurs des apps sources).
 ACTUALITES_TYPES = {
     "evenement": "presentation",
     "media_publie": "report",
     "outil_publie": "document",
     "information": "document",
-    "contact": "document",
+    "personne": "document",
     "projet": "document",
     "organisation": "document",
     "lieu": "document",
@@ -239,7 +239,7 @@ def _s(v):
 def next_citation_key(items, prefix):
     """Prochain C000N/P000N : max des citationKeys de la collection + 1.
 
-    (C0001 si vide — calque ajouter_contact.py/ajouter_projet.py.)
+    (C0001 si vide — calque ajouter_personne.py/ajouter_projet.py.)
     """
     nums = []
     for it in items:
@@ -320,7 +320,7 @@ def build_item_actualites(prop, collection_key, items):
       des DEUX collections (Actualités + Outilthèque).
 
     Lot 5 — 6 nouvelles formes (CEO 12/10/26, calque EXACT du
-    précédent media_publie/outil_publie) : contact, projet,
+    précédent media_publie/outil_publie) : personne, projet,
     organisation, lieu, question, idee. Chaque forme est le CALQUE du
     constructeur de son app source (mêmes champs, mêmes libellés extra
     anglais) avec DEUX différences : les collections (Actualités +
@@ -378,8 +378,8 @@ def build_item_actualites(prop, collection_key, items):
             "dateModified": f"{today}T00:00:00Z",
         }
 
-    # --- Forme contact (calque build_item_contacts + bi-collection) ---
-    if typ == "contact":
+    # --- Forme personne (calque build_item_personnes + bi-collection) ---
+    if typ == "personne":
         extra_lines = [f"Type: {typ}"]
         if prop.get("email"):
             extra_lines.append(f"Email: {prop['email']}")
@@ -533,8 +533,8 @@ def build_item_actualites(prop, collection_key, items):
     }
 
 
-def build_item_contacts(prop, collection_key, items):
-    """proposition contact → item Zotero (mapping C2, calque ajouter_contact.py).
+def build_item_personnes(prop, collection_key, items):
+    """proposition personne → item Zotero (mapping C2, calque ajouter_personne.py).
 
     title=nom, abstractNote=description, publisher=organisation, place=lieu,
     url=lien, extra=lignes « Email: »/« Telephone: »/« Role: » (seulement les
@@ -548,7 +548,7 @@ def build_item_contacts(prop, collection_key, items):
         extra_lines.append(f"Telephone: {prop['telephone']}")
     if prop["role"]:
         extra_lines.append(f"Role: {prop['role']}")
-    extra_lines.append("Source: contribution contacts (issue GitHub)")
+    extra_lines.append("Source: contribution personnes (issue GitHub)")
     today = datetime.date.today().isoformat()
     item = {
         "itemType": "document",
@@ -749,7 +749,7 @@ def clean_actualites(data):
         v = str(data.get(k) or "").strip()
         return v or None
     # Contrat 3 formes + lot 5 (6 nouvelles formes) : les champs des
-    # formes média/outil/contact/projet/organisation/lieu/question/idee
+    # formes média/outil/personne/projet/organisation/lieu/question/idee
     # sont conservés (nettoyés, absents → None) et vivront côté build ;
     # les champs de la forme actualités restent inchangés
     # (rétrocompatibilité issues legacy et pipeline mail valider.py).
@@ -762,7 +762,7 @@ def clean_actualites(data):
         "url": s("url"), "abstract": s("abstract"),
         # forme outil (calque outilthèque)
         "nom": s("nom"), "categorie": s("categorie"),
-        # forme contact (calque contacts)
+        # forme personne (calque personnes)
         "organisation": s("organisation"), "email": s("email"),
         "telephone": s("telephone"), "role": s("role"),
         # forme projet (calque projets)
@@ -776,7 +776,7 @@ def clean_actualites(data):
     }
 
 
-def clean_contacts(data):
+def clean_personnes(data):
     def s(k):
         v = str(data.get(k) or "").strip()
         return v or None
@@ -862,7 +862,7 @@ APPS = {
             ("année", "year"), ("lien", "url"), ("résumé", "abstract"),
         ),
         "phrase": "Le document",
-        "pronom": "Il",
+        "pronom": "Elle",
         "publie": "la médiathèque",
     },
     "actualites": {
@@ -875,7 +875,7 @@ APPS = {
         "required_fn": lambda prop: (
             ("titre", "type", "doc_type", "url") if normalize_actualites_type(prop.get("type") or "") == "media_publie"
             else ("nom", "type") if normalize_actualites_type(prop.get("type") or "") == "outil_publie"
-            else ("nom", "type") if normalize_actualites_type(prop.get("type") or "") == "contact"
+            else ("nom", "type") if normalize_actualites_type(prop.get("type") or "") == "personne"
             else ("titre", "type", "description") if normalize_actualites_type(prop.get("type") or "") == "projet"
             else ("nom", "type") if normalize_actualites_type(prop.get("type") or "") == "organisation"
             else ("nom", "type") if normalize_actualites_type(prop.get("type") or "") == "lieu"
@@ -898,7 +898,7 @@ APPS = {
             else [("titre", "nom"), ("type", "type"), ("organisation", "organisation"),
                   ("lieu", "lieu"), ("e-mail", "email"), ("téléphone", "telephone"),
                   ("rôle", "role"), ("description", "description"), ("lien", "url")]
-            if normalize_actualites_type(prop.get("type") or "") == "contact"
+            if normalize_actualites_type(prop.get("type") or "") == "personne"
             else [("titre", "titre"), ("type", "type"), ("porteur", "porteur"),
                   ("lieu", "lieu"), ("dates", "dates"), ("statut", "statut"),
                   ("description", "description"), ("lien", "url")]
@@ -924,20 +924,20 @@ APPS = {
         "pronom": "Elle",
         "publie": "la grille Actualités (et la médiathèque pour les médias, l'outilthèque pour les outils)",
     },
-    "contacts": {
+    "personnes": {
         "collection": ("Contacts", "JI7JP8AZ"),
-        "clean": clean_contacts,
+        "clean": clean_personnes,
         "required": ("nom",),
-        "checks": ("check_contacts",),
-        "build": build_item_contacts,
+        "checks": ("check_personnes",),
+        "build": build_item_personnes,
         "list_fields": (
             ("nom", "nom"), ("organisation", "organisation"),
             ("lieu", "lieu"), ("e-mail", "email"), ("téléphone", "telephone"),
             ("rôle", "role"), ("description", "description"), ("lien", "url"),
         ),
-        "phrase": "Le contact",
-        "pronom": "Il",
-        "publie": "le répertoire Contacts",
+        "phrase": "La personne",
+        "pronom": "Elle",
+        "publie": "le répertoire Personnes",
     },
     "projets": {
         "collection": ("Projets", "RPZFWI9M"),
@@ -1046,7 +1046,7 @@ def check_actualites(prop):
     - media_publie : doc_type fermé médiathèque + année 4 chiffres +
       url http/s ;
     - outil_publie : nom ≥ 3 + url http/s facultative ;
-    - contact : calque check_contacts (email/téléphone/url si fournis) ;
+    - personne : calque check_personnes (email/téléphone/url si fournis) ;
     - projet : calque check_projets (dates facultatives AAAA-MM-JJ,
       fin ≥ début, statut fermé, url http/s) ;
     - organisation : calque check_organisations (email/téléphone/url) ;
@@ -1077,8 +1077,8 @@ def check_actualites(prop):
 
     # --- lot 5 : calques des checks des apps sources (champs tous
     #     facultatifs — la modération reste permissive) ---
-    if typ == "contact":
-        return check_contacts(prop)
+    if typ == "personne":
+        return check_personnes(prop)
 
     if typ == "projet":
         return check_projets(prop)
@@ -1107,7 +1107,7 @@ def check_actualites(prop):
     return None
 
 
-def check_contacts(prop):
+def check_personnes(prop):
     """Email/téléphone simples, aucun champ obligation hors nom. Retourne motif ou None."""
     if prop["email"] and not re.match(r"^[^\s@]+@[^\s@]+\.[^\s@]+$", prop["email"]):
         return f"e-mail invalide « {prop['email']} »"
@@ -1138,7 +1138,7 @@ def check_projets(prop):
 def check_organisations(prop):
     """Email/téléphone simples + url http/s. Retourne motif ou None.
 
-    Calque check_contacts (mêmes règles) : email regex, téléphone
+    Calque check_personnes (mêmes règles) : email regex, téléphone
     ≥ 6 chiffres, url http/s — aucun champ obligatoire hors nom.
     """
     if prop["email"] and not re.match(r"^[^\s@]+@[^\s@]+\.[^\s@]+$", prop["email"]):
@@ -1181,7 +1181,7 @@ def check_idees(prop):
 CHECKS = {
     "check_mediatheque": check_mediatheque,
     "check_actualites": check_actualites,
-    "check_contacts": check_contacts,
+    "check_personnes": check_personnes,
     "check_projets": check_projets,
     "check_organisations": check_organisations,
     "check_outiltheque": check_outiltheque,

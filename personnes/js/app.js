@@ -1,6 +1,6 @@
 /* =========================================================
-   Contacts — Parlement de la rivière Isère (C3)
-   Répertoire public de cartes contact. Lit data/contacts.json
+   Personnes — Parlement de la rivière Isère (C3, ex-Contacts)
+   Répertoire public de fiches personne. Lit data/personnes.json
    (contrat C2 : id, nom, description, organisation, lieu,
    date_contact, lien, email, telephone, role, categories,
    date_ajout — le fichier commis est une FIXTURE de dev,
@@ -11,7 +11,7 @@
    ========================================================= */
 "use strict";
 
-const DATA_URL = "data/contacts.json";
+const DATA_URL = "data/personnes.json";
 
 const { esc } = window.GrilleDom;
 const GS = window.GrilleSearch;
@@ -32,7 +32,7 @@ const state = {
   items: [],
   searchText: "",
   selectedCats: new Set(), // catégories cochées (vide = toutes)
-  sortMode: "nom", // "nom" (A-Z, défaut) | "recent" (contact le plus récent)
+  sortMode: "nom", // "nom" (A-Z, défaut) | "recent" (personne la plus récemment rencontrée)
   pageSize: "9", // "9" | "18" | "36" | "all" (calque actualités)
   currentPage: 0, // index 0-based
 };
@@ -90,7 +90,7 @@ function sortItems(items) {
     a.nom.localeCompare(b.nom, "fr", { sensitivity: "base" }) ||
     a.id.localeCompare(b.id);
   if (state.sortMode === "recent") {
-    // Contact le plus récent d'abord (date_contact desc ; sans date
+    // Personne la plus récente d'abord (date_contact desc ; sans date
     // → fin de liste, départagée par date_ajout desc puis nom).
     const ts = (c) => (c.date_contact ? window.GrilleDom.parseISO(c.date_contact)?.getTime() || 0 : 0);
     return items.slice().sort((a, b) => {
@@ -140,7 +140,7 @@ function renderCard(item) {
   const metaSegs = [item.lieu, item.role].filter(Boolean);
 
   return `
-    <article class="card contact-card" data-id="${esc(item.id)}" tabindex="0" role="button" aria-label="Voir le détail de ${esc(item.nom)}">
+    <article class="card personne-card" data-id="${esc(item.id)}" tabindex="0" role="button" aria-label="Voir le détail de ${esc(item.nom)}">
       <div class="card-head">
         <span class="avatar" aria-hidden="true">${esc(initialsOf(item.nom))}</span>
         <div class="card-id-block">
@@ -173,8 +173,8 @@ function renderGrid() {
     p.className = "empty";
     p.textContent =
       state.searchText.trim() || state.selectedCats.size
-        ? "Aucun contact ne correspond à ces filtres."
-        : "Aucun contact pour le moment.";
+        ? "Aucune personne ne correspond à ces filtres."
+        : "Aucune personne pour le moment.";
     els.grid.appendChild(p);
     updateCount(0);
     return;
@@ -186,7 +186,7 @@ function renderGrid() {
   // mécanique mutualisée dans dom.js. La carte passe en triggerEl —
   // en mode intégré (?mode=integre), le pop-up s'ancre sur elle.
   window.GrilleDom.attachCardClick(els.grid, {
-    cardSelector: ".contact-card",
+    cardSelector: ".personne-card",
     findItem: (card) => state.items.find((i) => i.id === card.dataset.id) || null,
     open: (item, card) => openModal(item, card),
   });
@@ -195,18 +195,18 @@ function renderGrid() {
 
 function updateCount(n) {
   if (!els.count) return;
-  els.count.textContent = n === 0 ? "aucun contact" : `${n} contact${n > 1 ? "s" : ""}`;
+  els.count.textContent = n === 0 ? "aucune personne" : `${n} personne${n > 1 ? "s" : ""}`;
 }
 
-/* ---------- Modale détail (définition « contacts » du socle GrilleDetail,
-   common/js/details/contacts.js — aucune duplication : le conteneur et
+/* ---------- Modale détail (définition « personnes » du socle GrilleDetail,
+   common/js/details/personnes.js — aucune duplication : le conteneur et
    les blocs structurels viennent du socle commun modal.css, l'avatar
-   et la tête de modale de common/css/details/contacts.css). ---------- */
+   et la tête de modale de common/css/details/personnes.css). ---------- */
 const GD = window.GrilleDetail;
 
 /* ---------- Modale détail : consommation du socle GrilleDetail ---------- */
 function openModal(item, triggerEl) {
-  GD.open("contacts", item, { triggerEl });
+  GD.open("personnes", item, { triggerEl });
 }
 
 /* ---------- Menu Catégories (dropdown commun) ---------- */
@@ -234,9 +234,9 @@ async function load() {
     const data = await resp.json();
     raw = Array.isArray(data) ? data : data.items || [];
   } catch (err) {
-    console.error("Erreur de chargement des contacts :", err);
+    console.error("Erreur de chargement des personnes :", err);
     if (els.grid) {
-      els.grid.innerHTML = `<p class="empty">Impossible de charger les contacts.</p>`;
+      els.grid.innerHTML = `<p class="empty">Impossible de charger les personnes.</p>`;
     }
     return;
   }
@@ -284,7 +284,7 @@ function attachListeners() {
    Calque médiathèque, socle commun common/js/contribution.js :
    envoi silencieux au relais VPS → issue GitHub étiquetée
    « contribution » ; repli manuel si le relais échoue. Les champs
-   suivent le mapping C2 de scripts/fetch_contacts.py /
+   suivent le mapping C2 de scripts/fetch_personnes.py /
    valider_contribution.py (labels extra ANGLAIS sans accents :
    Email:/Telephone:/Role:). */
 (function initContribution() {
@@ -303,7 +303,7 @@ function attachListeners() {
   };
 
   function closeDetailModal() {
-    if (GD.isOpen("contacts")) GD.close("contacts");
+    if (GD.isOpen("personnes")) GD.close("personnes");
   }
 
   function validate() {
@@ -312,7 +312,7 @@ function attachListeners() {
     const email = f.email().value.trim();
 
     if (!nom) {
-      GC.setFieldError(f.nom(), "Le nom est nécessaire pour que l'équipe vérifie le contact.");
+      GC.setFieldError(f.nom(), "Le nom est nécessaire pour que l'équipe vérifie la personne.");
       ok = false;
     } else if (nom.length < 3) {
       GC.setFieldError(f.nom(), "Le nom paraît trop court — prénom et nom suffisent.");
@@ -347,7 +347,7 @@ function attachListeners() {
   }
 
   GC.init({
-    app: "contacts",
+    app: "personnes",
     firstFieldId: "c-nom",
     onOpen: closeDetailModal,
     titleOf: (d) => d.nom,
@@ -374,14 +374,14 @@ function attachListeners() {
       ["Lien", d.url || "—"],
     ],
     issueTexts: {
-      heading: "Proposition de contact",
+      heading: "Proposition de personne",
       intro:
-        "Un·e visiteur du répertoire Contacts propose d'ajouter ce contact. " +
+        "Un·e visiteur du répertoire Personnes propose d'ajouter cette personne. " +
         "⚠ Coordonnées personnelles : vérifier le consentement avant validation.",
       closing:
         "La validation crée l'item Zotero (collection « Contacts », mapping C2 : " +
         "extra Email:/Telephone:/Role:, citationKey C000N), ferme cette issue et le prochain " +
-        "`deploy.sh` publie le contact.",
+        "`deploy.sh` publie la fiche personne.",
     },
   });
 })();

@@ -108,7 +108,7 @@
 }
 
 /* ---------- Liste de coordonnées (label + lien) ----------
-   Partagée par les modales contacts/organisations/outilthèque/
+   Partagée par les modales personnes/organisations/outilthèque/
    lieux/questions/idées — modal-coords n'existe que dans les
    modales, pas de scopage nécessaire. */
 .modal-coords {

@@ -54,8 +54,11 @@ TYPE_MAP = {
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--titre", required=True)
-    ap.add_argument("--type", required=True, help="libellé du pending (Article de presse, …)")
+    # --titre/--type requis SEULEMENT sans --numero : avec --numero, tout est
+    # pré-rempli depuis le pending (voie du flux Tri Mail — le cron n'en met
+    # pas d'autres). Le contrôle réel se fait après lecture du pending.
+    ap.add_argument("--titre")
+    ap.add_argument("--type", help="libellé du pending (Article de presse, …)")
     ap.add_argument("--url")
     ap.add_argument("--date")
     ap.add_argument("--resume")
@@ -82,7 +85,9 @@ def main():
             args.auteur = p.get("auteurs") or []
         if not args.tag:
             args.tag = p.get("tags") or []
-
+    if not args.titre or not args.type:
+        print("ERREUR: --titre et --type requis (ou --numero qui les pré-remplit)")
+        sys.exit(1)
     item_type = TYPE_MAP.get(args.type)
     if not item_type:
         print(f"ERREUR: type inconnu « {args.type} » — mappings: {list(TYPE_MAP)}"); sys.exit(1)

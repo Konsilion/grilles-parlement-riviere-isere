@@ -54,5 +54,47 @@
     "date_ajout": "2026-10-14",
     "zotero_key": "8T53U32W",
     "date_modif": "2026-10-14"
+  },
+  {
+    "id": "I0005",
+    "titre": "Créer une association support logistique du Parlement",
+    "description": "Pierre Louis Serero propose la création d'une association dont l'objet serait le support logistique du Parlement : financement, gestion du site internet, accueil de stages, embauche de salarié·e·s, conventions de partenariat avec institutions, associations, fondations, demande de local (par exemple la MNE).",
+    "lien": "",
+    "auteur": "Pierre Louis Serero (Civipole)",
+    "categories": [
+      "association support",
+      "logistique"
+    ],
+    "date_ajout": "2026-10-15",
+    "zotero_key": "HWCT4P2T",
+    "date_modif": "2026-10-15"
+  },
+  {
+    "id": "I0006",
+    "titre": "Réunir les Gardien·ne·s de la rivière et agir dans les autres départements du bassin versant",
+    "description": "Pierre Louis Serero propose de réunir les Gardien·ne·s de la rivière et de mener des actions dans les autres départements du bassin versant, à partir des contacts établis et des organisations qui ont rejoint le Parlement.",
+    "lien": "",
+    "auteur": "Pierre Louis Serero (Civipole)",
+    "categories": [
+      "bassin versant",
+      "gardiens"
+    ],
+    "date_ajout": "2026-10-15",
+    "zotero_key": "QZRGDQ3N",
+    "date_modif": "2026-10-15"
+  },
+  {
+    "id": "I0007",
+    "titre": "Mettre sur le site du Parlement un lien vers NaturaMundis et les associations membres",
+    "description": "Suite à la demande de Delphine Astier (NaturaMundis) d'un lien depuis le site web du Parlement, Philippe Dubois estime que ce serait légitime — et idem pour les autres associations et organismes qui se retrouvent dans le Parlement.",
+    "lien": "http://www.naturamundis.org",
+    "auteur": "Philippe Dubois (FNE38), à la suite de Delphine Astier (NaturaMundis)",
+    "categories": [
+      "associations",
+      "site internet"
+    ],
+    "date_ajout": "2026-10-15",
+    "zotero_key": "S7S37S7H",
+    "date_modif": "2026-10-15"
   }
 ]

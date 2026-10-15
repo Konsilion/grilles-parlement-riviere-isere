@@ -62,5 +62,18 @@
     "date_ajout": "2026-10-12",
     "zotero_key": "SRP83K5W",
     "date_modif": "2026-10-12"
+  },
+  {
+    "id": "U0005",
+    "nom": "CARTOFALCO (solutions cartographiques ArcGIS)",
+    "description": "Démo de solution cartographique ArcGIS partagée via l'ONG ARCADE : voirie, couche de remarques de terrain et cadastre sur une carte interactive (outil propriétaire, non libre).",
+    "lieu": "En ligne",
+    "categorie": "carte",
+    "disponibilite": "démo en consultation",
+    "lien": "https://experience.arcgis.com/experience/1bb8a6d9f364452f853c52473d4eed44/page/Entretien-Avancement?views=Information-sur-l%27%C3%A9l%C3%A9ment",
+    "categories": [],
+    "date_ajout": "2026-10-15",
+    "zotero_key": "2IIRNS37",
+    "date_modif": "2026-10-15"
   }
 ]

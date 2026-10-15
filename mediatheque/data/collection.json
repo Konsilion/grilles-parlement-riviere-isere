@@ -1,8 +1,28 @@
 {
-  "generated_at": "2026-10-15T06:07:43Z",
+  "generated_at": "2026-10-15T06:55:46Z",
   "collection_id": "MCKNJI9M",
-  "count": 92,
+  "count": 93,
   "items": [
+    {
+      "key": "9TUJIN63",
+      "title": "Film documentaire sur « Le Dragon et le Serpent » — Hugo Lange (projection et exposition)",
+      "authors": [
+        "Hugo Lange"
+      ],
+      "year": "2026",
+      "type": "Vidéo",
+      "abstract": "Film documentaire sur « Le Dragon et le Serpent » réalisé par Hugo Lange (étudiant UGA), projeté en continu de 17h à 19h le 13 octobre 2026 dans la salle du Forum de MUSE lors de l'inauguration. Aucune URL publique dans le mail ni trouvée en ligne : l'enregistrement documente la projection, pas un média relayable.",
+      "tags": [
+        "Dragon et le Serpent",
+        "UGA",
+        "film",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": null,
+      "dateAdded": "2026-10-15",
+      "date_modif": "2026-10-15"
+    },
     {
       "key": "43RMCG28",
       "title": "Une gestion globale pour l'Isère — état cible d'Albertville à Valence",

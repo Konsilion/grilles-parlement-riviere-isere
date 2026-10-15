@@ -204,5 +204,24 @@
     "date_ajout": "2026-10-11",
     "zotero_key": "VX37H8IK",
     "date_modif": "2026-10-11"
+  },
+  {
+    "id": "C0012",
+    "nom": "Sébastien Triqueneaux",
+    "description": "Chercheur à l'Institut Néel / CNRS. Propose à Nicolas Brémond une rencontre de travail (le 27 ou le 29/10 à 18h au bar de l'Orangerie) sur les sujets du Parlement de la rivière Isère.",
+    "organisation": "Institut Néel / CNRS",
+    "lieu": "Grenoble",
+    "date_contact": "",
+    "lien": "",
+    "email": "sebastien.triqueneaux@neel.cnrs.fr",
+    "telephone": "",
+    "role": "Chercheur à l'Institut Néel (CNRS), propose une rencontre (27 ou 29/10, bar de l'Orangerie)",
+    "categories": [
+      "commission scientifique",
+      "intervenant·e"
+    ],
+    "date_ajout": "2026-10-15",
+    "zotero_key": "M24GUZ7S",
+    "date_modif": "2026-10-15"
   }
 ]

@@ -1,8 +1,87 @@
 {
-  "generated_at": "2026-10-18T20:07:42Z",
+  "generated_at": "2026-10-18T20:11:42Z",
   "collection_id": "MCKNJI9M",
-  "count": 93,
+  "count": 97,
   "items": [
+    {
+      "key": "NMSGE5TC",
+      "title": "Recensement des parlements et initiatives assimilées",
+      "authors": [
+        "Pierre Louis Serero (initiation)",
+        "François Bernigaud (mise en forme)"
+      ],
+      "year": "2026",
+      "type": "Document",
+      "abstract": "Document de recensement des parlements de fleuves et rivières et des initiatives assimilées, initialisé par Pierre Louis Serero et mis en forme par François Bernigaud en page Markdown du site (pas d'URL publique dans le mail : seul lien d'édition GitHub interne, intégration au site en cours).",
+      "tags": [
+        "fédération",
+        "parlements",
+        "recensement",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": null,
+      "dateAdded": "2026-10-18",
+      "date_modif": "2026-10-18"
+    },
+    {
+      "key": "DJFSAZ97",
+      "title": "Le Parlement de l'eau — Wendy Delorme (roman)",
+      "authors": [
+        "Wendy Delorme"
+      ],
+      "year": "2025",
+      "type": "Livre",
+      "abstract": "Roman de Wendy Delorme (éditions Cambourakis, parution 2025) autour d'un « parlement de l'eau » ; relance prévue avec la librairie Les Modernes pour la venue de l'autrice à Grenoble (point inscrit à l'ordre du jour du comité de pilotage du 16/10/2026). Livre papier : pas d'URL dans le mail.",
+      "tags": [
+        "littérature",
+        "parlement de l'eau",
+        "roman",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": null,
+      "dateAdded": "2026-10-18",
+      "date_modif": "2026-10-18"
+    },
+    {
+      "key": "NVIK68VN",
+      "title": "Vidéo des travaux dans la rivière du 24 août au 2 septembre",
+      "authors": [
+        "Vincent Verzat"
+      ],
+      "year": "2026",
+      "type": "Vidéo",
+      "abstract": "Vidéo courte des travaux dans la rivière du 24 août au 2 septembre, réalisée par Vincent Verzat (chaîne YouTube « PartagerCestSympa »), partagée dans le fil sur le projet de Colomieu.",
+      "tags": [
+        "Colomieu",
+        "rivière",
+        "travaux",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": "https://youtube.com/shorts/6UCseHOHcI4",
+      "dateAdded": "2026-10-18",
+      "date_modif": "2026-10-18"
+    },
+    {
+      "key": "JX7ZVJMZ",
+      "title": "Dossier photos et documents du projet de Colomieu",
+      "authors": [],
+      "year": "2026",
+      "type": "Page web",
+      "abstract": "Dossier Drive regroupant photos et documents du projet de Colomieu, partagé dans le fil sur l'inauguration du 16 octobre.",
+      "tags": [
+        "Colomieu",
+        "Drive",
+        "photos",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": "https://drive.google.com/drive/folders/15VbMR8xpduc7U7VP5NZ6Q1VwmwNhfLbX",
+      "dateAdded": "2026-10-18",
+      "date_modif": "2026-10-18"
+    },
     {
       "key": "9TUJIN63",
       "title": "Film documentaire sur « Le Dragon et le Serpent » — Hugo Lange (projection et exposition)",

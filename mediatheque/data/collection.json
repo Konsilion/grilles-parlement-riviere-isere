@@ -1,8 +1,82 @@
 {
-  "generated_at": "2026-10-18T20:11:42Z",
+  "generated_at": "2026-10-18T20:39:13Z",
   "collection_id": "MCKNJI9M",
-  "count": 97,
+  "count": 101,
   "items": [
+    {
+      "key": "2S6U42SK",
+      "title": "AWS summary (vidéo)",
+      "authors": [],
+      "year": "2026",
+      "type": "Vidéo",
+      "abstract": "Vidéo « AWS summary » (Alliance for Water Stewardship), liée à la démarche AWS STMicroelectronics/FNE/CIVIPOLE, citée dans le fil sur la stratégie de gestion responsable de l'eau de Crolles.",
+      "tags": [
+        "AWS",
+        "STMicroelectronics",
+        "vidéo",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": "https://youtu.be/6LMPM2gz-m4",
+      "dateAdded": "2026-10-18",
+      "date_modif": "2026-10-18"
+    },
+    {
+      "key": "GB475VKC",
+      "title": "Mémoire de M2 de Justin Soubanere — sociologie politique de l'engagement pour les droits de la nature",
+      "authors": [
+        "Justin Soubanere"
+      ],
+      "year": "2026",
+      "type": "Thèse",
+      "abstract": "Mémoire de M2 de sociologie politique de l'engagement pour les droits de la nature, salué par son jury et transmis par son auteur pour mise en ligne sur le site internet du Parlement (PDF joint).",
+      "tags": [
+        "droits de la nature",
+        "mémoire",
+        "sociologie",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": null,
+      "dateAdded": "2026-10-18",
+      "date_modif": "2026-10-18"
+    },
+    {
+      "key": "MCSBMI5N",
+      "title": "Sécurité de l'eau à l'échelle mondiale (ScienceDirect)",
+      "authors": [],
+      "year": "2026",
+      "type": "Article de revue",
+      "abstract": "Article « Sécurité de l'eau à l'échelle mondiale » repéré sur ScienceDirect dans la lettre d'information de la Chaire Territoires en Transition de Grenoble École de Management, partagé dans la veille du Parlement.",
+      "tags": [
+        "monde",
+        "revue",
+        "sécurité de l'eau",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": "https://www.sciencedirect.com/science/article/pii/S0921800926001230?via%3Dihub",
+      "dateAdded": "2026-10-18",
+      "date_modif": "2026-10-18"
+    },
+    {
+      "key": "V5KE5APB",
+      "title": "Au fil de l'eau — projection suivie d'un débat avec le Parlement",
+      "authors": [],
+      "year": "2026",
+      "type": "Vidéo",
+      "abstract": "Film « Au fil de l'eau » projeté le 22 octobre 2026 à 18h30 avec un débat auquel le Parlement est invité à participer ; événement organisé avec ici Grenoble et le CFSI, fiche du film en pièce jointe.",
+      "tags": [
+        "Au fil de l'eau",
+        "film",
+        "projection-débat",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": null,
+      "dateAdded": "2026-10-18",
+      "date_modif": "2026-10-18"
+    },
     {
       "key": "NMSGE5TC",
       "title": "Recensement des parlements et initiatives assimilées",

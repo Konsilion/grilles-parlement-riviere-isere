@@ -52,5 +52,76 @@
     "date_ajout": "2026-10-11",
     "zotero_key": "29TEGZJI",
     "date_modif": "2026-10-11"
+  },
+  {
+    "id": "P0004",
+    "titre": "Rights for Nature – Initiative des citoyens européens (ECI)",
+    "description": "Initiative des citoyens européens « Rights for Nature » pour les droits de la nature : signature ouverte, objectif 1 million de signatures à réunir en 1 an à partir du 13 octobre 2026, relayée au Parlement avec séminaire en ligne associé.",
+    "porteur": "ECI Rights for Nature",
+    "lieu": "Union européenne",
+    "date_debut": "2026-10-13",
+    "date_fin": "2027-10-13",
+    "lien": "https://rightsfornature.eu/",
+    "statut": "",
+    "categories": [
+      "Europe",
+      "droits de la nature"
+    ],
+    "date_ajout": "2026-10-18",
+    "zotero_key": "MMIGCJA9",
+    "date_modif": "2026-10-18"
+  },
+  {
+    "id": "P0005",
+    "titre": "Représentation de la rivière dans les instances du SYMBHI",
+    "description": "Demande portée par le Parlement auprès du SYMBHI : représenter la rivière Isère en tant qu'entité naturelle dans ses instances.",
+    "porteur": "Parlement de la rivière Isère / SYMBHI",
+    "lieu": "Bassin de l'Isère",
+    "date_debut": "2026-10-04",
+    "date_fin": "",
+    "lien": "",
+    "statut": "",
+    "categories": [
+      "droits de la nature"
+    ],
+    "date_ajout": "2026-10-18",
+    "zotero_key": "8EGPUJFF",
+    "date_modif": "2026-10-18"
+  },
+  {
+    "id": "P0006",
+    "titre": "MEPAG – géohistoire des sécheresses (Drac et Romanche)",
+    "description": "Projet de recherche MEPAG « Manquer d'eau potable à Grenoble ? » : géohistoire des sécheresses dans les bassins du Drac et de la Romanche (notamment 1962-1964), demi-journée de restitution et d'échanges à l'IGE (campus de Grenoble).",
+    "porteur": "Antoine Brochet et équipe MEPAG (IGE)",
+    "lieu": "Grenoble (IGE)",
+    "date_debut": "2026-09-30",
+    "date_fin": "",
+    "lien": "",
+    "statut": "",
+    "categories": [
+      "recherche",
+      "sécheresse"
+    ],
+    "date_ajout": "2026-10-18",
+    "zotero_key": "R88278S4",
+    "date_modif": "2026-10-18"
+  },
+  {
+    "id": "P0007",
+    "titre": "La Fresque des zones humides (campagne de financement participatif)",
+    "description": "Projet « La Fresque des zones humides » (étudiants d'AgroToulouse et Forum des Marais Atlantiques) en campagne de financement participatif, signalé au Parlement par Pierre Louis Serero via la Turbine.coop.",
+    "porteur": "Étudiants AgroToulouse / Forum des Marais Atlantiques",
+    "lieu": "France",
+    "date_debut": "2026-09-29",
+    "date_fin": "",
+    "lien": "",
+    "statut": "",
+    "categories": [
+      "financement participatif",
+      "zones humides"
+    ],
+    "date_ajout": "2026-10-18",
+    "zotero_key": "8SGDJAUX",
+    "date_modif": "2026-10-18"
   }
 ]

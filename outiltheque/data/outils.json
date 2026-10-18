@@ -75,5 +75,31 @@
     "date_ajout": "2026-10-15",
     "zotero_key": "2IIRNS37",
     "date_modif": "2026-10-15"
+  },
+  {
+    "id": "U0006",
+    "nom": "Formation « Droits de la nature » (programme Wild Legal)",
+    "description": "Programme de formation sur les droits de la nature du Wild Legal, transmis par Maximin Enjolras dans le fil de l'Assemblée des rivières (septembre 2026).",
+    "lieu": "En ligne",
+    "categorie": "formation",
+    "disponibilite": "sur inscription",
+    "lien": "https://www.wildlegal.eu/formation",
+    "categories": [],
+    "date_ajout": "2026-10-18",
+    "zotero_key": "KHD4RQZM",
+    "date_modif": "2026-10-18"
+  },
+  {
+    "id": "U0007",
+    "nom": "Zotero (bibliothèque documentaire du Parlement)",
+    "description": "Outil de gestion bibliographique utilisé par le Parlement pour cataloguer ses références : la saisie de l'étude du département sur la prospective « eau » y est terminée (septembre 2026, revue demandée avant projection sur le site), et la page publique du site présente la documentation.",
+    "lieu": "Site du Parlement (en ligne)",
+    "categorie": "",
+    "disponibilite": "en ligne",
+    "lien": "https://parlement-isere.org/pages/documentation/zotero/",
+    "categories": [],
+    "date_ajout": "2026-10-18",
+    "zotero_key": "DGWXMSHN",
+    "date_modif": "2026-10-18"
   }
 ]

@@ -95,5 +95,61 @@
     "date_ajout": "2026-10-18",
     "zotero_key": "WDD2P6SC",
     "date_modif": "2026-10-18"
+  },
+  {
+    "id": "L0008",
+    "nom": "Salle du Triolet (Tignieu-Jameyzieu)",
+    "description": "Salle de la conférence « L'attachement au fleuve Rhône : un dialogue entre sociologie, écologie et photographie » (samedi 10 octobre 2026, 15h), dans le cadre de la Fête des possibles du territoire Nord-Isère — invitation du collectif Stop Barrage Rhonergia, relayée au Parlement.",
+    "adresse": "Tignieu-Jameyzieu",
+    "lien": "",
+    "categories": [
+      "conférence",
+      "salle"
+    ],
+    "date_ajout": "2026-10-18",
+    "zotero_key": "7U8S6ZE4",
+    "date_modif": "2026-10-18"
+  },
+  {
+    "id": "L0009",
+    "nom": "Cosmocité (Le Pont-de-Claix)",
+    "description": "Centre de culture scientifique et technique du Pont-de-Claix : intervention de Jacques Pulou « Au fil du Drac : évolution du Drac et sa biodiversité au cours du temps » le mardi 13 octobre 2026 à 18h30 ; la commission eau FNE s'y réunit aussi (prochaine le 20/10, 17h30, à la MNEI et en visio).",
+    "adresse": "Le Pont-de-Claix",
+    "lien": "https://www.cosmocite.fr/evenements/au-fil-du-drac-evolution-du-drac-et-sa-biodiversite-au-cours-du-temps/",
+    "categories": [
+      "centre culturel",
+      "conférence"
+    ],
+    "date_ajout": "2026-10-18",
+    "zotero_key": "W26V2GVK",
+    "date_modif": "2026-10-18"
+  },
+  {
+    "id": "L0010",
+    "nom": "Bourg d'Oisans",
+    "description": "Bourg où se tient le spectacle participatif « Manuel d'adaptation à la Planète » de l'Oisans (4 octobre 2026, 15h, Zelda Soussan et Ruggero Franceschini), et où est prévue une restitution à la Fête de la Science en 2027 après la récolte des récits des habitants sur l'eau du territoire (Les gouttes d'eau, chercheurs scientifiques embarqués — vivant aussi à Livet-et-Gavet du 18 au 21 novembre).",
+    "adresse": "Bourg d'Oisans",
+    "lien": "",
+    "categories": [
+      "spectacle",
+      "ville"
+    ],
+    "date_ajout": "2026-10-18",
+    "zotero_key": "CIHQR96R",
+    "date_modif": "2026-10-18"
+  },
+  {
+    "id": "L0011",
+    "nom": "Le Pré Lanaud (Eymoutiers)",
+    "description": "Pré au bord de la Vienne, à Eymoutiers : lieu de l'Assemblée des rivières du dimanche 27 septembre 2026 (9h–13h), rencontre-discussion de l'Appel à la Vienne dans le cadre de la Fête de la Montagne Limousine — échange sur les approches sensibles, les droits de la nature ; le Parlement a demandé une possibilité de visio vu la distance.",
+    "adresse": "Eymoutiers (Haute-Vienne)",
+    "lien": "",
+    "categories": [
+      "assemblée",
+      "pré"
+    ],
+    "date_ajout": "2026-10-18",
+    "zotero_key": "JBCQ2EX2",
+    "date_modif": "2026-10-18"
   }
 ]

@@ -450,6 +450,21 @@
     "source_app": ""
   },
   {
+    "id": "A0031",
+    "type": "evenement",
+    "titre": "4ème session du Parlement de la rivière Isère",
+    "description": "4ème session du Parlement de la rivière Isère, en 2 temps : présentation publique de la simulation parlementaire le 25 mars 2027 (17h-20h, Amphi 1 du campus UGA Saint-Martin-d'Hères), puis participation citoyenne et sensible le 27 mars 2027 (Maison de l'innovation - MaCi). Les deux temps sont ouverts au public.",
+    "date_debut": "2027-03-25",
+    "date_fin": "2027-03-27",
+    "lieu": "Amphi 1 (UGA Saint-Martin-d'Hères) / MaCi",
+    "lien": "",
+    "date_ajout": "2026-10-19",
+    "source_message_id": "1855364944.2146861.1792412624951.JavaMail.zimbra@etu.univ-grenoble-alpes.fr",
+    "zotero_key": "EK4SRCGM",
+    "date_modif": "2026-10-19",
+    "source_app": ""
+  },
+  {
     "id": "24SX4E4H",
     "type": "media_publie",
     "titre": "Tant que nos institutions ne renforceront pas leur dimension participative, la colère s’exprimera dans la rue",

@@ -399,9 +399,11 @@ def main():
         if not typ:
             rejected.append((n, f"type inconnu « {p.get('type')} »"))
             continue
-        if mid and mid in mids:
-            rejected.append((n, "message_id déjà dans la collection"))
-            continue
+        # Garde-fou doublons : lien et titre UNIQUES. Le message-id n'est PLUS
+        # un critère de refus depuis le générateur v2 (18/10/26) : un même mail
+        # (ex. comité de pilotage) peut légitimement produire PLUSIEURS
+        # événements distincts — un seul message-id. L'unicité de message-id
+        # reste assurée côté génération (dédup par uid), pas à la saisie.
         if lien and lien in links:
             rejected.append((n, "lien déjà dans la collection"))
             continue

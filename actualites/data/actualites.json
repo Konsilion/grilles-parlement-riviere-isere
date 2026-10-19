@@ -2175,6 +2175,21 @@
     "source_app": "personnes"
   },
   {
+    "id": "C0013",
+    "type": "personne",
+    "titre": "Hippolyte Massini",
+    "description": "Étudiant travaillant à la Maci, disponible pour interférer dans les échanges ou se rendre sur place régulièrement.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "Grenoble",
+    "lien": "",
+    "date_ajout": "2026-10-19",
+    "source_message_id": "",
+    "zotero_key": "B7XG7WU8",
+    "date_modif": "2026-10-19",
+    "source_app": "personnes"
+  },
+  {
     "id": "P0001",
     "type": "projet",
     "titre": "Déclaration des droits de la rivière Isère",

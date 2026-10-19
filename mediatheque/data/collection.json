@@ -1,8 +1,51 @@
 {
-  "generated_at": "2026-10-19T17:07:47Z",
+  "generated_at": "2026-10-19T17:42:20Z",
   "collection_id": "MCKNJI9M",
-  "count": 101,
+  "count": 103,
   "items": [
+    {
+      "key": "24SX4E4H",
+      "title": "Tant que nos institutions ne renforceront pas leur dimension participative, la colère s’exprimera dans la rue",
+      "authors": [
+        "Nicolas Duvoux"
+      ],
+      "year": "2026",
+      "type": "Article de presse",
+      "abstract": "Article de Mediapart abordant la participation citoyenne comme complément démocratique, avec des citations du sociologue Nicolas Duvoux sur le rôle du ressenti et de la parole ordinaire dans la démocratie.",
+      "tags": [
+        "démocratie",
+        "parole ordinaire",
+        "participation citoyenne",
+        "ressenti",
+        "sociologie",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": "https://www.mediapart.fr/journal/france/161026/tant-que-nos-institutions-ne-renforceront-pas-leur-dimension-participative-la-colere-s-exprimera-dans-la-r",
+      "dateAdded": "2026-10-19",
+      "date_modif": "2026-10-19"
+    },
+    {
+      "key": "U62VAN4J",
+      "title": "Des vies volées. Restituer le pouvoir",
+      "authors": [
+        "Nicolas Duvoux"
+      ],
+      "year": "2026",
+      "type": "Livre",
+      "abstract": "Ouvrage du sociologue Nicolas Duvoux, spécialiste des questions de pauvreté, abordant la restitution du pouvoir et la participation citoyenne.",
+      "tags": [
+        "participation citoyenne",
+        "pauvreté",
+        "pouvoir",
+        "sociologie",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": null,
+      "dateAdded": "2026-10-19",
+      "date_modif": "2026-10-19"
+    },
     {
       "key": "2S6U42SK",
       "title": "AWS summary (vidéo)",

@@ -151,5 +151,38 @@
     "date_ajout": "2026-10-18",
     "zotero_key": "JBCQ2EX2",
     "date_modif": "2026-10-18"
+  },
+  {
+    "id": "L0012",
+    "nom": "MNEI (salle abeille)",
+    "description": "Lieu de réunion du comité de pilotage du Parlement.",
+    "adresse": "",
+    "lien": "",
+    "categories": [],
+    "date_ajout": "2026-10-19",
+    "zotero_key": "XD8HX7W3",
+    "date_modif": "2026-10-19"
+  },
+  {
+    "id": "L0013",
+    "nom": "Amphi 1",
+    "description": "Lieu de rendu de la simulation parlementaire.",
+    "adresse": "",
+    "lien": "",
+    "categories": [],
+    "date_ajout": "2026-10-19",
+    "zotero_key": "NFTN7B24",
+    "date_modif": "2026-10-19"
+  },
+  {
+    "id": "L0014",
+    "nom": "Maci",
+    "description": "Lieu où travaille Hippolyte Massini, potentiellement utile pour les activités du Parlement de la rivière Isère.",
+    "adresse": "",
+    "lien": "",
+    "categories": [],
+    "date_ajout": "2026-10-19",
+    "zotero_key": "H272QRQX",
+    "date_modif": "2026-10-19"
   }
 ]

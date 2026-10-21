@@ -465,6 +465,21 @@
     "source_app": ""
   },
   {
+    "id": "A0032",
+    "type": "evenement",
+    "titre": "Rencontres des Pensées de l’Écologie à Cluny",
+    "description": "Rencontres des Pensées de l’Écologie, événement pluridisciplinaire sur l'écologie.",
+    "date_debut": "2026-11-13",
+    "date_fin": "",
+    "lieu": "Cluny",
+    "lien": "",
+    "date_ajout": "2026-10-21",
+    "source_message_id": "MRZP264MB163829372FE1FC3E32673D4BF9672@MRZP264MB1638.FRAP264.PROD.OUTLOOK.COM",
+    "zotero_key": "449KGPVN",
+    "date_modif": "2026-10-21",
+    "source_app": ""
+  },
+  {
     "id": "24SX4E4H",
     "type": "media_publie",
     "titre": "Tant que nos institutions ne renforceront pas leur dimension participative, la colère s’exprimera dans la rue",

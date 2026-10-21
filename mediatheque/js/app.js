@@ -47,7 +47,9 @@
     // (ancrage absolu) : ne pas notifier l'hôte, pour éviter un cercle de
     // redimensionnements.
     if (document.querySelector('.modal[aria-hidden="false"]')) return;
-    notifyHost({ type: "konnect:height", height: document.documentElement.scrollHeight });
+    // Nom de message historique conservé : la page hôte parlement-isere.org
+    // (zotero.md, iframe mode=integre) écoute « zotero-vitrine:height ».
+    notifyHost({ type: "zotero-vitrine:height", height: document.documentElement.scrollHeight });
   };
 
   // ---------- État global ----------

@@ -55,6 +55,27 @@ html, body {
   padding: 1.5rem;
 }
 
+/* ============== Barre de marque Konnect (21/10/26) ============== */
+/* Identité légère : marque lien vers l'accueil + nom de la grille,
+   alignés sur la largeur du layout. */
+.k-brand {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 1rem 1.5rem 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  font-size: 0.95rem;
+}
+.k-brand-link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+.k-brand-link:hover, .k-brand-link:focus-visible { color: var(--accent-hover); }
+.k-brand-app { color: var(--text-muted); }
+.k-brand [aria-hidden] { color: var(--text-muted); }
+
 /* ============== Entête de contenu ============== */
 /* (.content-header/.result-count : layout propre à chaque app —
    actus = colonne [compteur puis toolbar], médiathèque = ligne

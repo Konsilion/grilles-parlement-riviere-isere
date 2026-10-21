@@ -47,7 +47,7 @@
     // (ancrage absolu) : ne pas notifier l'hôte, pour éviter un cercle de
     // redimensionnements.
     if (document.querySelector('.modal[aria-hidden="false"]')) return;
-    notifyHost({ type: "zotero-vitrine:height", height: document.documentElement.scrollHeight });
+    notifyHost({ type: "konnect:height", height: document.documentElement.scrollHeight });
   };
 
   // ---------- État global ----------

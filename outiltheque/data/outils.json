@@ -114,5 +114,44 @@
     "date_ajout": "2026-10-19",
     "zotero_key": "9XK8CH6T",
     "date_modif": "2026-10-19"
+  },
+  {
+    "id": "U0009",
+    "nom": "MkDocs",
+    "description": "Générateur de site statique en Markdown, utilisé actuellement par le Parlement pour son site web.",
+    "lieu": "",
+    "categorie": "Générateur de site statique",
+    "disponibilite": "",
+    "lien": "https://www.mkdocs.org/",
+    "categories": [],
+    "date_ajout": "2026-10-22",
+    "zotero_key": "6Z4964W2",
+    "date_modif": "2026-10-22"
+  },
+  {
+    "id": "U0010",
+    "nom": "Nextcloud",
+    "description": "Plateforme d'auto-hébergement de stockage et de partage de fichiers, permettant une structuration des ressources informatiques pour un collectif.",
+    "lieu": "",
+    "categorie": "Stockage collaboratif",
+    "disponibilite": "",
+    "lien": "https://nextcloud.com/",
+    "categories": [],
+    "date_ajout": "2026-10-22",
+    "zotero_key": "AX4388BN",
+    "date_modif": "2026-10-22"
+  },
+  {
+    "id": "U0011",
+    "nom": "WordPress",
+    "description": "Outil de gestion de contenu (CMS) pour créer et gérer un site web dynamique, permettant une meilleure UX et un accès multi-utilisateurs à la modification.",
+    "lieu": "",
+    "categorie": "CMS",
+    "disponibilite": "",
+    "lien": "https://wordpress.org/",
+    "categories": [],
+    "date_ajout": "2026-10-22",
+    "zotero_key": "8GJ575I3",
+    "date_modif": "2026-10-22"
   }
 ]

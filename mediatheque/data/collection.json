@@ -1,8 +1,62 @@
 {
-  "generated_at": "2026-10-22T20:07:49Z",
+  "generated_at": "2026-10-22T20:12:48Z",
   "collection_id": "MCKNJI9M",
-  "count": 103,
+  "count": 106,
   "items": [
+    {
+      "key": "GUC9SW9H",
+      "title": "Fondation Caisse d'Épargne Rhône-Alpes - Appel à projets",
+      "authors": [],
+      "year": "2026",
+      "type": "Page web",
+      "abstract": "Page de la Fondation Caisse d'Épargne Rhône-Alpes présentant ses appels à projets et critères de financement.",
+      "tags": [
+        "Caisse d'Épargne Rhône-Alpes",
+        "appel à projets",
+        "financement",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": "https://www.caissedepargnerhonealpes.fr/responsable-solidaire/la-fondation/#",
+      "dateAdded": "2026-10-22",
+      "date_modif": "2026-10-22"
+    },
+    {
+      "key": "BR8HIAPK",
+      "title": "Fondation MACIF - Notre histoire",
+      "authors": [],
+      "year": "2026",
+      "type": "Page web",
+      "abstract": "Page historique de la Fondation MACIF, incluant ses critères et axes d'intervention.",
+      "tags": [
+        "Fondation MACIF",
+        "appel à projets",
+        "financement",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": "https://www.fondation-macif.org/page/notre-histoire",
+      "dateAdded": "2026-10-22",
+      "date_modif": "2026-10-22"
+    },
+    {
+      "key": "8AEK793I",
+      "title": "Fondation SUEZ - Appel à projets",
+      "authors": [],
+      "year": "2026",
+      "type": "Page web",
+      "abstract": "Page de la Fondation SUEZ dédiée à ses appels à projets et critères de sélection.",
+      "tags": [
+        "Fondation SUEZ",
+        "appel à projets",
+        "financement",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": "https://www.suez.com/fr/groupe/developpement-durable/fondation-suez/appel-projets",
+      "dateAdded": "2026-10-22",
+      "date_modif": "2026-10-22"
+    },
     {
       "key": "24SX4E4H",
       "title": "Tant que nos institutions ne renforceront pas leur dimension participative, la colère s’exprimera dans la rue",

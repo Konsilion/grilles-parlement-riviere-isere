@@ -198,5 +198,27 @@
     "date_ajout": "2026-10-19",
     "zotero_key": "VM39QVST",
     "date_modif": "2026-10-19"
+  },
+  {
+    "id": "I0017",
+    "titre": "Hébergement d'un site WordPress et d'un Nextcloud pour le Parlement de la rivière Isère",
+    "description": "Proposition d'hébergement d'une instance WordPress (pour remplacer le site statique actuel) et d'une instance Nextcloud dédiée, afin de structurer les ressources informatiques du collectif et améliorer l'accessibilité collaborative.",
+    "lien": "",
+    "auteur": "Nicolas Brémond",
+    "categories": [],
+    "date_ajout": "2026-10-22",
+    "zotero_key": "8JZH4VJE",
+    "date_modif": "2026-10-22"
+  },
+  {
+    "id": "I0018",
+    "titre": "Obstacle juridique pour le financement du Parlement de la rivière Isère",
+    "description": "La forme juridique actuelle du Parlement de la rivière Isère (association) ne permet pas de répondre aux critères des financeurs comme SUEZ, MACIF ou la CE, qui exigent un statut d'utilité publique, une existence juridique de 5 ans minimum, ou une déclaration d'intérêt général.",
+    "lien": "",
+    "auteur": "phdpdc@free.fr",
+    "categories": [],
+    "date_ajout": "2026-10-22",
+    "zotero_key": "IM6DH7MB",
+    "date_modif": "2026-10-22"
   }
 ]

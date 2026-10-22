@@ -480,6 +480,51 @@
     "source_app": ""
   },
   {
+    "id": "GUC9SW9H",
+    "type": "media_publie",
+    "titre": "Fondation Caisse d'Épargne Rhône-Alpes - Appel à projets",
+    "description": "Page de la Fondation Caisse d'Épargne Rhône-Alpes présentant ses appels à projets et critères de financement.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "https://www.caissedepargnerhonealpes.fr/responsable-solidaire/la-fondation/#",
+    "date_ajout": "2026-10-22",
+    "source_message_id": "",
+    "zotero_key": "GUC9SW9H",
+    "date_modif": "2026-10-22",
+    "source_app": "mediatheque"
+  },
+  {
+    "id": "BR8HIAPK",
+    "type": "media_publie",
+    "titre": "Fondation MACIF - Notre histoire",
+    "description": "Page historique de la Fondation MACIF, incluant ses critères et axes d'intervention.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "https://www.fondation-macif.org/page/notre-histoire",
+    "date_ajout": "2026-10-22",
+    "source_message_id": "",
+    "zotero_key": "BR8HIAPK",
+    "date_modif": "2026-10-22",
+    "source_app": "mediatheque"
+  },
+  {
+    "id": "8AEK793I",
+    "type": "media_publie",
+    "titre": "Fondation SUEZ - Appel à projets",
+    "description": "Page de la Fondation SUEZ dédiée à ses appels à projets et critères de sélection.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "https://www.suez.com/fr/groupe/developpement-durable/fondation-suez/appel-projets",
+    "date_ajout": "2026-10-22",
+    "source_message_id": "",
+    "zotero_key": "8AEK793I",
+    "date_modif": "2026-10-22",
+    "source_app": "mediatheque"
+  },
+  {
     "id": "24SX4E4H",
     "type": "media_publie",
     "titre": "Tant que nos institutions ne renforceront pas leur dimension participative, la colère s’exprimera dans la rue",
@@ -2220,6 +2265,21 @@
     "source_app": "personnes"
   },
   {
+    "id": "C0014",
+    "type": "personne",
+    "titre": "François BERNIGAUD",
+    "description": "Propose son aide à distance pour l'administration de Nextcloud, mentionne son utilisation de Mistral et son expérience en administration serveur.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "16 Chemin de l'Achard, 38410 St Martin d'Uriage",
+    "lien": "",
+    "date_ajout": "2026-10-22",
+    "source_message_id": "",
+    "zotero_key": "3C7QJUJ8",
+    "date_modif": "2026-10-22",
+    "source_app": "personnes"
+  },
+  {
     "id": "P0001",
     "type": "projet",
     "titre": "Déclaration des droits de la rivière Isère",
@@ -2550,6 +2610,51 @@
     "source_app": "outiltheque"
   },
   {
+    "id": "U0009",
+    "type": "outil_publie",
+    "titre": "MkDocs",
+    "description": "Générateur de site statique en Markdown, utilisé actuellement par le Parlement pour son site web.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "https://www.mkdocs.org/",
+    "date_ajout": "2026-10-22",
+    "source_message_id": "",
+    "zotero_key": "6Z4964W2",
+    "date_modif": "2026-10-22",
+    "source_app": "outiltheque"
+  },
+  {
+    "id": "U0010",
+    "type": "outil_publie",
+    "titre": "Nextcloud",
+    "description": "Plateforme d'auto-hébergement de stockage et de partage de fichiers, permettant une structuration des ressources informatiques pour un collectif.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "https://nextcloud.com/",
+    "date_ajout": "2026-10-22",
+    "source_message_id": "",
+    "zotero_key": "AX4388BN",
+    "date_modif": "2026-10-22",
+    "source_app": "outiltheque"
+  },
+  {
+    "id": "U0011",
+    "type": "outil_publie",
+    "titre": "WordPress",
+    "description": "Outil de gestion de contenu (CMS) pour créer et gérer un site web dynamique, permettant une meilleure UX et un accès multi-utilisateurs à la modification.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "https://wordpress.org/",
+    "date_ajout": "2026-10-22",
+    "source_message_id": "",
+    "zotero_key": "8GJ575I3",
+    "date_modif": "2026-10-22",
+    "source_app": "outiltheque"
+  },
+  {
     "id": "L0001",
     "type": "lieu",
     "titre": "Maison de la Nature et de l'Environnement de l'Isère (MNEI)",
@@ -2760,6 +2865,21 @@
     "source_app": "lieux"
   },
   {
+    "id": "L0015",
+    "type": "lieu",
+    "titre": "Salle ORCHIDEE",
+    "description": "Salle de la Maison de la Nature dédiée à la commission eau.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "5 place Bir-Hakeim, 38000 Grenoble",
+    "lien": "",
+    "date_ajout": "2026-10-22",
+    "source_message_id": "",
+    "zotero_key": "QC8FVR6A",
+    "date_modif": "2026-10-22",
+    "source_app": "lieux"
+  },
+  {
     "id": "Q0001",
     "type": "question",
     "titre": "Manquer d'eau potable à Grenoble ?",
@@ -2847,6 +2967,21 @@
     "source_message_id": "",
     "zotero_key": "C9ZI5M45",
     "date_modif": "2026-10-19",
+    "source_app": "questions"
+  },
+  {
+    "id": "Q0007",
+    "type": "question",
+    "titre": "Comment lever l'obstacle juridique pour accéder aux financements SUEZ, MACIF et CE ?",
+    "description": "Question posée implicitement sur la manière de surmonter les exigences juridiques des financeurs (statut d'utilité publique, 5 ans d'existence, intérêt général) pour le Parlement de la rivière Isère.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "",
+    "date_ajout": "2026-10-22",
+    "source_message_id": "",
+    "zotero_key": "JIK66CGR",
+    "date_modif": "2026-10-22",
     "source_app": "questions"
   },
   {
@@ -3087,6 +3222,36 @@
     "source_message_id": "",
     "zotero_key": "VM39QVST",
     "date_modif": "2026-10-19",
+    "source_app": "idees"
+  },
+  {
+    "id": "I0017",
+    "type": "idee",
+    "titre": "Hébergement d'un site WordPress et d'un Nextcloud pour le Parlement de la rivière Isère",
+    "description": "Proposition d'hébergement d'une instance WordPress (pour remplacer le site statique actuel) et d'une instance Nextcloud dédiée, afin de structurer les ressources informatiques du collectif et améliorer l'accessibilité collaborative.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "",
+    "date_ajout": "2026-10-22",
+    "source_message_id": "",
+    "zotero_key": "8JZH4VJE",
+    "date_modif": "2026-10-22",
+    "source_app": "idees"
+  },
+  {
+    "id": "I0018",
+    "type": "idee",
+    "titre": "Obstacle juridique pour le financement du Parlement de la rivière Isère",
+    "description": "La forme juridique actuelle du Parlement de la rivière Isère (association) ne permet pas de répondre aux critères des financeurs comme SUEZ, MACIF ou la CE, qui exigent un statut d'utilité publique, une existence juridique de 5 ans minimum, ou une déclaration d'intérêt général.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "",
+    "date_ajout": "2026-10-22",
+    "source_message_id": "",
+    "zotero_key": "IM6DH7MB",
+    "date_modif": "2026-10-22",
     "source_app": "idees"
   }
 ]

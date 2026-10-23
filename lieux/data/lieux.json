@@ -195,5 +195,27 @@
     "date_ajout": "2026-10-22",
     "zotero_key": "QC8FVR6A",
     "date_modif": "2026-10-22"
+  },
+  {
+    "id": "L0016",
+    "nom": "Boucles de l'Isère (campus SMH)",
+    "description": "Lieu physique au bord de l'Isère, proposé pour l'accueil ou la clôture des sessions du Parlement.",
+    "adresse": "Campus de SMH, Grenoble",
+    "lien": "",
+    "categories": [],
+    "date_ajout": "2026-10-23",
+    "zotero_key": "PWR85SN5",
+    "date_modif": "2026-10-23"
+  },
+  {
+    "id": "L0017",
+    "nom": "GRENOBLE INP - ENSE3",
+    "description": "Lieu d'accueil de l'événement RSE en action - La Montagne en Transition, incluant table ronde, conférence et ateliers.",
+    "adresse": "21 Avenue des Martyrs, 38000 Grenoble",
+    "lien": "",
+    "categories": [],
+    "date_ajout": "2026-10-23",
+    "zotero_key": "B7M3UXGV",
+    "date_modif": "2026-10-23"
   }
 ]

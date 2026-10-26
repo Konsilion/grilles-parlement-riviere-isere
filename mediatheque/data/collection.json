@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-26T06:07:37Z",
+  "generated_at": "2026-10-26T07:07:51Z",
   "collection_id": "MCKNJI9M",
-  "count": 114,
+  "count": 115,
   "items": [
     {
       "key": "GUC9SW9H",
@@ -1134,6 +1134,40 @@
       "date_modif": "2026-10-09"
     },
     {
+      "key": "KH6CFJY2",
+      "title": "L’eau sous tension : concilier sobriété hydrique, équité et investissement",
+      "authors": [
+        "Anne Perrot",
+        "Arnaud Reynaud",
+        "Stéphane Saussier"
+      ],
+      "year": "2026",
+      "type": "Article de revue",
+      "abstract": "",
+      "tags": [
+        "Le prix de l'eau"
+      ],
+      "doi": null,
+      "url": "https://cae-eco.fr/static/pdf/CAE087_Eau_260127.pdf",
+      "dateAdded": "2026-10-26",
+      "date_modif": "2026-10-26"
+    },
+    {
+      "key": "XUFCX8YF",
+      "title": "Le prix de l’eau :  état des lieux et perspectives pour une gestion durable  de la ressource",
+      "authors": [],
+      "year": "2026",
+      "type": "Article de revue",
+      "abstract": "",
+      "tags": [
+        "Le prix de l'eau"
+      ],
+      "doi": null,
+      "url": null,
+      "dateAdded": "2026-10-26",
+      "date_modif": "2026-10-26"
+    },
+    {
       "key": "KJI8BJM6",
       "title": "An Exploration in the Theory of Optimum Income Taxation",
       "authors": [
@@ -1257,21 +1291,6 @@
       ],
       "doi": "10.3917/reco.pr2.0144",
       "url": "https://www.cairn.info/revue-economique-2019-4-page-461.htm?ref=doi",
-      "dateAdded": "2026-10-26",
-      "date_modif": "2026-10-26"
-    },
-    {
-      "key": "3RMJ3249",
-      "title": "Le prix de l’eau :  état des lieux et perspectives pour une gestion durable  de la ressource",
-      "authors": [],
-      "year": "2026",
-      "type": "Article de revue",
-      "abstract": "",
-      "tags": [
-        "Le prix de l'eau"
-      ],
-      "doi": null,
-      "url": null,
       "dateAdded": "2026-10-26",
       "date_modif": "2026-10-26"
     },

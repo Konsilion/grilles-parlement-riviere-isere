@@ -1500,6 +1500,36 @@
     "source_app": "mediatheque"
   },
   {
+    "id": "KH6CFJY2",
+    "type": "media_publie",
+    "titre": "L’eau sous tension : concilier sobriété hydrique, équité et investissement",
+    "description": "",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "https://cae-eco.fr/static/pdf/CAE087_Eau_260127.pdf",
+    "date_ajout": "2026-10-26",
+    "source_message_id": "",
+    "zotero_key": "KH6CFJY2",
+    "date_modif": "2026-10-26",
+    "source_app": "mediatheque"
+  },
+  {
+    "id": "XUFCX8YF",
+    "type": "media_publie",
+    "titre": "Le prix de l’eau :  état des lieux et perspectives pour une gestion durable  de la ressource",
+    "description": "",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "",
+    "date_ajout": "2026-10-26",
+    "source_message_id": "",
+    "zotero_key": "XUFCX8YF",
+    "date_modif": "2026-10-26",
+    "source_app": "mediatheque"
+  },
+  {
     "id": "KJI8BJM6",
     "type": "media_publie",
     "titre": "An Exploration in the Theory of Optimum Income Taxation",
@@ -1601,21 +1631,6 @@
     "date_ajout": "2026-10-26",
     "source_message_id": "",
     "zotero_key": "33RSVY4P",
-    "date_modif": "2026-10-26",
-    "source_app": "mediatheque"
-  },
-  {
-    "id": "3RMJ3249",
-    "type": "media_publie",
-    "titre": "Le prix de l’eau :  état des lieux et perspectives pour une gestion durable  de la ressource",
-    "description": "",
-    "date_debut": "",
-    "date_fin": "",
-    "lieu": "",
-    "lien": "",
-    "date_ajout": "2026-10-26",
-    "source_message_id": "",
-    "zotero_key": "3RMJ3249",
     "date_modif": "2026-10-26",
     "source_app": "mediatheque"
   },

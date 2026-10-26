@@ -153,5 +153,57 @@
     "date_ajout": "2026-10-22",
     "zotero_key": "8GJ575I3",
     "date_modif": "2026-10-22"
+  },
+  {
+    "id": "U0012",
+    "nom": "Jitsi Meet",
+    "description": "Outil de visioconférence utilisé pour organiser les réunions de préparation de la soirée « Au fil de l’eau ».",
+    "lieu": "",
+    "categorie": "Visioconférence",
+    "disponibilite": "",
+    "lien": "https://meet.jit.si/aufildeleau_projection2210",
+    "categories": [],
+    "date_ajout": "2026-10-26",
+    "zotero_key": "3RBKQP6Z",
+    "date_modif": "2026-10-26"
+  },
+  {
+    "id": "U0013",
+    "nom": "Framadate",
+    "description": "Outil de planification en ligne utilisé pour organiser la rencontre entre le Parlement et les étudiants du DU.",
+    "lieu": "",
+    "categorie": "Planification",
+    "disponibilite": "",
+    "lien": "https://framadate.org/polls/c8c7747d44e4c731ed4a",
+    "categories": [],
+    "date_ajout": "2026-10-26",
+    "zotero_key": "BGD87GJX",
+    "date_modif": "2026-10-26"
+  },
+  {
+    "id": "U0014",
+    "nom": "Plateforme OneWater Data",
+    "description": "Plateforme dédiée au partage et à la réutilisation des données sur l'eau, développée dans le cadre du PEPR OneWater.",
+    "lieu": "",
+    "categorie": "Plateforme de données",
+    "disponibilite": "",
+    "lien": "https://www.onewater.fr/fr",
+    "categories": [],
+    "date_ajout": "2026-10-26",
+    "zotero_key": "IS6NGPMP",
+    "date_modif": "2026-10-26"
+  },
+  {
+    "id": "U0015",
+    "nom": "Zotero",
+    "description": "Outil de gestion bibliographique utilisé par le Parlement pour la médiathèque.",
+    "lieu": "",
+    "categorie": "Gestion bibliographique",
+    "disponibilite": "",
+    "lien": "",
+    "categories": [],
+    "date_ajout": "2026-10-26",
+    "zotero_key": "TUMQXKW6",
+    "date_modif": "2026-10-26"
   }
 ]

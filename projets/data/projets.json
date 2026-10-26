@@ -138,5 +138,35 @@
     "date_ajout": "2026-10-19",
     "zotero_key": "JSIK7GRA",
     "date_modif": "2026-10-19"
+  },
+  {
+    "id": "P0009",
+    "titre": "Projet Ciblé n°8 : Plateforme OneWater Data",
+    "description": "Projet du PEPR OneWater visant à prioriser les actions pour améliorer le partage et la réutilisation des données sur l'eau.",
+    "porteur": "PEPR OneWater",
+    "lieu": "",
+    "date_debut": "",
+    "date_fin": "",
+    "lien": "https://www.onewater.fr/fr",
+    "statut": "",
+    "categories": [],
+    "date_ajout": "2026-10-26",
+    "zotero_key": "ACKC3IG2",
+    "date_modif": "2026-10-26"
+  },
+  {
+    "id": "P0010",
+    "titre": "Projet Ciblé n°8 : Plateforme OneWater Data",
+    "description": "Projet du PEPR OneWater visant à prioriser les actions pour améliorer le partage et la réutilisation des données sur l'eau.",
+    "porteur": "PEPR OneWater",
+    "lieu": "",
+    "date_debut": "",
+    "date_fin": "",
+    "lien": "https://www.onewater.fr/fr",
+    "statut": "",
+    "categories": [],
+    "date_ajout": "2026-10-26",
+    "zotero_key": "QS2V9HXU",
+    "date_modif": "2026-10-26"
   }
 ]

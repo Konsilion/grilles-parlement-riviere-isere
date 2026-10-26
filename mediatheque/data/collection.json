@@ -1,8 +1,62 @@
 {
-  "generated_at": "2026-10-26T21:07:50Z",
+  "generated_at": "2026-10-26T21:22:24Z",
   "collection_id": "MCKNJI9M",
-  "count": 115,
+  "count": 118,
   "items": [
+    {
+      "key": "HJCR8MKC",
+      "title": "Document de travail 73 : Prix de l'eau",
+      "authors": [],
+      "year": "2025",
+      "type": "Article de revue",
+      "abstract": "",
+      "tags": [
+        "Gestion de l'eau",
+        "Prix de l'eau",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": "https://www.ecologie.gouv.fr/sites/default/files/publications/document_travail_73_prix_eau_aout20258.pdf",
+      "dateAdded": "2026-10-26",
+      "date_modif": "2026-10-26"
+    },
+    {
+      "key": "C5NST36F",
+      "title": "Revue économique 2019-4, page 461",
+      "authors": [],
+      "year": "2019",
+      "type": "Article de revue",
+      "abstract": "",
+      "tags": [
+        "Gestion de l'eau",
+        "Prix de l'eau",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": "https://shs.cairn.info/revue-economique-2019-4-page-461?lang=fr&tab=texte-integral",
+      "dateAdded": "2026-10-26",
+      "date_modif": "2026-10-26"
+    },
+    {
+      "key": "QT28MRAS",
+      "title": "Film « Au fil de l’eau » – Festival Alimenterre",
+      "authors": [],
+      "year": "2026",
+      "type": "Vidéo",
+      "abstract": "Film projeté lors de la soirée du 22 octobre 2026, abordant des thèmes liés à l’eau, aux biens communs et à la gouvernance. Utilisé comme support pour les interventions des structures partenaires.",
+      "tags": [
+        "Festival Alimenterre",
+        "bien commun",
+        "eau",
+        "gouvernance",
+        "participation citoyenne",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": "https://player.lowka.fr/1780041699594586",
+      "dateAdded": "2026-10-26",
+      "date_modif": "2026-10-26"
+    },
     {
       "key": "GUC9SW9H",
       "title": "Fondation Caisse d'Épargne Rhône-Alpes - Appel à projets",

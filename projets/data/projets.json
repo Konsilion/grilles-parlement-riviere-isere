@@ -125,21 +125,6 @@
     "date_modif": "2026-10-18"
   },
   {
-    "id": "P0008",
-    "titre": "Simulation parlementaire - Parlement de la rivière Isère",
-    "description": "Projet de simulation parlementaire avec des étudiants, incluant des points d'étape, un rendu final et une remise de proposition de loi. Le Barreau des avocats de Grenoble s'y associerait.",
-    "porteur": "Parlement de la rivière Isère",
-    "lieu": "Grenoble",
-    "date_debut": "2026-10-01",
-    "date_fin": "",
-    "lien": "",
-    "statut": "",
-    "categories": [],
-    "date_ajout": "2026-10-19",
-    "zotero_key": "JSIK7GRA",
-    "date_modif": "2026-10-19"
-  },
-  {
     "id": "P0009",
     "titre": "Projet Ciblé n°8 : Plateforme OneWater Data",
     "description": "Projet du PEPR OneWater visant à prioriser les actions pour améliorer le partage et la réutilisation des données sur l'eau.",

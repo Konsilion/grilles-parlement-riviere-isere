@@ -1,8 +1,31 @@
 {
-  "generated_at": "2026-11-05T21:07:40Z",
+  "generated_at": "2026-11-05T21:57:54Z",
   "collection_id": "MCKNJI9M",
-  "count": 118,
+  "count": 119,
   "items": [
+    {
+      "key": "Q35DITPV",
+      "title": "Webinaire MAPCa : Dynamiques des habitats des castors et coexistence dans le Jura",
+      "authors": [
+        "Vincent Dams"
+      ],
+      "year": "2026",
+      "type": "Vidéo",
+      "abstract": "Webinaire sur les observations de terrain de Vincent Dams (Jura Nature Environnement) concernant les zones humides créées par les castors, les enjeux de coexistence et les solutions techniques pour réduire les conflits.",
+      "tags": [
+        "Jura",
+        "biodiversité",
+        "castor",
+        "coexistence",
+        "gestion de l'eau",
+        "zones humides",
+        "Hermes"
+      ],
+      "doi": null,
+      "url": "https://lnkd.in/ejqx--ES",
+      "dateAdded": "2026-11-05",
+      "date_modif": "2026-11-05"
+    },
     {
       "key": "HJCR8MKC",
       "title": "Document de travail 73 : Prix de l'eau",

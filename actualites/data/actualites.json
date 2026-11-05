@@ -540,6 +540,36 @@
     "source_app": ""
   },
   {
+    "id": "A0037",
+    "type": "evenement",
+    "titre": "2ème Comité de concertation de l'EPTB Isère",
+    "description": "Comité de concertation organisé par l'EPTB Isère pour partager les connaissances sur l'hydrologie du bassin versant, les évolutions du régime juridique des concessions hydroélectriques et le programme d'actions de l'EPTB. Inclut des interventions de l'Agence de l'eau RMC et de la Fédération de Savoie pour la pêche et la protection des milieux aquatiques.",
+    "date_debut": "2026-12-09",
+    "date_fin": "",
+    "lieu": "Hémicycle de l'Hôtel du Département de l'Isère - 7 rue Fantin Latour, Grenoble",
+    "lien": "https://www.google.com/maps/search/7+rue+Fantin+Latour+%C3%A0+Grenoble?entry=gmail&source=g",
+    "date_ajout": "2026-11-05",
+    "source_message_id": "96cb9955658ba42c643022b54787e2c0@free.fr",
+    "zotero_key": "BN97JJHI",
+    "date_modif": "2026-11-05",
+    "source_app": ""
+  },
+  {
+    "id": "Q35DITPV",
+    "type": "media_publie",
+    "titre": "Webinaire MAPCa : Dynamiques des habitats des castors et coexistence dans le Jura",
+    "description": "Webinaire sur les observations de terrain de Vincent Dams (Jura Nature Environnement) concernant les zones humides créées par les castors, les enjeux de coexistence et les solutions techniques pour réduire les conflits.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "https://lnkd.in/ejqx--ES",
+    "date_ajout": "2026-11-05",
+    "source_message_id": "",
+    "zotero_key": "Q35DITPV",
+    "date_modif": "2026-11-05",
+    "source_app": "mediatheque"
+  },
+  {
     "id": "HJCR8MKC",
     "type": "media_publie",
     "titre": "Document de travail 73 : Prix de l'eau",
@@ -2970,6 +3000,21 @@
     "source_app": "outiltheque"
   },
   {
+    "id": "U0016",
+    "type": "outil_publie",
+    "titre": "Boîte à outils Waterwise",
+    "description": "Boîte à outils développée dans le cadre du projet Waterwise pour aider les territoires de montagne à anticiper leur futur hydrique.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "https://reserves-naturelles.org/le-projet-eau-en-montagne-waterwise/",
+    "date_ajout": "2026-11-05",
+    "source_message_id": "",
+    "zotero_key": "XF7E43WB",
+    "date_modif": "2026-11-05",
+    "source_app": "outiltheque"
+  },
+  {
     "id": "L0001",
     "type": "lieu",
     "titre": "Maison de la Nature et de l'Environnement de l'Isère (MNEI)",
@@ -3240,6 +3285,51 @@
     "source_app": "lieux"
   },
   {
+    "id": "L0019",
+    "type": "lieu",
+    "titre": "Régie de Quartier Grenoble",
+    "description": "Structure organisatrice de la soirée, située au 1 rue des Trembles, Grenoble.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "1 rue des Trembles, 38100 Grenoble",
+    "lien": "",
+    "date_ajout": "2026-11-05",
+    "source_message_id": "",
+    "zotero_key": "VEFAKBP7",
+    "date_modif": "2026-11-05",
+    "source_app": "lieux"
+  },
+  {
+    "id": "L0020",
+    "type": "lieu",
+    "titre": "Musée départemental de l'ancien évêché",
+    "description": "Lieu proposant une exposition sur la rivière Isère, avec visite guidée prévue après le comité de concertation.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "Grenoble",
+    "lien": "",
+    "date_ajout": "2026-11-05",
+    "source_message_id": "",
+    "zotero_key": "P3MAC6AJ",
+    "date_modif": "2026-11-05",
+    "source_app": "lieux"
+  },
+  {
+    "id": "L0021",
+    "type": "lieu",
+    "titre": "Hémicycle de l'Hôtel du Département de l'Isère",
+    "description": "Lieu de tenue du 2ème Comité de concertation de l'EPTB Isère.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "7 rue Fantin Latour, Grenoble",
+    "lien": "https://www.google.com/maps/search/7+rue+Fantin+Latour+%C3%A0+Grenoble?entry=gmail&source=g",
+    "date_ajout": "2026-11-05",
+    "source_message_id": "",
+    "zotero_key": "HSDDDWFM",
+    "date_modif": "2026-11-05",
+    "source_app": "lieux"
+  },
+  {
     "id": "Q0001",
     "type": "question",
     "titre": "Manquer d'eau potable à Grenoble ?",
@@ -3342,6 +3432,36 @@
     "source_message_id": "",
     "zotero_key": "JIK66CGR",
     "date_modif": "2026-10-22",
+    "source_app": "questions"
+  },
+  {
+    "id": "Q0008",
+    "type": "question",
+    "titre": "Quels sont les enjeux liés à la suppression des sections de communes ?",
+    "description": "Question implicite soulevée dans le mail sur les conséquences de la suppression des sections de communes, notamment pour la gestion des forêts, de l'eau et des liens sociaux.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "",
+    "date_ajout": "2026-11-05",
+    "source_message_id": "",
+    "zotero_key": "EF3D9ZPT",
+    "date_modif": "2026-11-05",
+    "source_app": "questions"
+  },
+  {
+    "id": "Q0009",
+    "type": "question",
+    "titre": "Quelle serait la part du Parlement dans la contribution pour la revue Waterwise ?",
+    "description": "Question posée par Philippe Dubois (Parlement de l'Isère) sur la part du Parlement dans la contribution pour la revue Waterwise.",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "",
+    "date_ajout": "2026-11-05",
+    "source_message_id": "",
+    "zotero_key": "6E53E8DH",
+    "date_modif": "2026-11-05",
     "source_app": "questions"
   },
   {
@@ -3672,6 +3792,21 @@
     "source_message_id": "",
     "zotero_key": "V9AN4CEJ",
     "date_modif": "2026-10-26",
+    "source_app": "idees"
+  },
+  {
+    "id": "I0023",
+    "type": "idee",
+    "titre": "Proposition de formation pour le plan d'actions eau 2027",
+    "description": "Mise en place de webinaires pour la montée en compétences des bénévoles représentant les instances, avec des thématiques comme l'inondation, la gestion quantitative, l'écologie, ou des types de réunions/programmes (PTGE, SAGE, PAPI).",
+    "date_debut": "",
+    "date_fin": "",
+    "lieu": "",
+    "lien": "",
+    "date_ajout": "2026-11-05",
+    "source_message_id": "",
+    "zotero_key": "PM9FRF8J",
+    "date_modif": "2026-11-05",
     "source_app": "idees"
   }
 ]

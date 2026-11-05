@@ -228,5 +228,38 @@
     "date_ajout": "2026-10-26",
     "zotero_key": "6F2SVIGD",
     "date_modif": "2026-10-26"
+  },
+  {
+    "id": "L0019",
+    "nom": "Régie de Quartier Grenoble",
+    "description": "Structure organisatrice de la soirée, située au 1 rue des Trembles, Grenoble.",
+    "adresse": "1 rue des Trembles, 38100 Grenoble",
+    "lien": "",
+    "categories": [],
+    "date_ajout": "2026-11-05",
+    "zotero_key": "VEFAKBP7",
+    "date_modif": "2026-11-05"
+  },
+  {
+    "id": "L0020",
+    "nom": "Musée départemental de l'ancien évêché",
+    "description": "Lieu proposant une exposition sur la rivière Isère, avec visite guidée prévue après le comité de concertation.",
+    "adresse": "Grenoble",
+    "lien": "",
+    "categories": [],
+    "date_ajout": "2026-11-05",
+    "zotero_key": "P3MAC6AJ",
+    "date_modif": "2026-11-05"
+  },
+  {
+    "id": "L0021",
+    "nom": "Hémicycle de l'Hôtel du Département de l'Isère",
+    "description": "Lieu de tenue du 2ème Comité de concertation de l'EPTB Isère.",
+    "adresse": "7 rue Fantin Latour, Grenoble",
+    "lien": "https://www.google.com/maps/search/7+rue+Fantin+Latour+%C3%A0+Grenoble?entry=gmail&source=g",
+    "categories": [],
+    "date_ajout": "2026-11-05",
+    "zotero_key": "HSDDDWFM",
+    "date_modif": "2026-11-05"
   }
 ]
